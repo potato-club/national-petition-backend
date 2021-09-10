@@ -1,10 +1,10 @@
-package com.example.nationalpetition;
+package com.example.nationalpetition.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class mainController {
+public class MainController {
 
     @GetMapping("/ping")
     public String ping() {
