@@ -8,6 +8,20 @@ group = 'com.example'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
+
+// 현식추가
+archivesBaseName = 'national-petition-backend'
+
+tasks.jar {
+    enabled = false
+}
+
+tasks.bootJar {
+    enabled = true
+    mainClass = 'com.example.nationalpetition.NationalPetitionApplication'
+}
+// 추가 끝
+
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
