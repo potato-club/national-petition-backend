@@ -1,0 +1,9 @@
+POST {{local}}/api/v1/board
+Content-Type: application/json
+
+{
+  "petitionId": "600413",
+  "title": "신고요",
+  "content": "이것좀 봐주세요",
+  "memberId": 1
+}
