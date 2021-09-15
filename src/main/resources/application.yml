@@ -8,9 +8,6 @@ spring:
     driver-class-name: org.h2.Driver
     username: sa
     password:
-  profiles:
-    include:
-      - jwt
   jpa:
     hibernate:
       ddl-auto: create
