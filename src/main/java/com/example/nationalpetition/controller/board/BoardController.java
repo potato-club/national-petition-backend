@@ -22,4 +22,6 @@ public class BoardController {
         return ApiResponse.success(boardService.createBoard(request));
     }
 
+
+
 }
