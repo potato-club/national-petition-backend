@@ -5,16 +5,20 @@ import com.example.nationalpetition.external.petition.dto.response.PetitionRespo
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
+
 @Getter
 @NoArgsConstructor
 public class CreateBoardRequest {
 
+    @NotNull
     private Long petitionId;
 
     private String title;
 
     private String content;
 
+    @NotNull
     private Long memberId;
 
     public CreateBoardRequest(Long petitionId, String title, String content, Long memberId) {

@@ -35,7 +35,7 @@ public class BoardControllerTest {
     @Test
     void 청원_게시글_생성한다() throws Exception {
         // given
-        CreateBoardRequest request = CreateBoardRequest.testInstance(600403L, "title", "content", 1L);
+        CreateBoardRequest request = CreateBoardRequest.testInstance(1L, "title", "content", 1L);
 
         // when & then
         final ResultActions resultActions = mockMvc.perform(
