@@ -1,0 +1,12 @@
+
+=== Request HTTP Example
+include::{snippets}/board/http-request.adoc[]
+
+=== Request Fields
+include::{snippets}/board/request-fields.adoc[]
+
+=== Response
+include::{snippets}/board/http-response.adoc[]
+
+=== Response Fields
+include::{snippets}/board/response-fields.adoc[]

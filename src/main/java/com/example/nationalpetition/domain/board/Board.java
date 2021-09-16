@@ -25,7 +25,7 @@ public class Board extends BaseTimeEntity {
     @Column(length = 100)
     private String title;
 
-    @Column(columnDefinition = "TEXT NOT NULL")
+    @Column(nullable = false, columnDefinition = "TEXT NOT NULL")
     private String petitionContent;
 
     private String content;

@@ -19,8 +19,8 @@ public class BoardService {
 
     @Transactional
     public BoardInfoResponse createBoard(CreateBoardRequest request) {
-        PetitionResponse petitionInfo = petitionClient.getPetitionInfo(request.getPetitionId());
-        final Board board = boardRepository.save(request.toEntity(petitionInfo));
+//        PetitionResponse petitionInfo = petitionClient.getPetitionInfo(request.getPetitionId());
+        final Board board = boardRepository.save(request.toEntity(PetitionResponse.of("title", "content", "1000", "status")));
         return BoardInfoResponse.of(board);
     }
 
