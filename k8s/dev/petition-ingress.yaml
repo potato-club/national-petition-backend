@@ -12,6 +12,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: petition-service
+                name: petition-api-service
                 port:
-                  number: 8080
+                  number: 80
