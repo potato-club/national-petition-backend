@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: petition-api-deployment
+  labels:
+    app: petition-api
+    env: dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: petition-api
+      env: dev
+  template:
+    metadata:
+      labels:
+        app: petition-api
+        env: dev
+    spec:
+      containers:
+        - name: petition-api
+          image: ghcr.io/potato-club/petition-api:v0.0.1-2
+          ports:
+            - containerPort: 8080
+          imagePullPolicy: Always
