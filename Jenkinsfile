@@ -12,7 +12,7 @@ pipeline {
 
         stage('Build And Test') {
             steps {
-                echo 'build backend...'
+                echo 'build backend....'
 
                 dir('./') {
                     sh '''
