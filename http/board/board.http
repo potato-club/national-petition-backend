@@ -7,3 +7,13 @@ Content-Type: application/json
   "content": "이것좀 봐주세요",
   "memberId": 1
 }
+
+### 게시글 수정
+POST {{local}}/api/v1/board/update
+Content-Type: application/json
+
+{
+  "boardId": 1,
+  "title": "신고요 수정",
+  "content": "이것좀 봐주세요 수정"
+}

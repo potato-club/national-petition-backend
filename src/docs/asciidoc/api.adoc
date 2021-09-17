@@ -71,17 +71,26 @@ use of HTTP status codes.
 == Board
 청원 게시글에 관한 api입니다.
 
-[[resources_notes_create]]
+[[resources_board_create]]
 === Creating a Board
 
 === Request HTTP Example
-include::{snippets}/board/http-request.adoc[]
+include::{snippets}/board/create/http-request.adoc[]
 
 === Request Fields
-include::{snippets}/board/request-fields.adoc[]
+include::{snippets}/board/create/request-fields.adoc[]
 
 === Response
-include::{snippets}/board/http-response.adoc[]
+include::{snippets}/board/create/http-response.adoc[]
 
-=== Response Fields
-include::{snippets}/board/response-fields.adoc[]
+[[resources_board_update]]
+=== update a Board
+
+=== Request HTTP Example
+include::{snippets}/board/update/http-request.adoc[]
+
+=== Request Fields
+include::{snippets}/board/update/request-fields.adoc[]
+
+=== Response
+include::{snippets}/board/update/http-response.adoc[]

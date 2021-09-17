@@ -4,9 +4,11 @@ import com.example.nationalpetition.domain.BaseTimeEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 
+@ToString
 @Entity
 @Getter
 @NoArgsConstructor
@@ -51,6 +53,11 @@ public class Board extends BaseTimeEntity {
         this.petitionsCount = petitionsCount;
         this.category = category;
         this.isDeleted = false;
+    }
+
+    public void updateBoard(String title, String content) {
+        this.title = title;
+        this.content = content;
     }
 
 }
