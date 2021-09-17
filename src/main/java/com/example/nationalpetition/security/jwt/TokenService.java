@@ -1,0 +1,86 @@
+package com.example.nationalpetition.security.jwt;
+
+import com.example.nationalpetition.domain.member.entity.Member;
+import com.example.nationalpetition.service.member.MemberService;
+import io.jsonwebtoken.*;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.PostConstruct;
+import java.util.Base64;
+import java.util.Date;
+
+@Slf4j
+@Service
+public class TokenService {
+
+    @Value("${jwt.secret}")
+    private String secretKey;
+
+    private final MemberService memberService;
+
+    public TokenService(MemberService memberService) {
+        this.memberService = memberService;
+    }
+
+    @PostConstruct
+    protected void init() {
+        secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
+    }
+
+    public Token generateToken(String uid) {
+        // 토큰 인증시간 = 10분, refresh 토큰 만료 시간 = 3주
+        final long tokenPeriod = 1000L * 60L * 10L;
+        final long refreshPeriod = 1000L * 60L * 60L * 24L * 30L * 3L;
+
+        final Claims claims = Jwts.claims().setSubject(uid);
+        final Date now = new Date();
+
+        return new Token(
+                Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(now)
+                .setExpiration(new Date(now.getTime() + tokenPeriod))
+                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .compact(),
+                Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(now)
+                .setExpiration(new Date(now.getTime() + refreshPeriod))
+                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .compact()
+        );
+    }
+
+    public boolean validateToken(String token) {
+
+        try {
+            Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+            return true;
+        } catch (MalformedJwtException e) {
+            log.info("잘못된 JWT 서명입니다.");
+        } catch (ExpiredJwtException e) {
+            log.info("만료된 JWT 토큰입니다.");
+        } catch (UnsupportedJwtException e) {
+            log.info("지원되지 않는 JWT 토큰입니다.");
+        } catch (IllegalArgumentException e) {
+            log.info("JWT 토큰이 잘못되었습니다.");
+        }
+        return false;
+    }
+
+    public String getUid(String token) {
+        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+    }
+
+
+    public Authentication getAuthentication(String token) {
+        final String uid = getUid(token);
+        final Member member = memberService.findByUid(uid);
+
+        return new UsernamePasswordAuthenticationToken(member, token, null);
+    }
+}

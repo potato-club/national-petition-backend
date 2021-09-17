@@ -25,51 +25,51 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class BoardControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+	@Autowired
+	private MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+	@Autowired
+	private ObjectMapper objectMapper;
 
-    @DisplayName("청원 크롤링 서버에서 가져와서 나의 제목과 컨텐츠와 함께 저장한다")
-    @Test
-    void 청원_게시글_생성한다() throws Exception {
-        // given
-        CreateBoardRequest request = CreateBoardRequest.testInstance(1L, "title", "content", 1L);
+	@DisplayName("청원 크롤링 서버에서 가져와서 나의 제목과 컨텐츠와 함께 저장한다")
+	@Test
+	void 청원_게시글_생성한다() throws Exception {
+		// given
+		CreateBoardRequest request = CreateBoardRequest.testInstance(1L, "title", "content", 1L);
 
-        // when & then
-        final ResultActions resultActions = mockMvc.perform(
-                post("/api/v1/board")
-                        .content(objectMapper.writeValueAsString(request))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andDo(document("board",
-                        getDocumentRequest(),
-                        getDocumentResponse(),
-                        requestFields(
-                                fieldWithPath("petitionId").description("청원글 아이디"),
-                                fieldWithPath("title").description("나의 청원 제목"),
-                                fieldWithPath("content").description("나의 청원 글"),
-                                fieldWithPath("memberId").description("memberId")
-                        ),
-                        responseFields(
-                                fieldWithPath("code").description("code"),
-                                fieldWithPath("message").description("message"),
-                                fieldWithPath("data.boardId").description("boardId"),
-                                fieldWithPath("data.memberId").description("boardId"),
-                                fieldWithPath("data.petitionTitle").description("boardId"),
-                                fieldWithPath("data.title").description("boardId"),
-                                fieldWithPath("data.petitionContent").description("boardId"),
-                                fieldWithPath("data.content").description("boardId"),
-                                fieldWithPath("data.petitionUrl").description("boardId"),
-                                fieldWithPath("data.petitionsCount").description("boardId"),
-                                fieldWithPath("data.category").description("boardId")
-                        )
-                ));
+		// when & then
+		final ResultActions resultActions = mockMvc.perform(
+				post("/api/v1/board")
+						.content(objectMapper.writeValueAsString(request))
+						.contentType(MediaType.APPLICATION_JSON)
+						.accept(MediaType.APPLICATION_JSON))
+				.andDo(print())
+				.andDo(document("board",
+						getDocumentRequest(),
+						getDocumentResponse(),
+						requestFields(
+								fieldWithPath("petitionId").description("청원글 아이디"),
+								fieldWithPath("title").description("나의 청원 제목"),
+								fieldWithPath("content").description("나의 청원 글"),
+								fieldWithPath("memberId").description("memberId")
+						),
+						responseFields(
+								fieldWithPath("code").description("code"),
+								fieldWithPath("message").description("message"),
+								fieldWithPath("data.boardId").description("boardId"),
+								fieldWithPath("data.memberId").description("boardId"),
+								fieldWithPath("data.petitionTitle").description("boardId"),
+								fieldWithPath("data.title").description("boardId"),
+								fieldWithPath("data.petitionContent").description("boardId"),
+								fieldWithPath("data.content").description("boardId"),
+								fieldWithPath("data.petitionUrl").description("boardId"),
+								fieldWithPath("data.petitionsCount").description("boardId"),
+								fieldWithPath("data.category").description("boardId")
+						)
+				));
 
-        resultActions.andExpect(status().isOk());
+		resultActions.andExpect(status().isOk());
 
-    }
+	}
 
 }
