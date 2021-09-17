@@ -34,4 +34,11 @@ public class BoardService {
         return BoardInfoResponse.of(board);
     }
 
+    @Transactional
+    public BoardInfoResponse getBoard(Long boardId) {
+        final Board board = boardRepository.findByIdAndIsDeletedFalse(boardId)
+                .orElseThrow(() -> new NotFoundException(String.format("%s는 존재하지 않는 게시물입니다.", boardId)));
+        return BoardInfoResponse.of(board);
+    }
+
 }

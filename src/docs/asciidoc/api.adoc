@@ -94,3 +94,16 @@ include::{snippets}/board/update/request-fields.adoc[]
 
 === Response
 include::{snippets}/board/update/http-response.adoc[]
+
+[[resources_board_get]]
+=== get a Board
+
+=== Request HTTP Example
+include::{snippets}/board/get/http-request.adoc[]
+
+=== Path-Parameters
+include::{snippets}/board/get/path-parameters.adoc[]
+
+=== Response
+include::{snippets}/board/get/http-response.adoc[]
+

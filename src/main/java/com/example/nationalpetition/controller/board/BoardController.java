@@ -6,9 +6,7 @@ import com.example.nationalpetition.dto.board.request.UpdateBoardRequest;
 import com.example.nationalpetition.dto.board.response.BoardInfoResponse;
 import com.example.nationalpetition.service.board.BoardService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -26,6 +24,11 @@ public class BoardController {
     @PostMapping("/api/v1/board/update")
     public ApiResponse<BoardInfoResponse> updateBoard(@RequestBody @Valid UpdateBoardRequest request) {
         return ApiResponse.success(boardService.updateBoard(request));
+    }
+
+    @GetMapping("/api/v1/board/{boardId}")
+    public ApiResponse<BoardInfoResponse> getBoard(@PathVariable Long boardId) {
+        return ApiResponse.success(boardService.getBoard(boardId));
     }
 
 }

@@ -17,3 +17,7 @@ Content-Type: application/json
   "title": "신고요 수정",
   "content": "이것좀 봐주세요 수정"
 }
+
+### 게시글 불러오기
+GET {{local}}/api/v1/board/1
+Content-Type: application/json

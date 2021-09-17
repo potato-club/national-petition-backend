@@ -13,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
@@ -20,6 +21,9 @@ import static com.example.nationalpetition.controller.ApiDocumentUtils.getDocume
 import static com.example.nationalpetition.controller.ApiDocumentUtils.getDocumentResponse;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -81,6 +85,7 @@ public class BoardControllerTest {
                 ));
         resultActions.andExpect(status().isOk());
     }
+
     @DisplayName("내가_작성한_게시글을_수정한다")
     @Test
     void 청원_게시글_수정한다() throws Exception {
@@ -121,5 +126,40 @@ public class BoardControllerTest {
         resultActions.andExpect(status().isOk());
     }
 
+    @DisplayName("게시글_아이디로_해당_게시글을_불러온다")
+    @Test
+    void 게시글을_불러온다() throws Exception {
+        // given
+        Board board = new Board(1L, "petitionTitle", "title", "petitionContent", "content", "url", "10000", "사회문제");
+        boardRepository.save(board);
+
+        // when & then
+        final ResultActions resultActions = mockMvc.perform(
+                RestDocumentationRequestBuilders.get("/api/v1/board/{id}", board.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andDo(document("board/get",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        pathParameters(
+                            parameterWithName("id").description("게시글 아이디")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").description("code"),
+                                fieldWithPath("message").description("message"),
+                                fieldWithPath("data.boardId").description("boardId"),
+                                fieldWithPath("data.memberId").description("작성한 유저"),
+                                fieldWithPath("data.petitionTitle").description("크롤링 해서 가져온 제목"),
+                                fieldWithPath("data.title").description("나의 작성한 제목"),
+                                fieldWithPath("data.petitionContent").description("크롤링해서 가져온 글"),
+                                fieldWithPath("data.content").description("내가 작성한 글"),
+                                fieldWithPath("data.petitionUrl").description("url"),
+                                fieldWithPath("data.petitionsCount").description("청원 수"),
+                                fieldWithPath("data.category").description("청원 카테고리")
+                        )
+                ));
+        resultActions.andExpect(status().isOk());
+    }
 
 }
