@@ -21,3 +21,7 @@ Content-Type: application/json
 ### 게시글 불러오기
 GET {{local}}/api/v1/board/1
 Content-Type: application/json
+
+### 게시글 리스트 불러오기
+GET {{local}}/api/v1/board/list?search=&page=0
+Content-Type: application/json

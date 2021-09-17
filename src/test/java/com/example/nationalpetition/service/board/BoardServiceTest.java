@@ -14,11 +14,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.springframework.data.domain.Sort.Direction.DESC;
 
 @SpringBootTest
 public class BoardServiceTest {
@@ -37,6 +39,23 @@ public class BoardServiceTest {
     @AfterEach
     void clean() {
         boardRepository.deleteAll();
+    }
+
+    // 테스트를 위한 코드
+    public void insert10() {
+        for(int i = 1; i < 11; i++) {
+            Board board = Board.builder()
+                    .memberId(1L)
+                    .content("content")
+                    .category("category")
+                    .petitionContent("petitionContent")
+                    .petitionsCount("10000")
+                    .petitionTitle("petitionTitle")
+                    .petitionUrl("url")
+                    .title("title" + i)
+                    .build();
+            boardRepository.save(board);
+        }
     }
 
     @Test
@@ -100,6 +119,56 @@ public class BoardServiceTest {
         assertThat(boardList).hasSize(1);
         assertThat(boardList.get(0).getTitle()).isEqualTo(board.getTitle());
         assertThat(boardList.get(0).getContent()).isEqualTo(board.getContent());
+    }
+
+    @DisplayName("title 기준으로 검색하고 기본 10개씩 첫페이지는 0으로 가져온다.")
+    @Test
+    void 게시글_리스트_불러오기() {
+        // given
+        insert10();
+
+        // when
+        final Pageable pageable = PageRequest.of(0, 10, DESC, "id");
+        final List<BoardInfoResponse> responseList = boardService.retrieveBoard("", pageable);
+
+        // then
+        final List<Board> boardList = boardRepository.findAll();
+        assertThat(boardList).hasSize(10);
+        assertThat(responseList).hasSize(10);
+        assertThat(responseList.get(0).getTitle()).isEqualTo("title10");
+    }
+
+    @DisplayName("title 기준으로 검색하고 기본 10개씩 첫페이지는 0으로 가져온다. - 타이틀검색어가 있을 시")
+    @Test
+    void 게시글_리스트_불러오기2() {
+        // given
+        insert10();
+
+        // when
+        final Pageable pageable = PageRequest.of(0, 10, DESC, "id");
+        final List<BoardInfoResponse> responseList = boardService.retrieveBoard("1", pageable);
+
+        // then
+        final List<Board> boardList = boardRepository.findAll();
+        assertThat(boardList).hasSize(10);
+        assertThat(responseList).hasSize(2);
+        assertThat(responseList.get(0).getTitle()).isEqualTo("title10");
+        assertThat(responseList.get(1).getTitle()).isEqualTo("title1");
+    }
+
+    @DisplayName("title 기준으로 검색하고 기본 10개씩 첫페이지는 0으로 가져온다. 10개만 있을 시 페이지1은 빈배열 반환")
+    @Test
+    void 게시글_리스트_불러오기3() {
+        // given
+        insert10();
+
+        // when
+        final Pageable pageable = PageRequest.of(1, 10, DESC, "id");
+        final List<BoardInfoResponse> responseList = boardService.retrieveBoard("1", pageable);
+
+        // then
+        assertThat(responseList).isEmpty();
+
     }
 
     private static class MockPetitionApiCaller implements PetitionClient {

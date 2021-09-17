@@ -17,13 +17,13 @@ import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.util.Arrays;
+
 import static com.example.nationalpetition.controller.ApiDocumentUtils.getDocumentRequest;
 import static com.example.nationalpetition.controller.ApiDocumentUtils.getDocumentResponse;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -157,6 +157,44 @@ public class BoardControllerTest {
                                 fieldWithPath("data.petitionUrl").description("url"),
                                 fieldWithPath("data.petitionsCount").description("청원 수"),
                                 fieldWithPath("data.category").description("청원 카테고리")
+                        )
+                ));
+        resultActions.andExpect(status().isOk());
+    }
+
+    @Test
+    void 게시글리스트를_불러온다() throws Exception {
+        // given
+        Board board1 = new Board(1L, "petitionTitle", "title1", "petitionContent", "content", "url", "10000", "사회문제");
+        Board board2 = new Board(1L, "petitionTitle", "title2", "petitionContent", "content", "url", "10000", "사회문제");
+        boardRepository.saveAll(Arrays.asList(board1, board2));
+
+        // when & then
+        final ResultActions resultActions = mockMvc.perform(
+                RestDocumentationRequestBuilders.get("/api/v1/board/list?search=&page=0&size=10")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andDo(document("board/list",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestParameters(
+                                parameterWithName("search").description("타이틀 기준 검색어 [required] required 아니게 바꿀까??"),
+                                parameterWithName("page").description("page [required]"),
+                                parameterWithName("size").description("size [optional] default = 10")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").description("code"),
+                                fieldWithPath("message").description("message"),
+                                fieldWithPath("data[].boardId").description("boardId"),
+                                fieldWithPath("data[].memberId").description("작성한 유저"),
+                                fieldWithPath("data[].petitionTitle").description("크롤링 해서 가져온 제목"),
+                                fieldWithPath("data[].title").description("나의 작성한 제목"),
+                                fieldWithPath("data[].petitionContent").description("크롤링해서 가져온 글"),
+                                fieldWithPath("data[].content").description("내가 작성한 글"),
+                                fieldWithPath("data[].petitionUrl").description("url"),
+                                fieldWithPath("data[].petitionsCount").description("청원 수"),
+                                fieldWithPath("data[].category").description("청원 카테고리")
                         )
                 ));
         resultActions.andExpect(status().isOk());

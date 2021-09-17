@@ -9,8 +9,12 @@ import com.example.nationalpetition.error.exception.NotFoundException;
 import com.example.nationalpetition.external.petition.PetitionClient;
 import com.example.nationalpetition.external.petition.dto.response.PetitionResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -39,6 +43,12 @@ public class BoardService {
         final Board board = boardRepository.findByIdAndIsDeletedFalse(boardId)
                 .orElseThrow(() -> new NotFoundException(String.format("%s는 존재하지 않는 게시물입니다.", boardId)));
         return BoardInfoResponse.of(board);
+    }
+
+    @Transactional
+    public List<BoardInfoResponse> retrieveBoard(String search, Pageable pageable) {
+        return boardRepository.findByTitleContaining(search, pageable)
+                .stream().map(BoardInfoResponse::of).collect(Collectors.toList());
     }
 
 }
