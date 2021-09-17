@@ -3,6 +3,7 @@ package com.example.nationalpetition.config;
 import com.example.nationalpetition.security.oauth2.CustomOAuth2Service;
 import com.example.nationalpetition.security.oauth2.OAuth2SuccessHandler;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -21,12 +22,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
+    public void configure(WebSecurity web) throws Exception
+    {
+        web.ignoring().antMatchers("/resources/**", "/h2-console/**", "/favicon.ico");
+    }
+
+    @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
                 .and()
+                    .formLogin().disable()
                     .authorizeRequests()
                     .anyRequest().permitAll()
 
