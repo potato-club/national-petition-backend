@@ -14,12 +14,12 @@ public class CommentCreateDto {
     private String content;
 
     @Builder
-    public CommentCreateDto(Long memberId, String content) {
-        this.memberId = memberId;
+    public CommentCreateDto(String content, Long memberId) {
         this.content = content;
+        this.memberId = memberId;
     }
 
-    public Comment toEntity(Long memberId, Long boardId) {
+    public Comment toEntity(Long boardId) {
         Comment comment = Comment.builder()
                 .memberId(memberId)
                 .boardId(boardId)

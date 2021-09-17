@@ -16,8 +16,8 @@ public class CommentService {
     private final CommentRepository commentRepository;
 
     @Transactional
-    public Long save(CommentCreateDto dto, Long boardId) {
-        Comment comment = commentRepository.save(dto.toEntity(dto.getMemberId(), boardId));
+    public Long addComment(CommentCreateDto dto, Long boardId) {
+        Comment comment = commentRepository.save(dto.toEntity(boardId));
         return comment.getId();
     }
 

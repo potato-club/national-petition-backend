@@ -4,6 +4,7 @@ import com.example.nationalpetition.domain.BaseTimeEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 
@@ -28,17 +29,18 @@ public class Comment extends BaseTimeEntity {
     private String content;
 
     @Column
+    @ColumnDefault("0")
     private int depth;
 
     private boolean isDeleted;
 
     @Builder
-    public Comment(Long memberId, Long boardId, Long parentId, String content) {
+    public Comment(Long memberId, Long boardId, Long parentId, int depth, String content) {
         this.memberId = memberId;
         this.boardId = boardId;
         this.parentId = parentId;
         this.content = content;
-        this.depth = 0;
+        this.depth = depth;
         this.isDeleted = false;
     }
 
