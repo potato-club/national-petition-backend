@@ -31,12 +31,12 @@ public class TokenService {
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
     }
 
-    public Token generateToken(String uid) {
+    public Token generateToken(Long memberId) {
         // 토큰 인증시간 = 10분, refresh 토큰 만료 시간 = 3주
         final long tokenPeriod = 1000L * 60L * 10L;
         final long refreshPeriod = 1000L * 60L * 60L * 24L * 30L * 3L;
 
-        final Claims claims = Jwts.claims().setSubject(uid);
+        final Claims claims = Jwts.claims().setSubject(String.valueOf(memberId));
         final Date now = new Date();
 
         return new Token(
@@ -72,14 +72,14 @@ public class TokenService {
         return false;
     }
 
-    public String getUid(String token) {
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+    public Long getMemberId(String token) {
+        return Long.valueOf(Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject());
     }
 
 
     public Authentication getAuthentication(String token) {
-        final String uid = getUid(token);
-        final Member member = memberService.findByUid(uid);
+        final Long memberId = getMemberId(token);
+        final Member member = memberService.findById(memberId);
 
         return new UsernamePasswordAuthenticationToken(member, token, null);
     }

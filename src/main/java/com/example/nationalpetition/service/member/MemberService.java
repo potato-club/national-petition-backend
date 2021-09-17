@@ -2,6 +2,8 @@ package com.example.nationalpetition.service.member;
 
 import com.example.nationalpetition.domain.member.entity.Member;
 
+import java.util.Optional;
+
 public interface MemberService {
-    Member findByUid(String uid);
+    Member findById(Long memberId);
 }

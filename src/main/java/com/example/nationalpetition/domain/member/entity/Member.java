@@ -26,8 +26,6 @@ public class Member extends BaseTimeEntity {
     @Column(length = 20)
     private String name;
 
-    private String uid;
-
     @Column
     private String picture;
 
@@ -36,7 +34,6 @@ public class Member extends BaseTimeEntity {
         this.name = name;
         this.email = email;
         this.picture = picture;
-        this.uid = UUID.randomUUID().toString();
     }
 
     public static Member of(String name, String email, String picture) {

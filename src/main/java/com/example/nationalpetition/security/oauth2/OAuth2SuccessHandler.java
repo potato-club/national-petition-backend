@@ -37,7 +37,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         final OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
         final Member member = memberRepository.findByEmail((String) oAuth2User.getAttributes().get("email")).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_USER));
-        final Token token = tokenService.generateToken(member.getUid());
+        final Token token = tokenService.generateToken(member.getId());
 
         writeTokenResponse(response, token);
 
