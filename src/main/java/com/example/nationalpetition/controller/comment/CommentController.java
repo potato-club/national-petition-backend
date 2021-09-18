@@ -19,5 +19,4 @@ public class CommentController {
         return ApiResponse.success(commentService.addComment(dto, boardId));
     }
 
-
 }
