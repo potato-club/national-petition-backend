@@ -6,6 +6,7 @@ import com.example.nationalpetition.service.comment.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+
 @RequiredArgsConstructor
 @RestController
 public class CommentController {
@@ -17,5 +18,6 @@ public class CommentController {
                                         @PathVariable Long boardId) {
         return ApiResponse.success(commentService.addComment(dto, boardId));
     }
+
 
 }

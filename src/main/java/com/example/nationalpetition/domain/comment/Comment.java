@@ -4,7 +4,6 @@ import com.example.nationalpetition.domain.BaseTimeEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 
@@ -29,19 +28,40 @@ public class Comment extends BaseTimeEntity {
     private String content;
 
     @Column
-    @ColumnDefault("0")
     private int depth;
 
     private boolean isDeleted;
 
     @Builder
-    public Comment(Long memberId, Long boardId, Long parentId, int depth, String content) {
+    private Comment(Long memberId, Long boardId, Long parentId, String content, int depth, boolean isDeleted) {
         this.memberId = memberId;
         this.boardId = boardId;
         this.parentId = parentId;
         this.content = content;
         this.depth = depth;
-        this.isDeleted = false;
+        this.isDeleted = isDeleted;
+    }
+
+    public static Comment newRootComment(Long memberId, Long boardId, String content) {
+        return Comment.builder()
+                .parentId(null)
+                .memberId(memberId)
+                .boardId(boardId)
+                .content(content)
+                .depth(1)
+                .isDeleted(false)
+                .build();
+    }
+
+    public static Comment newChildComment(Long parentId, Long memberId, Long boardId, int depth, String content) {
+        return Comment.builder()
+                .parentId(parentId)
+                .memberId(memberId)
+                .boardId(boardId)
+                .content(content)
+                .depth(depth)
+                .isDeleted(false)
+                .build();
     }
 
 }
