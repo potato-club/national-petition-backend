@@ -85,3 +85,16 @@ include::{snippets}/board/http-response.adoc[]
 
 === Response Fields
 include::{snippets}/board/response-fields.adoc[]
+
+
+= 국민 청원 API
+== 인기 랭킹 TOP5 조회
+
+=== Request
+include::{snippets}/petitionRank/http-request.adoc[]
+
+=== Response
+include::{snippets}/petitionRank/http-response.adoc[]
+
+=== Response fields
+include::{snippets}/petitionRank/response-fields.adoc[]
