@@ -31,12 +31,10 @@ public class CommentService {
     @Transactional
     public Comment updateComment(CommentUpdateDto updateDto) {
 
-        Comment findIdAndBoardId = commentRepository.findByIdAndMemberIdAndIsDeletedIsFalse(updateDto.getId(), updateDto.getMemberId());
-        if (findIdAndBoardId == null) {
+        Comment comment = commentRepository.findByIdAndMemberIdAndIsDeletedIsFalse(updateDto.getId(), updateDto.getMemberId());
+        if (comment == null) {
             throw new NotFoundException(String.format("해당하는 %s 에 해당하는 댓글이 없어요", updateDto.getId()));
         }
-        Comment comment = commentRepository.findById(updateDto.getId())
-                .orElseThrow(() -> new NotFoundException(String.format("(%s)에 해당하는 댓글이 존재하지 않아요.", updateDto.getId())));
         comment.update(updateDto.getContent());
         return comment;
     }

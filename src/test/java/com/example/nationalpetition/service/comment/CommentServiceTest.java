@@ -121,7 +121,6 @@ public class CommentServiceTest {
         // when & then
         assertThatThrownBy(() -> commentService.updateComment(dto))
                 .isInstanceOf(NotFoundException.class);
-
     }
 
 }
