@@ -2,7 +2,8 @@ package com.example.nationalpetition.service.comment;
 
 import com.example.nationalpetition.domain.comment.Comment;
 import com.example.nationalpetition.domain.comment.CommentRepository;
-import com.example.nationalpetition.dto.CommentCreateDto;
+import com.example.nationalpetition.dto.comment.CommentCreateDto;
+import com.example.nationalpetition.dto.comment.request.CommentUpdateDto;
 import com.example.nationalpetition.error.exception.NotFoundException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -102,6 +103,25 @@ public class CommentServiceTest {
         // when & then
         assertThatThrownBy(() -> commentService.addComment(dto, boardId))
                 .isInstanceOf(NotFoundException.class);
+    }
+
+    @Test
+    void 해당하는_id가_없을때() {
+        // given
+        String originalContent = "감자는 소금과 먹나요?";
+        String updatedContent = "감자는 설탕과 먹어요";
+
+        Comment savedComment = commentRepository.save(Comment.newRootComment(1L, 1L, originalContent));
+        CommentUpdateDto dto = CommentUpdateDto.builder()
+                .id(savedComment.getId())
+                .memberId(2L)
+                .content(updatedContent)
+                .build();
+
+        // when & then
+        assertThatThrownBy(() -> commentService.updateComment(dto))
+                .isInstanceOf(NotFoundException.class);
+
     }
 
 }

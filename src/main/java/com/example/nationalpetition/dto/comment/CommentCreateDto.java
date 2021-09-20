@@ -1,4 +1,4 @@
-package com.example.nationalpetition.dto;
+package com.example.nationalpetition.dto.comment;
 
 import lombok.Builder;
 import lombok.Getter;
