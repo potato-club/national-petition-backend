@@ -3,7 +3,6 @@ package com.example.nationalpetition.security.jwt;
 import com.example.nationalpetition.exception.JwtTokenException;
 import com.example.nationalpetition.utils.error.ErrorCode;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.PatternMatchUtils;
@@ -20,7 +19,7 @@ import java.io.IOException;
 @Slf4j
 public class JwtAuthFilter extends GenericFilterBean {
 
-    private static final String[] whiteList = {"/", "/css/*"};
+    private static final String[] requiredTokenList = { "/mypage/**"};
 
     private final TokenService tokenService;
 
@@ -31,10 +30,10 @@ public class JwtAuthFilter extends GenericFilterBean {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         final HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-        final String token = httpServletRequest.getHeader("Auth");
+        final String token = httpServletRequest.getHeader("Authorization");
         final String requestURI = httpServletRequest.getRequestURI();
 
-        if (isWhiteListPath(requestURI)) {
+        if (!isRequiredTokenPath(requestURI)) {
             log.info("token 유효성 검사가 필요없는 url들 입니다., uri: {}", requestURI);
             chain.doFilter(request, response);
             return;
@@ -50,7 +49,7 @@ public class JwtAuthFilter extends GenericFilterBean {
         chain.doFilter(request, response);
     }
 
-    private boolean isWhiteListPath(String requestURI) {
-        return PatternMatchUtils.simpleMatch(whiteList, requestURI);
+    private boolean isRequiredTokenPath(String requestURI) {
+        return PatternMatchUtils.simpleMatch(requiredTokenList, requestURI);
     }
 }

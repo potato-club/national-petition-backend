@@ -1,13 +1,16 @@
 package com.example.nationalpetition.security.jwt;
 
 import com.example.nationalpetition.domain.member.entity.Member;
+import com.example.nationalpetition.exception.JwtTokenException;
 import com.example.nationalpetition.service.member.MemberService;
+import com.example.nationalpetition.utils.error.ErrorCode;
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
 import java.util.Base64;
@@ -58,6 +61,7 @@ public class TokenService {
     public boolean validateToken(String token) {
 
         try {
+            token = removeBear(token);
             Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
             return true;
         } catch (MalformedJwtException e) {
@@ -73,7 +77,16 @@ public class TokenService {
     }
 
     public Long getMemberId(String token) {
+        token = removeBear(token);
         return Long.valueOf(Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject());
+    }
+
+    public Long validateTokenAndGetMemberId(String token) {
+        if (validateToken(token)) {
+            token = removeBear(token);
+            return Long.valueOf(Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject());
+        }
+        throw new JwtTokenException(ErrorCode.JWT_TOKEN_EXCEPTION_INVALID);
     }
 
 
@@ -83,4 +96,13 @@ public class TokenService {
 
         return new UsernamePasswordAuthenticationToken(member, token, null);
     }
+
+    private String removeBear(String token) {
+        if (StringUtils.hasText(token) && token.startsWith("Bearer ")) {
+            token = token.substring(7);
+        }
+        return token;
+    }
+
+
 }

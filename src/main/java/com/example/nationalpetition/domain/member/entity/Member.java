@@ -21,19 +21,27 @@ public class Member extends BaseTimeEntity {
     @GeneratedValue
     private Long id;
 
+    @Column(nullable = false)
     private String email;
 
-    @Column(length = 20)
+    @Column(length = 20, nullable = false)
     private String name;
 
-    @Column
+    @Column(nullable = false)
     private String picture;
+
+    @Column(length = 20)
+    private String nickName;
 
     @Builder
     public Member(String name, String email, String picture) {
         this.name = name;
         this.email = email;
         this.picture = picture;
+    }
+
+    public void addNickName(String nickName) {
+        this.nickName = nickName;
     }
 
     public static Member of(String name, String email, String picture) {
