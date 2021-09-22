@@ -6,15 +6,12 @@ import com.example.nationalpetition.exception.NotFoundException;
 import com.example.nationalpetition.security.jwt.Token;
 import com.example.nationalpetition.security.jwt.TokenService;
 import com.example.nationalpetition.utils.error.ErrorCode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -41,13 +38,8 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         final Member member = memberRepository.findByEmail((String) oAuth2User.getAttributes().get("email")).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_USER));
         final Token token = tokenService.generateToken(member.getId());
 
-        response = OAuth2ServiceUtils.writeTokenResponse(response, token);
-
-        httpSession.setAttribute("Authorization", token.getToken());
-        httpSession.setAttribute("Refresh", token.getRefreshToken());
-
         if (!StringUtils.hasText(member.getNickName())) {
-            response.sendRedirect("/nickName");
+            response.sendRedirect("/nickName?token=" + token.getToken());
             return;
         }
         response.sendRedirect("/");

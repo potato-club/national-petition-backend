@@ -18,7 +18,6 @@ import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 @Slf4j
@@ -28,19 +27,15 @@ public class OAuth2Controller {
 
     private final TokenService tokenService;
     private final MemberService memberService;
-    private final HttpSession httpSession;
-
 
     /**
      * 테스트용 삭제예정
      * @return
      */
-    @GetMapping("nickName")
-    public String nickName() {
-        final String auth = (String) httpSession.getAttribute("Authorization");
-        return auth;
+    @GetMapping("/nickName")
+    public Long inputNickName(@RequestParam String token) {
+        return tokenService.validateTokenAndGetMemberId(token);
     }
-
 
     @PostMapping("/mypage/nickName")
     public ApiResponse<MemberCreateResponse> addNickName(@RequestHeader("Authorization") String token,
