@@ -39,6 +39,7 @@ out/
 .application-ouath-local.yml
 
 api.html
+api-board.html
 generated/
 
 application-oauth.yml

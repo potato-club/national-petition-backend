@@ -1,0 +1,74 @@
+= RESTful Petition API Guide
+potato;
+:doctype: petition
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+:operation-curl-request-title: Example request
+:operation-http-response-title: Example response
+
+
+[[resources_notes]]
+== Board
+청원 게시글에 관한 api입니다.
+
+[[resources_board_create]]
+=== Creating a Board
+
+Request HTTP Example
+include::{snippets}/board/create/http-request.adoc[]
+
+Request Fields
+include::{snippets}/board/create/request-fields.adoc[]
+
+Response
+include::{snippets}/board/create/http-response.adoc[]
+
+[[resources_board_update]]
+=== update a Board
+
+Request HTTP Example
+include::{snippets}/board/update/http-request.adoc[]
+
+Request Fields
+include::{snippets}/board/update/request-fields.adoc[]
+
+Response
+include::{snippets}/board/update/http-response.adoc[]
+
+[[resources_board_get]]
+=== get a Board
+
+Request HTTP Example
+include::{snippets}/board/get/http-request.adoc[]
+
+Path-Parameters
+include::{snippets}/board/get/path-parameters.adoc[]
+
+Response
+include::{snippets}/board/get/http-response.adoc[]
+
+[[resources_board_list]]
+=== get Boards
+
+Request HTTP Example
+include::{snippets}/board/list/http-request.adoc[]
+
+Path-Parameters
+include::{snippets}/board/list/request-parameters.adoc[]
+
+Response
+include::{snippets}/board/list/http-response.adoc[]
+
+== 인기 랭킹 TOP5 조회
+
+Request
+include::{snippets}/petitionRank/http-request.adoc[]
+
+Response
+include::{snippets}/petitionRank/http-response.adoc[]
+
+Response fields
+include::{snippets}/petitionRank/response-fields.adoc[]
