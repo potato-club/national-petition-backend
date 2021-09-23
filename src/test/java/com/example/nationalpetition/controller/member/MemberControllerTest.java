@@ -34,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @SpringBootTest
-@AutoConfigureRestDocs(uriScheme = "http", uriHost = "3.36.64.148")
+@AutoConfigureRestDocs(uriScheme = "http", uriHost = "3.36.229.76")
 @AutoConfigureMockMvc
 class MemberControllerTest {
 
