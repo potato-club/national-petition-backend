@@ -1,9 +1,11 @@
 package com.example.nationalpetition.controller.board;
 
 import com.example.nationalpetition.controller.ApiResponse;
+import com.example.nationalpetition.domain.member.entity.Member;
 import com.example.nationalpetition.dto.board.request.CreateBoardRequest;
 import com.example.nationalpetition.dto.board.request.UpdateBoardRequest;
 import com.example.nationalpetition.dto.board.response.BoardInfoResponse;
+import com.example.nationalpetition.security.jwt.TokenService;
 import com.example.nationalpetition.service.board.BoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -19,11 +21,14 @@ import static org.springframework.data.domain.Sort.Direction.DESC;
 @RequiredArgsConstructor
 public class BoardController {
 
+    private final TokenService tokenService;
     private final BoardService boardService;
 
     @PostMapping("/api/v1/board")
-    public ApiResponse<BoardInfoResponse> createBoard(@RequestBody @Valid CreateBoardRequest request) {
-        return ApiResponse.success(boardService.createBoard(request));
+    public ApiResponse<BoardInfoResponse> createBoard(@RequestBody @Valid CreateBoardRequest request, @RequestHeader("Authorization") String token) {
+        Long memberId = tokenService.getMemberId(token);
+        System.out.println("memberId = " + memberId);
+        return ApiResponse.success(boardService.createBoard(request, memberId));
     }
 
     @PostMapping("/api/v1/board/update")

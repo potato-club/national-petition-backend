@@ -1,11 +1,11 @@
 POST {{local}}/api/v1/board
 Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNjMyMzg4OTQ0LCJleHAiOjE2MzIzODk1NDR9.Ju5xSV4zJ5c5f0zDFpE_5Vo7D8K-DtSzEXkPHp01LfA
 
 {
   "petitionId": "600413",
   "title": "신고요",
-  "content": "이것좀 봐주세요",
-  "memberId": 1
+  "content": "이것좀 봐주세요"
 }
 
 ### 게시글 수정

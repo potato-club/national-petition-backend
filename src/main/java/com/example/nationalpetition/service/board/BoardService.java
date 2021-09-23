@@ -24,9 +24,9 @@ public class BoardService {
     private final PetitionClient petitionClient;
 
     @Transactional
-    public BoardInfoResponse createBoard(CreateBoardRequest request) {
+    public BoardInfoResponse createBoard(CreateBoardRequest request, Long memberId) {
         PetitionResponse petitionInfo = petitionClient.getPetitionInfo(request.getPetitionId());
-        final Board board = boardRepository.save(request.toEntity(petitionInfo));
+        final Board board = boardRepository.save(request.toEntity(petitionInfo, memberId));
         return BoardInfoResponse.of(board);
     }
 

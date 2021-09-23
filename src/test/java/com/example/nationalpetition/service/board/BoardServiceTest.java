@@ -61,10 +61,10 @@ public class BoardServiceTest {
     @Test
     void 사용자가_청원_게시글을_생성한다() {
         // given
-        CreateBoardRequest request = CreateBoardRequest.testInstance(600413L, "title", "content", 1L);
+        CreateBoardRequest request = CreateBoardRequest.testInstance(600413L, "title", "content");
 
         // when
-        final BoardInfoResponse response = boardService.createBoard(request);
+        final BoardInfoResponse response = boardService.createBoard(request, 1L);
 
         // then
         final List<Board> boardList = boardRepository.findAll();
