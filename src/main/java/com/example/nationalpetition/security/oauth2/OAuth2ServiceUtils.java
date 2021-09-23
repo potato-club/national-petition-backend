@@ -7,7 +7,6 @@ import com.example.nationalpetition.utils.error.ErrorCode;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.util.StringUtils;
-
 import javax.servlet.http.HttpServletResponse;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)

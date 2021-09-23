@@ -33,15 +33,15 @@ public class OAuth2Controller {
      * @return
      */
     @GetMapping("/nickName")
-    public Long inputNickName(@RequestParam String token) {
-        return tokenService.validateTokenAndGetMemberId(token);
+    public String inputNickName(@RequestParam String token) {
+        return token;
     }
 
     @PostMapping("/mypage/nickName")
     public ApiResponse<MemberCreateResponse> addNickName(@RequestHeader("Authorization") String token,
                                                             @RequestBody @Valid NickNameRequest request, BindingResult bindingResult) throws BindException {
         ValidationUtils.validateBindingResult(bindingResult);
-        final Member savedMember = memberService.addNickName(tokenService.validateTokenAndGetMemberId(token), request);
+        final Member savedMember = memberService.addNickName(tokenService.getMemberId(token), request);
         return ApiResponse.success(MemberCreateResponse.of(savedMember));
     }
 

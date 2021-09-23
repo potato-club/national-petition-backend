@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 
@@ -24,12 +23,11 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
     private final TokenService tokenService;
     private final MemberRepository memberRepository;
-    private final HttpSession httpSession;
 
-    public OAuth2SuccessHandler(TokenService tokenService, MemberRepository memberRepository, HttpSession httpSession) {
+
+    public OAuth2SuccessHandler(TokenService tokenService, MemberRepository memberRepository) {
         this.tokenService = tokenService;
         this.memberRepository = memberRepository;
-        this.httpSession = httpSession;
     }
 
     @Override
@@ -39,10 +37,16 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         final Token token = tokenService.generateToken(member.getId());
 
         if (!StringUtils.hasText(member.getNickName())) {
-            response.sendRedirect("/nickName?token=" + token.getToken());
+            /**
+             * 나중에 프론트 URL로 고칠 예정
+             */
+            response.sendRedirect("http://ec2-3-36-64-148.ap-northeast-2.compute.amazonaws.com:8080/nickName?token=" + token.getToken());
             return;
         }
-        response.sendRedirect("/");
+        /**
+         * 나중에 프론트 URL로 고칠 예정
+         */
+        response.sendRedirect("http://ec2-3-36-64-148.ap-northeast-2.compute.amazonaws.com:8080/");
     }
 
 }

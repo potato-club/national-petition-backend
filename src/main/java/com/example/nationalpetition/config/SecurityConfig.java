@@ -9,8 +9,11 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Component;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 @EnableWebSecurity
 @Component
@@ -19,11 +22,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
     private final CustomOAuth2Service customOAuth2UserService;
     private final TokenService tokenService;
+    private final CorsConfigurationSource corsConfigurationSource;
 
-    public SecurityConfig(OAuth2SuccessHandler oAuth2SuccessHandler, CustomOAuth2Service customOAuth2UserService, TokenService tokenService) {
+    public SecurityConfig(OAuth2SuccessHandler oAuth2SuccessHandler, CustomOAuth2Service customOAuth2UserService, TokenService tokenService, CorsConfigurationSource corsConfigurationSource) {
         this.oAuth2SuccessHandler = oAuth2SuccessHandler;
         this.customOAuth2UserService = customOAuth2UserService;
         this.tokenService = tokenService;
+        this.corsConfigurationSource = corsConfigurationSource;
     }
 
     @Override
@@ -44,8 +49,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .and()
                     .oauth2Login()
-                        .successHandler(oAuth2SuccessHandler)
-                        .userInfoEndpoint().userService(customOAuth2UserService);
+                    .successHandler(oAuth2SuccessHandler)
+                    .userInfoEndpoint().userService(customOAuth2UserService);
+
+        http
+                .cors().configurationSource(corsConfigurationSource);
+
 
         http
                 .addFilterBefore(new JwtAuthFilter(tokenService), UsernamePasswordAuthenticationFilter.class);
