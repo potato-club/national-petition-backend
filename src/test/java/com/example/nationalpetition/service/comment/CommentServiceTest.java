@@ -123,4 +123,25 @@ public class CommentServiceTest {
                 .isInstanceOf(NotFoundException.class);
     }
 
+    @Test
+    void 댓글을_수정한다() {
+        // given
+        String originalContent = "감자는 맛이 없어요 :(";
+        String newContent = "사실은 맛있어요 :)";
+
+        Comment originalComment = commentRepository.save(Comment.newRootComment(1L, 1L, originalContent));
+        CommentUpdateDto updateDto = CommentUpdateDto.builder()
+                .id(originalComment.getId())
+                .memberId(originalComment.getMemberId())
+                .content(newContent)
+                .build();
+
+        // when
+        Comment updatedComment = commentService.updateComment(updateDto);
+
+        // then
+        assertThat(updatedComment.getContent()).isEqualTo(updateDto.getContent());
+
+    }
+
 }

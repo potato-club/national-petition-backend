@@ -22,8 +22,8 @@ public class CommentController {
     }
 
     @PutMapping("/api/v1/comment")
-    public ApiResponse<Comment> updateComment(@RequestBody CommentUpdateDto dto) {
-        return ApiResponse.success(commentService.updateComment(dto));
+    public ApiResponse<String> updateComment(@RequestBody CommentUpdateDto dto) {
+        return ApiResponse.success(commentService.updateComment(dto).getContent());
     }
 
 
