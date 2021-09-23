@@ -1,13 +1,11 @@
 package com.example.nationalpetition.config;
 
+
 import com.example.nationalpetition.security.jwt.JwtAuthFilter;
 import com.example.nationalpetition.security.jwt.TokenService;
 import com.example.nationalpetition.security.oauth2.CustomOAuth2Service;
 import com.example.nationalpetition.security.oauth2.OAuth2SuccessHandler;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;

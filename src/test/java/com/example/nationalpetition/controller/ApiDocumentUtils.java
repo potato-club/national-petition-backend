@@ -10,9 +10,9 @@ public class ApiDocumentUtils {
     public static OperationRequestPreprocessor getDocumentRequest() {
         return preprocessRequest(
                 modifyUris()
-                        .scheme("https")
+                        .scheme("http")
                         // TODO: 2021-09-16 나중에 도메인 연결하면 바꾸기
-                        .host("docs.api.com")
+                        .host("3.36.64.148")
                         .removePort(),
                 prettyPrint());
     }
