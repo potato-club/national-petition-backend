@@ -18,4 +18,6 @@ spring:
         default_batch_size: true
         use_sql_comments: true
   profiles:
-    include: oauth-local
+    include:
+      - oauth
+      - jwt

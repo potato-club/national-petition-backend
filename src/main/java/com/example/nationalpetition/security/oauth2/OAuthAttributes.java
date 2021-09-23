@@ -1,13 +1,13 @@
-package com.example.nationalpetition.domain.auth;
+package com.example.nationalpetition.security.oauth2;
 
-import com.example.nationalpetition.domain.user.entity.Member;
+import com.example.nationalpetition.domain.member.entity.Member;
 import lombok.Builder;
 import lombok.Getter;
 
 import java.util.Map;
 
 @Getter
-public class OAuthAttributes {
+public class OAuthAttributes  {
 
     private Map<String, Object> attributes;
     private String nameAttributeKey;
@@ -24,7 +24,7 @@ public class OAuthAttributes {
         this.picture = picture;
     }
 
-    public static OAuthAttributes of(String registrationId, String userNameAttributeName, Map<String, Object> attributes) {
+    public static OAuthAttributes of(String userNameAttributeName, Map<String, Object> attributes) {
         return ofGoogle(userNameAttributeName, attributes);
     }
 
@@ -38,8 +38,10 @@ public class OAuthAttributes {
                 .build();
     }
 
+
     public Member toEntity() {
         return new Member(name, email,picture);
     }
+
 
 }
