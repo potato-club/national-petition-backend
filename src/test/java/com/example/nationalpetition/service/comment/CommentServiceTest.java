@@ -137,7 +137,7 @@ public class CommentServiceTest {
                 .build();
 
         // when
-        Comment updatedComment = commentService.updateComment(updateDto);
+        commentService.updateComment(updateDto);
 
         // then
         List<Comment> comment = commentRepository.findAll();
