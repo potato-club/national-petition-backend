@@ -2,8 +2,11 @@ package com.example.nationalpetition.controller.member;
 
 import com.example.nationalpetition.domain.member.entity.Member;
 import com.example.nationalpetition.domain.member.repository.MemberRepository;
+import com.example.nationalpetition.exception.JwtTokenException;
+import com.example.nationalpetition.exception.NotFoundException;
 import com.example.nationalpetition.security.jwt.Token;
 import com.example.nationalpetition.security.jwt.TokenService;
+import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
@@ -11,6 +14,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,14 +32,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+
 @SpringBootTest
 @AutoConfigureRestDocs(uriScheme = "http", uriHost = "3.36.64.148")
 @AutoConfigureMockMvc
-@Transactional
 class MemberControllerTest {
-
-    @Autowired
-    EntityManager em;
 
     @Autowired
     TokenService tokenService;
@@ -46,18 +47,9 @@ class MemberControllerTest {
     @Autowired
     MockMvc mockMvc;
 
-    @BeforeEach
-    public void init() {
-        final Member member = Member.of("이름", "aa@naver.com", "picturepicture");
-        member.addNickName("닉네임");
-        memberRepository.save(member);
-    }
-
     @AfterEach
     void clear() {
         memberRepository.deleteAll();
-        em.flush();
-        em.clear();
     }
 
 
@@ -65,7 +57,7 @@ class MemberControllerTest {
     @DisplayName("회원 정보 조회 (마이페이지 기준)")
     void getMyInfo() throws Exception {
         //given
-        final Long memberId = 1L;
+        final Long memberId = MemberServiceUtils.saveMember(memberRepository);
         final Token token = tokenService.generateToken(memberId);
         //when
         final ResultActions resultActions = mockMvc
@@ -87,6 +79,24 @@ class MemberControllerTest {
                 );
         //then
         resultActions.andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("회원 정보 조회 (토큰 값 틀렸을 경우) -> 아이디 찾지 못함")
+    void getMyInfo2() throws Exception {
+        //given
+        final Long memberId = MemberServiceUtils.saveMember(memberRepository);
+        final Token token = tokenService.generateToken(memberId+1L);
+        //when then
+        final MvcResult mockResult = mockMvc
+                .perform(
+                        get("/api/v1/mypage/info")
+                                .header("Authorization", token.getToken()))
+                .andDo(print())
+                .andDo(document("mypage/info/notFound"))
+                .andExpect(result -> assertTrue(result.getResolvedException().getClass().isAssignableFrom(NotFoundException.class)))
+                .andReturn();
+
     }
 
 }
