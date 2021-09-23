@@ -7,21 +7,21 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class MemberCreateResponse {
+public class MemberResponse {
 
     private String name;
     private String email;
     private String picture;
     private String nickName;
 
-    public MemberCreateResponse(String name, String email, String picture, String nickName) {
+    public MemberResponse(String name, String email, String picture, String nickName) {
         this.name = name;
         this.email = email;
         this.picture = picture;
         this.nickName = nickName;
     }
 
-    public static MemberCreateResponse of(Member member) {
-        return new MemberCreateResponse(member.getName(), member.getEmail(), member.getPicture(), member.getNickName());
+    public static MemberResponse of(Member member) {
+        return new MemberResponse(member.getName(), member.getEmail(), member.getPicture(), member.getNickName());
     }
 }
