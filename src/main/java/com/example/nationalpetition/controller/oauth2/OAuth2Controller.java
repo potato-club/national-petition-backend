@@ -3,7 +3,7 @@ package com.example.nationalpetition.controller.oauth2;
 import com.example.nationalpetition.controller.ApiResponse;
 import com.example.nationalpetition.domain.member.entity.Member;
 import com.example.nationalpetition.dto.member.request.NickNameRequest;
-import com.example.nationalpetition.dto.member.response.MemberCreateResponse;
+import com.example.nationalpetition.dto.member.response.MemberResponse;
 import com.example.nationalpetition.exception.JwtTokenException;
 import com.example.nationalpetition.security.jwt.Token;
 import com.example.nationalpetition.security.jwt.TokenService;
@@ -37,13 +37,6 @@ public class OAuth2Controller {
         return token;
     }
 
-    @PostMapping("/mypage/nickName")
-    public ApiResponse<MemberCreateResponse> addNickName(@RequestHeader("Authorization") String token,
-                                                            @RequestBody @Valid NickNameRequest request, BindingResult bindingResult) throws BindException {
-        ValidationUtils.validateBindingResult(bindingResult);
-        final Member savedMember = memberService.addNickName(tokenService.getMemberId(token), request);
-        return ApiResponse.success(MemberCreateResponse.of(savedMember));
-    }
 
     @GetMapping("token/expired")
     public ResponseEntity<String> expired() {
