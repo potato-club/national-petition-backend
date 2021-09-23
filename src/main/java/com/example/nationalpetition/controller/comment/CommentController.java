@@ -1,10 +1,13 @@
 package com.example.nationalpetition.controller.comment;
 
 import com.example.nationalpetition.controller.ApiResponse;
-import com.example.nationalpetition.dto.CommentCreateDto;
+import com.example.nationalpetition.domain.comment.Comment;
+import com.example.nationalpetition.dto.comment.CommentCreateDto;
+import com.example.nationalpetition.dto.comment.request.CommentUpdateDto;
 import com.example.nationalpetition.service.comment.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
 
 @RequiredArgsConstructor
 @RestController
@@ -17,5 +20,12 @@ public class CommentController {
                                         @PathVariable Long boardId) {
         return ApiResponse.success(commentService.addComment(dto, boardId));
     }
+
+    @PutMapping("/api/v1/comment")
+    public ApiResponse<String> updateComment(@RequestBody CommentUpdateDto dto) {
+        return ApiResponse.success(commentService.updateComment(dto).getContent());
+    }
+
+
 
 }
