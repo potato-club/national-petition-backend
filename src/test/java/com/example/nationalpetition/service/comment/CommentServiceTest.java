@@ -140,7 +140,9 @@ public class CommentServiceTest {
         Comment updatedComment = commentService.updateComment(updateDto);
 
         // then
-        assertThat(updatedComment.getContent()).isEqualTo(updateDto.getContent());
+        List<Comment> comment = commentRepository.findAll();
+        assertThat(comment).hasSize(1);
+        assertThat(comment.get(0)).isEqualTo(updateDto.getContent());
 
     }
 
