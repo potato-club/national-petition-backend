@@ -3,6 +3,7 @@ package com.example.nationalpetition.service.comment;
 import com.example.nationalpetition.domain.comment.Comment;
 import com.example.nationalpetition.domain.comment.CommentRepository;
 import com.example.nationalpetition.dto.comment.CommentCreateDto;
+import com.example.nationalpetition.dto.comment.request.CommentDeleteDto;
 import com.example.nationalpetition.dto.comment.request.CommentUpdateDto;
 import com.example.nationalpetition.utils.error.exception.NotFoundException;
 import org.junit.jupiter.api.AfterEach;
@@ -144,6 +145,25 @@ public class CommentServiceTest {
         assertThat(comment).hasSize(1);
         assertThat(comment.get(0).getContent()).isEqualTo(updateDto.getContent());
 
+    }
+
+    @Test
+    void 댓글을_삭제한다() {
+        // given
+        Long commentId = 1L;
+        Long memberId = 1L;
+        Long boardId = 1L;
+
+        commentRepository.save(Comment.newRootComment(memberId, boardId, "치킨이 더 맛있어요"));
+        CommentDeleteDto deleteDto = new CommentDeleteDto(commentId, memberId);
+
+        // when
+        commentService.deleteComment(deleteDto);
+
+        // then
+        List<Comment> deletedComment = commentRepository.findAll();
+        assertThat(deletedComment).hasSize(1);
+        assertThat(deletedComment.get(0).isDeleted()).isEqualTo(true);
     }
 
 }
