@@ -41,7 +41,7 @@ asciidoctor {
     inputs.dir snippetsDir
 }
 
-bootJar {
+build {
     dependsOn asciidoctor
     copy {
         from "${asciidoctor.outputDir}"
