@@ -4,6 +4,8 @@ import com.example.nationalpetition.domain.board.Board;
 import com.example.nationalpetition.domain.board.repository.BoardRepository;
 import com.example.nationalpetition.dto.board.request.CreateBoardRequest;
 import com.example.nationalpetition.dto.board.request.UpdateBoardRequest;
+import com.example.nationalpetition.security.jwt.Token;
+import com.example.nationalpetition.security.jwt.TokenService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -21,6 +23,8 @@ import java.util.Arrays;
 
 import static com.example.nationalpetition.controller.ApiDocumentUtils.getDocumentRequest;
 import static com.example.nationalpetition.controller.ApiDocumentUtils.getDocumentResponse;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
@@ -40,6 +44,9 @@ public class BoardControllerTest {
     private ObjectMapper objectMapper;
 
     @Autowired
+    private TokenService tokenService;
+
+    @Autowired
     private BoardRepository boardRepository;
 
     @AfterEach
@@ -51,11 +58,15 @@ public class BoardControllerTest {
     @Test
     void 청원_게시글_생성한다() throws Exception {
         // given
-        CreateBoardRequest request = CreateBoardRequest.testInstance(1L, "title", "content", 1L);
+        CreateBoardRequest request = CreateBoardRequest.testInstance(1L, "title", "content");
+
+        Token token = tokenService.generateToken(1L);
+        System.out.println("token.getToken() = " + token.getToken());
 
         // when & then
         final ResultActions resultActions = mockMvc.perform(
                 post("/api/v1/board")
+                        .header("Authorization", token.getToken())
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -63,11 +74,13 @@ public class BoardControllerTest {
                 .andDo(document("board/create",
                         getDocumentRequest(),
                         getDocumentResponse(),
+                        requestHeaders(
+                                headerWithName("Authorization").description("토큰")
+                        ),
                         requestFields(
                                 fieldWithPath("petitionId").description("청원글 아이디"),
                                 fieldWithPath("title").description("나의 청원 제목"),
-                                fieldWithPath("content").description("나의 청원 글"),
-                                fieldWithPath("memberId").description("memberId")
+                                fieldWithPath("content").description("나의 청원 글")
                         ),
                         responseFields(
                                 fieldWithPath("code").description("code"),
@@ -94,9 +107,12 @@ public class BoardControllerTest {
         boardRepository.save(board);
         UpdateBoardRequest request = UpdateBoardRequest.testInstance(board.getId(), "updateTitle", "updateContent");
 
+        Token token = tokenService.generateToken(1L);
+
         // when & then
         final ResultActions resultActions = mockMvc.perform(
                 post("/api/v1/board/update")
+                        .header("Authorization", token.getToken())
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -104,6 +120,9 @@ public class BoardControllerTest {
                 .andDo(document("board/update",
                         getDocumentRequest(),
                         getDocumentResponse(),
+                        requestHeaders(
+                                headerWithName("Authorization").description("토큰")
+                        ),
                         requestFields(
                                 fieldWithPath("boardId").description("게시글 아이디"),
                                 fieldWithPath("title").description("나의 청원 제목"),

@@ -18,21 +18,17 @@ public class CreateBoardRequest {
 
     private String content;
 
-    @NotNull
-    private Long memberId;
-
-    public CreateBoardRequest(Long petitionId, String title, String content, Long memberId) {
+    public CreateBoardRequest(Long petitionId, String title, String content) {
         this.petitionId = petitionId;
         this.title = title;
         this.content = content;
-        this.memberId = memberId;
     }
 
-    public static CreateBoardRequest testInstance(Long petitionId, String title, String content, Long memberId) {
-        return new CreateBoardRequest(petitionId, title, content, memberId);
+    public static CreateBoardRequest testInstance(Long petitionId, String title, String content) {
+        return new CreateBoardRequest(petitionId, title, content);
     }
 
-    public Board toEntity(PetitionResponse petitionInfo) {
+    public Board toEntity(PetitionResponse petitionInfo, Long memberId) {
         return Board.builder()
                 .petitionTitle(petitionInfo.getTitle())
                 .petitionContent(petitionInfo.getContent())

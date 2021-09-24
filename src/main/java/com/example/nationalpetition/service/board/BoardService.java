@@ -24,16 +24,16 @@ public class BoardService {
     private final PetitionClient petitionClient;
 
     @Transactional
-    public BoardInfoResponse createBoard(CreateBoardRequest request) {
+    public BoardInfoResponse createBoard(CreateBoardRequest request, Long memberId) {
         PetitionResponse petitionInfo = petitionClient.getPetitionInfo(request.getPetitionId());
-        final Board board = boardRepository.save(request.toEntity(petitionInfo));
+        final Board board = boardRepository.save(request.toEntity(petitionInfo, memberId));
         return BoardInfoResponse.of(board);
     }
 
     @Transactional
-    public BoardInfoResponse updateBoard(UpdateBoardRequest request) {
-        Board board = boardRepository.findByIdAndIsDeletedFalse(request.getBoardId())
-                .orElseThrow(() -> new NotFoundException(String.format("%s는 존재하지 않는 게시물입니다.", request.getBoardId())));
+    public BoardInfoResponse updateBoard(UpdateBoardRequest request, Long memberId) {
+        Board board = boardRepository.findByIdAndMemberId(request.getBoardId(), memberId)
+                .orElseThrow(() -> new NotFoundException(String.format("%s의 게시물%s는 존재하지 않는 게시물입니다.", memberId, request.getBoardId())));
         board.updateBoard(request.getTitle(), request.getContent());
         return BoardInfoResponse.of(board);
     }
