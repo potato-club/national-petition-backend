@@ -15,15 +15,9 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.restdocs.headers.RequestHeadersSnippet;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
-import org.springframework.restdocs.operation.preprocess.OperationRequestPreprocessor;
-import org.springframework.restdocs.operation.preprocess.OperationResponsePreprocessor;
-import org.springframework.restdocs.payload.RequestFieldsSnippet;
-import org.springframework.restdocs.payload.ResponseFieldsSnippet;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.ResultHandler;
 
 import java.util.Arrays;
 
@@ -113,9 +107,12 @@ public class BoardControllerTest {
         boardRepository.save(board);
         UpdateBoardRequest request = UpdateBoardRequest.testInstance(board.getId(), "updateTitle", "updateContent");
 
+        Token token = tokenService.generateToken(1L);
+
         // when & then
         final ResultActions resultActions = mockMvc.perform(
                 post("/api/v1/board/update")
+                        .header("Authorization", token.getToken())
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -123,6 +120,9 @@ public class BoardControllerTest {
                 .andDo(document("board/update",
                         getDocumentRequest(),
                         getDocumentResponse(),
+                        requestHeaders(
+                                headerWithName("Authorization").description("토큰")
+                        ),
                         requestFields(
                                 fieldWithPath("boardId").description("게시글 아이디"),
                                 fieldWithPath("title").description("나의 청원 제목"),

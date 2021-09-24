@@ -83,7 +83,7 @@ public class BoardServiceTest {
         UpdateBoardRequest request = UpdateBoardRequest.testInstance(board.getId(), "title", "content");
 
         // when
-        boardService.updateBoard(request);
+        boardService.updateBoard(request, 1L);
 
         // then
         final List<Board> boardList = boardRepository.findAll();
@@ -100,7 +100,7 @@ public class BoardServiceTest {
 
         // when & then
         assertThatThrownBy(
-            () -> boardService.updateBoard(request)
+            () -> boardService.updateBoard(request, 1L)
         ).isInstanceOf(NotFoundException.class);
     }
 

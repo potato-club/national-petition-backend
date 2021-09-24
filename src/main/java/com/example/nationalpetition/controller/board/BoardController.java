@@ -27,13 +27,13 @@ public class BoardController {
     @PostMapping("/api/v1/board")
     public ApiResponse<BoardInfoResponse> createBoard(@RequestBody @Valid CreateBoardRequest request, @RequestHeader("Authorization") String token) {
         Long memberId = tokenService.getMemberId(token);
-        System.out.println("memberId = " + memberId);
         return ApiResponse.success(boardService.createBoard(request, memberId));
     }
 
     @PostMapping("/api/v1/board/update")
-    public ApiResponse<BoardInfoResponse> updateBoard(@RequestBody @Valid UpdateBoardRequest request) {
-        return ApiResponse.success(boardService.updateBoard(request));
+    public ApiResponse<BoardInfoResponse> updateBoard(@RequestBody @Valid UpdateBoardRequest request, @RequestHeader("Authorization") String token) {
+        Long memberId = tokenService.getMemberId(token);
+        return ApiResponse.success(boardService.updateBoard(request, memberId));
     }
 
     @GetMapping("/api/v1/board/{boardId}")
