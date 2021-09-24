@@ -44,4 +44,4 @@ generated/
 
 application-oauth.yml
 application-jwt.yml
-k8s/secret/
+secret/
