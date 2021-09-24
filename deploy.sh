@@ -7,9 +7,9 @@ echo "> build 파일 복사"
 DEPLOY_PATH=/home/ec2-user/
 cp $BUILD_PATH $DEPLOY_PATH
 
-echo "> national-petition-backend-0.0.1-SNAPSHOT.jar 교체"
+echo "> national-petition-backend.jar 교체"
 CP_JAR_PATH=$DEPLOY_PATH$JAR_NAME
-APPLICATION_JAR_NAME=national-petition-backend-0.0.1-SNAPSHOT.jar
+APPLICATION_JAR_NAME=national-petition-backend.jar
 APPLICATION_JAR=$DEPLOY_PATH$APPLICATION_JAR_NAME
 
 ln -Tfs $CP_JAR_PATH $APPLICATION_JAR
