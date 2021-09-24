@@ -1,7 +1,7 @@
 package com.example.nationalpetition.utils.error.controllerAdvice;
 
 import com.example.nationalpetition.controller.ApiResponse;
-import com.example.nationalpetition.utils.error.errorCode.ErrorCode;
+import com.example.nationalpetition.utils.error.ErrorCode;
 import com.example.nationalpetition.utils.error.exception.JwtTokenException;
 import com.example.nationalpetition.utils.error.exception.NotFoundException;
 import com.example.nationalpetition.utils.ValidationResult;

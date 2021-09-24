@@ -2,14 +2,11 @@ package com.example.nationalpetition.domain.member.entity;
 
 import com.example.nationalpetition.domain.BaseTimeEntity;
 import lombok.*;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import java.util.Map;
-import java.util.UUID;
 
 @ToString
 @Entity
@@ -54,6 +51,5 @@ public class Member extends BaseTimeEntity {
 
         return this;
     }
-
 
 }

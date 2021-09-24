@@ -60,7 +60,7 @@ use of HTTP status codes.
 [[overview_headers]]
 == Headers
 
-헤더 나중에 정해지면 적기!
+Authorization: Bearer {{토큰}}
 
 [[overview_errors]]
 == Errors

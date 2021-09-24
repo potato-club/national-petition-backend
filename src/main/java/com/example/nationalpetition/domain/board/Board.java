@@ -1,10 +1,7 @@
 package com.example.nationalpetition.domain.board;
 
 import com.example.nationalpetition.domain.BaseTimeEntity;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 
