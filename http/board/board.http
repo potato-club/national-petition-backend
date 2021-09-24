@@ -26,3 +26,13 @@ Content-Type: application/json
 ### 게시글 리스트 불러오기
 GET {{local}}/api/v1/board/list?search=&page=0
 Content-Type: application/json
+
+### 게시글 찬성/반대
+POST {{local}}/api/v1/board/like
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNjMyNDY4OTIyLCJleHAiOjE2MzI0Njk1MjJ9.jKnXILgCxST05CjY4x0HTO0Di7W08kPxNRENZDrqWZQ
+
+{
+  "boardId": 1,
+  "boardState": "LIKE"
+}

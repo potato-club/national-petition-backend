@@ -1,10 +1,16 @@
 package com.example.nationalpetition.service.board;
 
 import com.example.nationalpetition.domain.board.Board;
+import com.example.nationalpetition.domain.board.BoardLike;
+import com.example.nationalpetition.domain.board.BoardState;
+import com.example.nationalpetition.domain.board.repository.BoardLikeRepository;
 import com.example.nationalpetition.domain.board.repository.BoardRepository;
+import com.example.nationalpetition.dto.board.request.BoardLikeRequest;
 import com.example.nationalpetition.dto.board.request.CreateBoardRequest;
 import com.example.nationalpetition.dto.board.request.UpdateBoardRequest;
 import com.example.nationalpetition.dto.board.response.BoardInfoResponse;
+import com.example.nationalpetition.testObject.BoardCreator;
+import com.example.nationalpetition.testObject.BoardLikeCreator;
 import com.example.nationalpetition.utils.error.exception.NotFoundException;
 import com.example.nationalpetition.external.petition.PetitionClient;
 import com.example.nationalpetition.external.petition.dto.response.PetitionResponse;
@@ -31,14 +37,18 @@ public class BoardServiceTest {
     @Autowired
     private BoardRepository boardRepository;
 
+    @Autowired
+    private BoardLikeRepository boardLikeRepository;
+
     @BeforeEach
     void setup() {
-        boardService = new BoardService(boardRepository, new MockPetitionApiCaller());
+        boardService = new BoardService(boardRepository, boardLikeRepository, new MockPetitionApiCaller());
     }
 
     @AfterEach
     void clean() {
         boardRepository.deleteAll();
+        boardLikeRepository.deleteAll();
     }
 
     // 테스트를 위한 코드
@@ -168,7 +178,58 @@ public class BoardServiceTest {
 
         // then
         assertThat(responseList).isEmpty();
+    }
 
+    @DisplayName("게시글 찬성/반대를 한다. 이미 게시글에 찬성이나 반대를 했으면 boardState의 값으로 업데이트 쳐주고 찬성/반대를 한적이 없으면 새로 생성해준다.")
+    @Test
+    void 게시글_찬성_반대1() {
+        // given
+        Board board = BoardCreator.create(1L, "title", "content");
+        boardRepository.save(board);
+        BoardLikeRequest request = BoardLikeRequest.testInstance(board.getId(), BoardState.LIKE);
+
+        // when
+        boardService.boardLikeOrUnLike(request, 1L);
+
+        // then
+        List<BoardLike> boardLikeList = boardLikeRepository.findAll();
+        assertThat(boardLikeList).hasSize(1);
+    }
+
+    @DisplayName("이미 찬성을 한 상태에서 반대로 변경")
+    @Test
+    void 게시글_찬성_반대2() {
+        // given
+        Board board = BoardCreator.create(1L, "title", "content");
+        boardRepository.save(board);
+        BoardLike boardLike = BoardLikeCreator.create(board.getId(), 1L, BoardState.LIKE);
+        boardLikeRepository.save(boardLike);
+
+        BoardLikeRequest request = BoardLikeRequest.testInstance(board.getId(), BoardState.UNLIKE);
+
+        // when
+        boardService.boardLikeOrUnLike(request, 1L);
+
+        // then
+        List<BoardLike> boardLikeList = boardLikeRepository.findAll();
+        assertThat(boardLikeList).hasSize(1);
+    }
+
+    @DisplayName("찬성/반대 삭제")
+    @Test
+    void 게시글_찬성_반대_삭제() {
+        // given
+        Board board = BoardCreator.create(1L, "title", "content");
+        boardRepository.save(board);
+        BoardLike boardLike = BoardLikeCreator.create(board.getId(), 1L, BoardState.LIKE);
+        boardLikeRepository.save(boardLike);
+
+        // when
+        boardService.deleteBoardLikeOrUnLike(board.getId(), 1L);
+
+        // then
+        List<BoardLike> boardLikeList = boardLikeRepository.findAll();
+        assertThat(boardLikeList).isEmpty();
     }
 
     private static class MockPetitionApiCaller implements PetitionClient {

@@ -1,5 +1,6 @@
 package com.example.nationalpetition.utils.error;
 
+import com.example.nationalpetition.utils.error.exception.ValidationException;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +14,11 @@ public enum ErrorCode {
     NOT_FOUND_EXCEPTION_COMMENT("400", "해당 하는 댓글을 찾을 수 없습니다."),
 
     JWT_TOKEN_EXCEPTION_INVALID("400", "유효한 JWT 토큰이 없습니다"),
-    JWT_TOKEN_EXCEPTION_EXPIRED("400", "JWT 토큰이 만료되었습니다.");
+    JWT_TOKEN_EXCEPTION_EXPIRED("400", "JWT 토큰이 만료되었습니다."),
+
+    VALIDATION_EXCEPTION("400", "유효하지 않은 값입니다."),
+
+    CONFLICT_EXCEPTION("400", "이미 존재하는 값입니다.");
 
     private String code;
     private String message;
