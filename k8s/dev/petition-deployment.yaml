@@ -29,7 +29,6 @@ spec:
                 configMapKeyRef:
                   name: petition-api-config
                   key: spring-profile-active
-              value: dev
             - name: GOOGLE_CLIENT_ID
               valueFrom:
                 configMapKeyRef:
