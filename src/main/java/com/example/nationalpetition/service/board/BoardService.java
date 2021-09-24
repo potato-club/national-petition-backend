@@ -1,7 +1,10 @@
 package com.example.nationalpetition.service.board;
 
 import com.example.nationalpetition.domain.board.Board;
+import com.example.nationalpetition.domain.board.BoardLike;
+import com.example.nationalpetition.domain.board.repository.BoardLikeRepository;
 import com.example.nationalpetition.domain.board.repository.BoardRepository;
+import com.example.nationalpetition.dto.board.request.BoardLikeRequest;
 import com.example.nationalpetition.dto.board.request.CreateBoardRequest;
 import com.example.nationalpetition.dto.board.request.UpdateBoardRequest;
 import com.example.nationalpetition.dto.board.response.BoardInfoResponse;
@@ -22,6 +25,7 @@ import java.util.stream.Collectors;
 public class BoardService {
 
     private final BoardRepository boardRepository;
+    private final BoardLikeRepository boardLikeRepository;
     private final PetitionClient petitionClient;
 
     @Transactional
@@ -39,17 +43,29 @@ public class BoardService {
         return BoardInfoResponse.of(board);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public BoardInfoResponse getBoard(Long boardId) {
         final Board board = boardRepository.findByIdAndIsDeletedFalse(boardId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_BOARD));
         return BoardInfoResponse.of(board);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<BoardInfoResponse> retrieveBoard(String search, Pageable pageable) {
         return boardRepository.findByTitleContaining(search, pageable)
                 .stream().map(BoardInfoResponse::of).collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void boardLikeOrUnLike(BoardLikeRequest request, Long memberId) {
+        boardRepository.findByIdAndIsDeletedFalse(request.getBoardId())
+                .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_BOARD));
+        BoardLike boardLike = boardLikeRepository.findByBoardIdAndMemberId(request.getBoardId(), memberId);
+        if (boardLike == null) {
+            boardLikeRepository.save(request.toEntity(memberId));
+        } else {
+            boardLike.updateState(request.getBoardState());
+        }
     }
 
 }

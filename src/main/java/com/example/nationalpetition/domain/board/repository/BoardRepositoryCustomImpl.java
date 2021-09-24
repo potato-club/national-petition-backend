@@ -9,7 +9,7 @@ import java.util.Optional;
 import static com.example.nationalpetition.domain.board.QBoard.board;
 
 @RequiredArgsConstructor
-public class BoardRepositoryCustomImpl implements BoardRepositoryCustom{
+public class BoardRepositoryCustomImpl implements BoardRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
 

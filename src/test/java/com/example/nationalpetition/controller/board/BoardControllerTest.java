@@ -1,7 +1,9 @@
 package com.example.nationalpetition.controller.board;
 
 import com.example.nationalpetition.domain.board.Board;
+import com.example.nationalpetition.domain.board.BoardState;
 import com.example.nationalpetition.domain.board.repository.BoardRepository;
+import com.example.nationalpetition.dto.board.request.BoardLikeRequest;
 import com.example.nationalpetition.dto.board.request.CreateBoardRequest;
 import com.example.nationalpetition.dto.board.request.UpdateBoardRequest;
 import com.example.nationalpetition.security.jwt.Token;
@@ -219,6 +221,44 @@ public class BoardControllerTest {
                                 fieldWithPath("data[].petitionUrl").description("url"),
                                 fieldWithPath("data[].petitionsCount").description("청원 수"),
                                 fieldWithPath("data[].category").description("청원 카테고리")
+                        )
+                ));
+        resultActions.andExpect(status().isOk());
+    }
+
+    @Test
+    void 게시글_찬성_반대() throws Exception {
+        // given
+        Token token = tokenService.generateToken(1L);
+
+        Board board1 = new Board(1L, "petitionTitle", "title1", "petitionContent", "content", "url", "10000", "사회문제");
+        Board board2 = new Board(1L, "petitionTitle", "title2", "petitionContent", "content", "url", "10000", "사회문제");
+        boardRepository.saveAll(Arrays.asList(board1, board2));
+
+        BoardLikeRequest request = BoardLikeRequest.testInstance(board1.getId(), BoardState.LIKE);
+
+        // when & then
+        final ResultActions resultActions = mockMvc.perform(
+                        RestDocumentationRequestBuilders.post("/api/v1/board/like")
+                                .header("Authorization", "Bearer ".concat(token.getToken()))
+                                .content(objectMapper.writeValueAsString(request))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andDo(document("board/like",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestHeaders(
+                                headerWithName("Authorization").description("토큰")
+                        ),
+                        requestFields(
+                                fieldWithPath("boardId").description("게시글 아이디"),
+                                fieldWithPath("boardState").description("게시글 찬성/반대")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").description("code"),
+                                fieldWithPath("message").description("message"),
+                                fieldWithPath("data").description("ok")
                         )
                 ));
         resultActions.andExpect(status().isOk());
