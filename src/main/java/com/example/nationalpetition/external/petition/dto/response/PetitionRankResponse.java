@@ -1,5 +1,6 @@
 package com.example.nationalpetition.external.petition.dto.response;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -7,6 +8,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Getter
+@AllArgsConstructor
 @NoArgsConstructor
 public class PetitionRankResponse {
 
@@ -14,6 +16,7 @@ public class PetitionRankResponse {
 	private List<RankInfo> item;
 
 	@Getter
+	@AllArgsConstructor
 	@NoArgsConstructor
 	private static class RankInfo {
 		private String id;

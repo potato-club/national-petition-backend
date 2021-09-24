@@ -11,7 +11,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -30,65 +29,64 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 class MemberControllerTest {
 
-    @Autowired
-    TokenService tokenService;
+	@Autowired
+	TokenService tokenService;
 
-    @Autowired
-    MemberRepository memberRepository;
+	@Autowired
+	MemberRepository memberRepository;
 
-    @Autowired
-    MockMvc mockMvc;
+	@Autowired
+	MockMvc mockMvc;
 
-    @AfterEach
-    void clear() {
-        memberRepository.deleteAll();
-    }
+	@AfterEach
+	void clear() {
+		memberRepository.deleteAll();
+	}
 
 
-    @Test
-    @DisplayName("회원 정보 조회 (마이페이지 기준)")
-    void getMyInfo() throws Exception {
-        //given
-        final Long memberId = MemberServiceUtils.saveMember(memberRepository);
-        final Token token = tokenService.generateToken(memberId);
-        //when
-        final ResultActions resultActions = mockMvc
-                .perform(
-                        get("/api/v1/mypage/info")
-                        .header("Authorization", token.getToken()))
-                .andDo(print())
-                .andDo(document("mypage/info",
-                        preprocessResponse(prettyPrint()),
-                        responseFields(
-                                fieldWithPath("code").type(JsonFieldType.STRING).description("code"),
-                                fieldWithPath("message").type(JsonFieldType.STRING).description("message"),
-                                fieldWithPath("data.name").type(JsonFieldType.STRING).description("이름"),
-                                fieldWithPath("data.email").type(JsonFieldType.STRING).description("이메일"),
-                                fieldWithPath("data.picture").type(JsonFieldType.STRING).description("프로필사진"),
-                                fieldWithPath("data.nickName").type(JsonFieldType.STRING).description("닉네임")
-                            )
-                        )
-                );
-        //then
-        resultActions.andExpect(status().isOk());
-    }
+	@Test
+	@DisplayName("회원 정보 조회 (마이페이지 기준)")
+	void getMyInfo() throws Exception {
+		//given
+		final Long memberId = MemberServiceUtils.saveMember(memberRepository);
+		final Token token = tokenService.generateToken(memberId);
+		//when
+		final ResultActions resultActions = mockMvc
+				.perform(
+						get("/api/v1/mypage/info")
+								.header("Authorization", "Bearer ".concat(token.getToken())))
+				.andDo(print())
+				.andDo(document("mypage/info",
+						preprocessResponse(prettyPrint()),
+						responseFields(
+								fieldWithPath("code").type(JsonFieldType.STRING).description("code"),
+								fieldWithPath("message").type(JsonFieldType.STRING).description("message"),
+								fieldWithPath("data.name").type(JsonFieldType.STRING).description("이름"),
+								fieldWithPath("data.email").type(JsonFieldType.STRING).description("이메일"),
+								fieldWithPath("data.picture").type(JsonFieldType.STRING).description("프로필사진"),
+								fieldWithPath("data.nickName").type(JsonFieldType.STRING).description("닉네임")
+						)
+						)
+				);
+		//then
+		resultActions.andExpect(status().isOk());
+	}
 
-    @Test
-    @DisplayName("회원 정보 조회 (토큰 값 틀렸을 경우) -> 아이디 찾지 못함")
-    void getMyInfo2() throws Exception {
-        //given
-        final Long memberId = MemberServiceUtils.saveMember(memberRepository);
-        final Token token = tokenService.generateToken(memberId+1L);
-        //when then
-        final MvcResult mockResult = mockMvc
-                .perform(
-                        get("/api/v1/mypage/info")
-                                .header("Authorization", token.getToken()))
-                .andDo(print())
-                .andDo(document("mypage/info/notFound"))
-                .andExpect(result -> assertTrue(result.getResolvedException().getClass().isAssignableFrom(NotFoundException.class)))
-                .andReturn();
+	@Test
+	@DisplayName("회원 정보 조회 (토큰 값 틀렸을 경우) -> 아이디 찾지 못함")
+	void getMyInfo2() throws Exception {
+		//given
+		final Long memberId = MemberServiceUtils.saveMember(memberRepository);
+		final Token token = tokenService.generateToken(memberId + 1L);
+		//when then
+        mockMvc.perform(
+                get("/api/v1/mypage/info")
+								.header("Authorization", "Bearer ".concat(token.getToken())))
+				.andDo(print())
+				.andDo(document("mypage/info/notFound"))
+				.andExpect(result -> assertTrue(result.getResolvedException().getClass().isAssignableFrom(NotFoundException.class)))
+				.andReturn();
 
-    }
+	}
 
 }

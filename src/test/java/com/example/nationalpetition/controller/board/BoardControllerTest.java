@@ -65,7 +65,7 @@ public class BoardControllerTest {
         // when & then
         final ResultActions resultActions = mockMvc.perform(
                 post("/api/v1/board")
-                        .header("Authorization", token.getToken())
+                        .header("Authorization", "Bearer ".concat(token.getToken()))
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -111,7 +111,7 @@ public class BoardControllerTest {
         // when & then
         final ResultActions resultActions = mockMvc.perform(
                 post("/api/v1/board/update")
-                        .header("Authorization", token.getToken())
+                        .header("Authorization", "Bearer ".concat(token.getToken()))
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -148,12 +148,15 @@ public class BoardControllerTest {
     @Test
     void 게시글을_불러온다() throws Exception {
         // given
+        Token token = tokenService.generateToken(1L);
+
         Board board = new Board(1L, "petitionTitle", "title", "petitionContent", "content", "url", "10000", "사회문제");
         boardRepository.save(board);
 
         // when & then
         final ResultActions resultActions = mockMvc.perform(
                 RestDocumentationRequestBuilders.get("/api/v1/board/{id}", board.getId())
+                        .header("Authorization", "Bearer ".concat(token.getToken()))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -183,6 +186,8 @@ public class BoardControllerTest {
     @Test
     void 게시글리스트를_불러온다() throws Exception {
         // given
+        Token token = tokenService.generateToken(1L);
+
         Board board1 = new Board(1L, "petitionTitle", "title1", "petitionContent", "content", "url", "10000", "사회문제");
         Board board2 = new Board(1L, "petitionTitle", "title2", "petitionContent", "content", "url", "10000", "사회문제");
         boardRepository.saveAll(Arrays.asList(board1, board2));
@@ -190,6 +195,7 @@ public class BoardControllerTest {
         // when & then
         final ResultActions resultActions = mockMvc.perform(
                 RestDocumentationRequestBuilders.get("/api/v1/board/list?search=&page=0&size=10")
+                        .header("Authorization", "Bearer ".concat(token.getToken()))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
