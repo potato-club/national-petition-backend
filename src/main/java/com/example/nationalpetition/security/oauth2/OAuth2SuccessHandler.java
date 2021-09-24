@@ -40,13 +40,13 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
             /**
              * 나중에 프론트 URL로 고칠 예정
              */
-            response.sendRedirect("http://ec2-3-36-64-148.ap-northeast-2.compute.amazonaws.com:8080/nickName?token=" + token.getToken());
+            response.sendRedirect("https://ec2-3-36-186-100.ap-northeast-2.compute.amazonaws.com/nickName?token=" + token.getToken());
             return;
         }
         /**
          * 나중에 프론트 URL로 고칠 예정
          */
-        response.sendRedirect("http://ec2-3-36-64-148.ap-northeast-2.compute.amazonaws.com:8080/");
+        response.sendRedirect("https://ec2-3-36-186-100.ap-northeast-2.compute.amazonaws.com/");
     }
 
 }
