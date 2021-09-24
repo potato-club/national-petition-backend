@@ -1,6 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: petition-api-config
-data:
-  spring-profile-active: dev
