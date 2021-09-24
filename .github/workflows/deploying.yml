@@ -1,3 +1,4 @@
+name: Deploy dev
 on:
   push:
     branches:
@@ -47,4 +48,6 @@ jobs:
           REPOSITORY_NAME: petition-api-dev
           VERSION: ${{ steps.version.outputs.version }}
         run: |
-          kubectl set image deployment/petition-api-deployment petition-api=$REGISTRY_NAME/$REPOSITORY_NAME:$VERSION --record
+          IMAGE=$REGISTRY_NAME/$REPOSITORY_NAME:$VERSION
+          echo image=$IMAGE
+          kubectl set image deployment/petition-api-deployment petition-api=$IMAGE --record
