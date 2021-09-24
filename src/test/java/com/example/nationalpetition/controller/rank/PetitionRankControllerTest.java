@@ -16,7 +16,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@AutoConfigureRestDocs(uriHost = "3.36.229.76")
+@AutoConfigureRestDocs(uriHost = "3.36.186.100")
 @AutoConfigureMockMvc
 @SpringBootTest
 public class PetitionRankControllerTest {

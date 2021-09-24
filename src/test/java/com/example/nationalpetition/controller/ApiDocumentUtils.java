@@ -12,7 +12,7 @@ public class ApiDocumentUtils {
                 modifyUris()
                         .scheme("http")
                         // TODO: 2021-09-16 나중에 도메인 연결하면 바꾸기
-                        .host("3.36.229.76")
+                        .host("3.36.186.100")
                         .removePort(),
                 prettyPrint());
     }

@@ -33,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
-@AutoConfigureRestDocs(uriScheme = "http", uriHost = "3.36.229.76")
+@AutoConfigureRestDocs(uriHost = "3.36.186.100")
 @AutoConfigureMockMvc
 public class BoardControllerTest {
 
