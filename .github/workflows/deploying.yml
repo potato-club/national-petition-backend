@@ -36,18 +36,31 @@ jobs:
           docker push $DOCKER_REGISTRY/$DOCKER_REPOSITORY:$IMAGE_TAG
           docker push $DOCKER_REGISTRY/$DOCKER_REPOSITORY:latest
 
+      - name: Upload version.txt
+        uses: actions/upload-artifact@v2
+        with:
+          name: VERSION
+          path: VERSION
+
   deploy:
     name: Deploy in k8s
     needs:
       - build
     runs-on: deploy
     steps:
+      - name: Download version.txt
+        uses: actions/download-artifact@v2
+        with:
+          name: VERSION
+
       - name: Deploy k8s
         env:
           REGISTRY_NAME: ghcr.io/potato-club
           REPOSITORY_NAME: petition-api-dev
-          VERSION: ${{ steps.version.outputs.version }}
         run: |
+          VERSION=`cat VERSION`
           IMAGE=$REGISTRY_NAME/$REPOSITORY_NAME:$VERSION
+
           echo image=$IMAGE
+
           kubectl set image deployment/petition-api-deployment petition-api=$IMAGE --record
