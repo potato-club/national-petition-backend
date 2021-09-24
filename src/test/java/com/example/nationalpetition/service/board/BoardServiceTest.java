@@ -215,6 +215,23 @@ public class BoardServiceTest {
         assertThat(boardLikeList).hasSize(1);
     }
 
+    @DisplayName("찬성/반대 삭제")
+    @Test
+    void 게시글_찬성_반대_삭제() {
+        // given
+        Board board = BoardCreator.create(1L, "title", "content");
+        boardRepository.save(board);
+        BoardLike boardLike = BoardLikeCreator.create(board.getId(), 1L, BoardState.LIKE);
+        boardLikeRepository.save(boardLike);
+
+        // when
+        boardService.deleteBoardLikeOrUnLike(board.getId(), 1L);
+
+        // then
+        List<BoardLike> boardLikeList = boardLikeRepository.findAll();
+        assertThat(boardLikeList).isEmpty();
+    }
+
     private static class MockPetitionApiCaller implements PetitionClient {
         @Override
         public PetitionResponse getPetitionInfo(Long id) {

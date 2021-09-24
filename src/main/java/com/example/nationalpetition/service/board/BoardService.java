@@ -6,6 +6,7 @@ import com.example.nationalpetition.domain.board.repository.BoardLikeRepository;
 import com.example.nationalpetition.domain.board.repository.BoardRepository;
 import com.example.nationalpetition.dto.board.request.BoardLikeRequest;
 import com.example.nationalpetition.dto.board.request.CreateBoardRequest;
+import com.example.nationalpetition.dto.board.request.DeleteBoardLikeRequest;
 import com.example.nationalpetition.dto.board.request.UpdateBoardRequest;
 import com.example.nationalpetition.dto.board.response.BoardInfoResponse;
 import com.example.nationalpetition.external.petition.PetitionClient;
@@ -66,6 +67,14 @@ public class BoardService {
         } else {
             boardLike.updateState(request.getBoardState());
         }
+    }
+
+    @Transactional
+    public void deleteBoardLikeOrUnLike(Long boardId, Long memberId) {
+        boardRepository.findByIdAndIsDeletedFalse(boardId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_BOARD));
+        BoardLike boardLike = boardLikeRepository.findByBoardIdAndMemberId(boardId, memberId);
+        boardLikeRepository.delete(boardLike);
     }
 
 }

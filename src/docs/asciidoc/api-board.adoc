@@ -84,3 +84,17 @@ include::{snippets}/board/like/request-fields.adoc[]
 Response
 include::{snippets}/board/like/http-response.adoc[]
 
+=== boardLike 삭제
+
+Request Header
+include::{snippets}/board/unlike/request-headers.adoc[]
+
+Request HTTP Example
+include::{snippets}/board/unlike/http-request.adoc[]
+
+Request Fields
+include::{snippets}/board/unlike/request-fields.adoc[]
+
+Response
+include::{snippets}/board/unlike/http-response.adoc[]
+

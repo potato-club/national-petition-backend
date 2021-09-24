@@ -4,6 +4,7 @@ import com.example.nationalpetition.config.MemberId;
 import com.example.nationalpetition.controller.ApiResponse;
 import com.example.nationalpetition.dto.board.request.BoardLikeRequest;
 import com.example.nationalpetition.dto.board.request.CreateBoardRequest;
+import com.example.nationalpetition.dto.board.request.DeleteBoardLikeRequest;
 import com.example.nationalpetition.dto.board.request.UpdateBoardRequest;
 import com.example.nationalpetition.dto.board.response.BoardInfoResponse;
 import com.example.nationalpetition.service.board.BoardService;
@@ -46,6 +47,12 @@ public class BoardController {
 	@PostMapping("/api/v1/board/like")
 	public ApiResponse<String> boardLikeOrUnLike(@RequestBody @Valid BoardLikeRequest request, @MemberId Long memberId) {
 		boardService.boardLikeOrUnLike(request, memberId);
+		return ApiResponse.OK;
+	}
+
+	@DeleteMapping("/api/v1/board/like")
+	public ApiResponse<String> deleteBoardLikeOrUnLike(@RequestBody @Valid DeleteBoardLikeRequest request, @MemberId Long memberId) {
+		boardService.deleteBoardLikeOrUnLike(request.getBoardId(), memberId);
 		return ApiResponse.OK;
 	}
 
