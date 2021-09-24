@@ -5,9 +5,10 @@ import com.example.nationalpetition.domain.board.repository.BoardRepository;
 import com.example.nationalpetition.dto.board.request.CreateBoardRequest;
 import com.example.nationalpetition.dto.board.request.UpdateBoardRequest;
 import com.example.nationalpetition.dto.board.response.BoardInfoResponse;
-import com.example.nationalpetition.error.exception.NotFoundException;
 import com.example.nationalpetition.external.petition.PetitionClient;
 import com.example.nationalpetition.external.petition.dto.response.PetitionResponse;
+import com.example.nationalpetition.utils.error.ErrorCode;
+import com.example.nationalpetition.utils.error.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -33,7 +34,7 @@ public class BoardService {
     @Transactional
     public BoardInfoResponse updateBoard(UpdateBoardRequest request, Long memberId) {
         Board board = boardRepository.findByIdAndMemberId(request.getBoardId(), memberId)
-                .orElseThrow(() -> new NotFoundException(String.format("%s의 게시물%s는 존재하지 않는 게시물입니다.", memberId, request.getBoardId())));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_BOARD));
         board.updateBoard(request.getTitle(), request.getContent());
         return BoardInfoResponse.of(board);
     }
@@ -41,7 +42,7 @@ public class BoardService {
     @Transactional
     public BoardInfoResponse getBoard(Long boardId) {
         final Board board = boardRepository.findByIdAndIsDeletedFalse(boardId)
-                .orElseThrow(() -> new NotFoundException(String.format("%s는 존재하지 않는 게시물입니다.", boardId)));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_BOARD));
         return BoardInfoResponse.of(board);
     }
 

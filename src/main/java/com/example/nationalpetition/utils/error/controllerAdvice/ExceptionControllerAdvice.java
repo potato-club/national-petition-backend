@@ -1,10 +1,9 @@
-package com.example.nationalpetition.error.controllerAdvice;
+package com.example.nationalpetition.utils.error.controllerAdvice;
 
 import com.example.nationalpetition.controller.ApiResponse;
-import com.example.nationalpetition.error.errorCode.ErrorCode;
-import com.example.nationalpetition.error.exception.BusinessException;
-import com.example.nationalpetition.exception.JwtTokenException;
-import com.example.nationalpetition.exception.NotFoundException;
+import com.example.nationalpetition.utils.error.errorCode.ErrorCode;
+import com.example.nationalpetition.utils.error.exception.JwtTokenException;
+import com.example.nationalpetition.utils.error.exception.NotFoundException;
 import com.example.nationalpetition.utils.ValidationResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
@@ -33,12 +32,6 @@ public class ExceptionControllerAdvice {
     protected ApiResponse<Object> handlerMethodArgumentNotValid(MethodArgumentNotValidException e) {
         log.error(e.getMessage(), e);
         return ApiResponse.error(ErrorCode.VALIDATION_EXCEPTION.getCode(), e.getBindingResult().getAllErrors().get(0).getDefaultMessage());
-    }
-
-    @ExceptionHandler(BusinessException.class)
-    public ApiResponse<Object> handleBusinessException(BusinessException e) {
-        log.error(e.getMessage());
-        return ApiResponse.error(e.getErrorCode().getCode(), e.getMessage());
     }
 
     @ExceptionHandler(NotFoundException.class)

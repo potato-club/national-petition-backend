@@ -61,7 +61,6 @@ public class BoardControllerTest {
         CreateBoardRequest request = CreateBoardRequest.testInstance(1L, "title", "content");
 
         Token token = tokenService.generateToken(1L);
-        System.out.println("token.getToken() = " + token.getToken());
 
         // when & then
         final ResultActions resultActions = mockMvc.perform(
