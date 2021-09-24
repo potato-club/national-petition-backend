@@ -1,4 +1,4 @@
-package com.example.nationalpetition.error.errorCode;
+package com.example.nationalpetition.utils.error.errorCode;
 
 import lombok.Getter;
 

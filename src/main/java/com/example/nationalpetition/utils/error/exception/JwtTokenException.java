@@ -1,4 +1,4 @@
-package com.example.nationalpetition.exception;
+package com.example.nationalpetition.utils.error.exception;
 
 import com.example.nationalpetition.utils.error.ErrorCode;
 

@@ -1,7 +1,7 @@
 package com.example.nationalpetition.security.jwt;
 
 import com.example.nationalpetition.domain.member.entity.Member;
-import com.example.nationalpetition.exception.JwtTokenException;
+import com.example.nationalpetition.utils.error.exception.JwtTokenException;
 import com.example.nationalpetition.service.member.MemberService;
 import com.example.nationalpetition.utils.error.ErrorCode;
 import io.jsonwebtoken.*;

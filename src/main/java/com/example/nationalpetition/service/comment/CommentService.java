@@ -4,7 +4,8 @@ import com.example.nationalpetition.domain.comment.Comment;
 import com.example.nationalpetition.domain.comment.CommentRepository;
 import com.example.nationalpetition.dto.comment.CommentCreateDto;
 import com.example.nationalpetition.dto.comment.request.CommentUpdateDto;
-import com.example.nationalpetition.error.exception.NotFoundException;
+import com.example.nationalpetition.utils.error.ErrorCode;
+import com.example.nationalpetition.utils.error.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +24,7 @@ public class CommentService {
             return commentRepository.save(Comment.newRootComment(dto.getMemberId(), boardId, dto.getContent())).getId();
         }
         Comment parentComment = commentRepository.findById(dto.getParentId())
-                .orElseThrow(() -> new NotFoundException(String.format("(%s)에 해당하는 댓글이 존재하지 않아요.", dto.getParentId())));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_COMMENT));
         int depth = parentComment.getDepth();
         return commentRepository.save(Comment.newChildComment(dto.getParentId(), dto.getMemberId(), boardId, depth + 1, dto.getContent())).getId();
     }
@@ -33,7 +34,7 @@ public class CommentService {
 
         Comment comment = commentRepository.findByIdAndMemberIdAndIsDeletedIsFalse(updateDto.getId(), updateDto.getMemberId());
         if (comment == null) {
-            throw new NotFoundException(String.format("해당하는 %s 에 해당하는 댓글이 없어요", updateDto.getId()));
+            throw new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_COMMENT);
         }
         comment.update(updateDto.getContent());
         return comment;

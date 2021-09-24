@@ -3,7 +3,7 @@ package com.example.nationalpetition.service.member;
 import com.example.nationalpetition.domain.member.entity.Member;
 import com.example.nationalpetition.domain.member.repository.MemberRepository;
 import com.example.nationalpetition.dto.member.request.NickNameRequest;
-import com.example.nationalpetition.exception.NotFoundException;
+import com.example.nationalpetition.utils.error.exception.NotFoundException;
 import com.example.nationalpetition.utils.error.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
