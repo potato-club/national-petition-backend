@@ -45,6 +45,6 @@ jobs:
         env:
           REGISTRY_NAME: ghcr.io/potato-club
           REPOSITORY_NAME: petition-api-dev
-          VERSION: latest
+          VERSION: ${{ steps.version.outputs.version }}
         run: |
           kubectl set image deployment/petition-api-deployment petition-api=$REGISTRY_NAME/$REPOSITORY_NAME:$VERSION --record
