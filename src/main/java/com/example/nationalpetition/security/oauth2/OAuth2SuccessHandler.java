@@ -2,7 +2,7 @@ package com.example.nationalpetition.security.oauth2;
 
 import com.example.nationalpetition.domain.member.entity.Member;
 import com.example.nationalpetition.domain.member.repository.MemberRepository;
-import com.example.nationalpetition.exception.NotFoundException;
+import com.example.nationalpetition.utils.error.exception.NotFoundException;
 import com.example.nationalpetition.security.jwt.Token;
 import com.example.nationalpetition.security.jwt.TokenService;
 import com.example.nationalpetition.utils.error.ErrorCode;

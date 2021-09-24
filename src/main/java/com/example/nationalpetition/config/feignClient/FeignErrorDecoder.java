@@ -1,4 +1,4 @@
-package com.example.nationalpetition.config;
+package com.example.nationalpetition.config.feignClient;
 
 import feign.Response;
 import feign.codec.ErrorDecoder;

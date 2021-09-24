@@ -5,7 +5,7 @@ import com.example.nationalpetition.domain.board.repository.BoardRepository;
 import com.example.nationalpetition.dto.board.request.CreateBoardRequest;
 import com.example.nationalpetition.dto.board.request.UpdateBoardRequest;
 import com.example.nationalpetition.dto.board.response.BoardInfoResponse;
-import com.example.nationalpetition.error.exception.NotFoundException;
+import com.example.nationalpetition.utils.error.exception.NotFoundException;
 import com.example.nationalpetition.external.petition.PetitionClient;
 import com.example.nationalpetition.external.petition.dto.response.PetitionResponse;
 import org.junit.jupiter.api.AfterEach;

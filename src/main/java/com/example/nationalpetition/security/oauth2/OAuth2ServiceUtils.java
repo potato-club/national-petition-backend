@@ -1,6 +1,6 @@
 package com.example.nationalpetition.security.oauth2;
 
-import com.example.nationalpetition.exception.JwtTokenException;
+import com.example.nationalpetition.utils.error.exception.JwtTokenException;
 import com.example.nationalpetition.security.jwt.Token;
 import com.example.nationalpetition.security.jwt.TokenService;
 import com.example.nationalpetition.utils.error.ErrorCode;

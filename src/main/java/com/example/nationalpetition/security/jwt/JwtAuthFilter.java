@@ -1,6 +1,6 @@
 package com.example.nationalpetition.security.jwt;
 
-import com.example.nationalpetition.exception.JwtTokenException;
+import com.example.nationalpetition.utils.error.exception.JwtTokenException;
 import com.example.nationalpetition.utils.error.ErrorCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
