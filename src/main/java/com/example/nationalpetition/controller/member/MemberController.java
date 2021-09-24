@@ -24,6 +24,14 @@ public class MemberController {
 
 	private final MemberService memberService;
 
+	/**
+	 * 테스트용
+	 */
+	@GetMapping("/nickName")
+	public String inputNickName(@RequestParam String token) {
+		return token;
+	}
+
 	@Operation(summary = "나의 회원 정보를 불러오는 API", security = {@SecurityRequirement(name = "BearerKey")})
 	@GetMapping("/api/v1/mypage/info")
 	private ApiResponse<MemberResponse> getMyInfo(@MemberId Long memberId) {
