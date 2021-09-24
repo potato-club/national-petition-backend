@@ -6,7 +6,6 @@ import com.example.nationalpetition.dto.comment.CommentCreateDto;
 import com.example.nationalpetition.dto.comment.request.CommentDeleteDto;
 import com.example.nationalpetition.dto.comment.request.CommentRetrieveRequestDto;
 import com.example.nationalpetition.dto.comment.request.CommentUpdateDto;
-import com.example.nationalpetition.dto.comment.response.CommentRetrieveResponseDto;
 import com.example.nationalpetition.utils.error.exception.NotFoundException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
