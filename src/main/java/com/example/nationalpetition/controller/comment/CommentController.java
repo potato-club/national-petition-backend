@@ -37,13 +37,11 @@ public class CommentController {
         return ApiResponse.success(CommentRetrieveResponseDto.of(commentService.deleteComment(deleteDto)));
     }
 
-//    @GetMapping
-//    public ApiResponse<List<CommentRetrieveResponseDto>> retrieveComments(@RequestBody CommentRetrieveRequestDto requestDto) {
-//        return ApiResponse.success(commentService.retrieveComments(requestDto));
-//
-//    }
+    @GetMapping
+    public ApiResponse<List<CommentRetrieveResponseDto>> retrieveComments(@RequestBody CommentRetrieveRequestDto requestDto) {
+        return ApiResponse.success(commentService.retrieveComments(requestDto));
 
-
+    }
 
 
 }

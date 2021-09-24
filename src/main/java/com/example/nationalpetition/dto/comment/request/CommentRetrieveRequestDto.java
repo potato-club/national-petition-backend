@@ -12,7 +12,7 @@ public class CommentRetrieveRequestDto {
     private Long boardId;
 
     @Builder
-    public CommentRetrieveRequestDto(Long commentId, Long boardId, Long memberId) {
+    public CommentRetrieveRequestDto(Long commentId, Long boardId) {
         this.commentId = commentId;
         this.boardId = boardId;
     }

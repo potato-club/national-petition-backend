@@ -16,6 +16,9 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.example.nationalpetition.domain.comment.QComment.comment;
 
 @RequiredArgsConstructor
 @Service
@@ -55,13 +58,11 @@ public class CommentService {
         return comment;
     }
 
-//    @Transactional
-//    public List<CommentRetrieveResponseDto> retrieveComments(CommentRetrieveRequestDto dto) {
-//        List<Comment> comments = commentRepository.findByBoardIdAndIsDeletedIsFalse(dto.getBoardId());
-//        // comments.stream().collect(Collectors.toList())
-//
-//        return comments;
-//    }
+    @Transactional
+    public List<CommentRetrieveResponseDto> retrieveComments(CommentRetrieveRequestDto dto) {
+        List<Comment> comments = commentRepository.findByBoardIdAndIsDeletedIsFalse(dto.getBoardId());
+        return comments.stream().map(comment -> CommentRetrieveResponseDto.of(comment)).collect(Collectors.toList());
+    }
 
 
 }

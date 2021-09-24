@@ -4,7 +4,9 @@ import com.example.nationalpetition.domain.comment.Comment;
 import com.example.nationalpetition.domain.comment.CommentRepository;
 import com.example.nationalpetition.dto.comment.CommentCreateDto;
 import com.example.nationalpetition.dto.comment.request.CommentDeleteDto;
+import com.example.nationalpetition.dto.comment.request.CommentRetrieveRequestDto;
 import com.example.nationalpetition.dto.comment.request.CommentUpdateDto;
+import com.example.nationalpetition.dto.comment.response.CommentRetrieveResponseDto;
 import com.example.nationalpetition.utils.error.exception.NotFoundException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -12,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -150,12 +153,8 @@ public class CommentServiceTest {
     @Test
     void 댓글을_삭제한다() {
         // given
-        Long commentId = 1L;
-        Long memberId = 1L;
-        Long boardId = 1L;
-
-        commentRepository.save(Comment.newRootComment(memberId, boardId, "치킨이 더 맛있어요"));
-        CommentDeleteDto deleteDto = new CommentDeleteDto(commentId, memberId);
+        Comment savedComment = commentRepository.save(Comment.newRootComment(1L, 1L, "치킨이 더 맛있어요"));
+        CommentDeleteDto deleteDto = new CommentDeleteDto(savedComment.getId(), savedComment.getMemberId());
 
         // when
         commentService.deleteComment(deleteDto);
@@ -164,6 +163,29 @@ public class CommentServiceTest {
         List<Comment> deletedComment = commentRepository.findAll();
         assertThat(deletedComment).hasSize(1);
         assertThat(deletedComment.get(0).isDeleted()).isEqualTo(true);
+    }
+
+    @Test
+    void 댓글을_불러온다() {
+        // given
+        Long memberId = 1L;
+        Long boardId = 1L;
+        String content = "첫 번째 게시물 입니다.";
+
+        Comment savedComment = commentRepository.save(Comment.newRootComment(memberId, boardId, content));
+
+        CommentRetrieveRequestDto requestDto = new CommentRetrieveRequestDto(savedComment.getId(), boardId);
+
+        // when
+        commentService.retrieveComments(requestDto);
+
+        //then
+        List<Comment> dto = commentRepository.findAll().stream().collect(Collectors.toList());
+        assertThat(dto).hasSize(1);
+        assertThat(savedComment.getMemberId()).isEqualTo(memberId);
+        assertThat(savedComment.getContent()).isEqualTo(content);
+        assertThat(savedComment.getBoardId()).isEqualTo(boardId);
+
     }
 
 }
