@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: petition-api-deployment
+  labels:
+    app: petition-api
+    env: dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: petition-api
+      env: dev
+  template:
+    metadata:
+      labels:
+        app: petition-api
+        env: dev
+    spec:
+      containers:
+        - name: petition-api
+          image: ghcr.io/potato-club/petition-api-dev:latest
+          ports:
+            - containerPort: 8080
+          imagePullPolicy: Always
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              valueFrom:
+                configMapKeyRef:
+                  name: petition-api-config
+                  key: spring-profile-active
+              value: dev
+            - name: GOOGLE_CLIENT_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: petition-api-secret-config
+                  key: google-client-id
+            - name: GOOGLE_CLIENT_SECRET
+              valueFrom:
+                configMapKeyRef:
+                  name: petition-api-secret-config
+                  key: google-client-secret
+            - name: JWT_SECRET
+              valueFrom:
+                configMapKeyRef:
+                  name: petition-api-secret-config
+                  key: jwt-secret
