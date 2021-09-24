@@ -4,6 +4,7 @@ import com.example.nationalpetition.domain.member.entity.Member;
 import com.example.nationalpetition.domain.member.repository.MemberRepository;
 import com.example.nationalpetition.security.jwt.Token;
 import com.example.nationalpetition.security.jwt.TokenService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +18,7 @@ public class LocalController {
 	private final MemberRepository memberRepository;
 	private final TokenService tokenService;
 
+	@Operation(summary = "테스트 토큰을 받아오는 API (개발 서버 전용)")
 	@GetMapping("/test-token")
 	public ApiResponse<Token> getTestToken() {
 		Member member = memberRepository.findByEmail("potato.test@gmail.com")

@@ -7,6 +7,8 @@ import com.example.nationalpetition.dto.member.request.NickNameRequest;
 import com.example.nationalpetition.dto.member.response.MemberResponse;
 import com.example.nationalpetition.service.member.MemberService;
 import com.example.nationalpetition.utils.ValidationUtils;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BindException;
@@ -22,11 +24,13 @@ public class MemberController {
 
 	private final MemberService memberService;
 
+	@Operation(summary = "나의 회원 정보를 불러오는 API", security = {@SecurityRequirement(name = "BearerKey")})
 	@GetMapping("/api/v1/mypage/info")
 	private ApiResponse<MemberResponse> getMyInfo(@MemberId Long memberId) {
 		return ApiResponse.success(MemberResponse.of(memberService.findById(memberId)));
 	}
 
+	@Operation(summary = "닉네임을 수정하는 API", security = {@SecurityRequirement(name = "BearerKey")})
 	@PostMapping("/api/v1/mypage/nickName")
 	public ApiResponse<MemberResponse> addNickName(@MemberId Long memberId,
 												   @RequestBody @Valid NickNameRequest request, BindingResult bindingResult) throws BindException {
