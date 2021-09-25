@@ -2,9 +2,12 @@ package com.example.nationalpetition.dto.comment.response;
 
 import com.example.nationalpetition.domain.comment.Comment;
 import lombok.Builder;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 
+@Getter
+@Builder
 public class CommentRetrieveResponseDto {
 
     private Long commentId;

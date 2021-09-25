@@ -6,6 +6,7 @@ import com.example.nationalpetition.dto.comment.CommentCreateDto;
 import com.example.nationalpetition.dto.comment.request.CommentDeleteDto;
 import com.example.nationalpetition.dto.comment.request.CommentRetrieveRequestDto;
 import com.example.nationalpetition.dto.comment.request.CommentUpdateDto;
+import com.example.nationalpetition.dto.comment.response.CommentRetrieveResponseDto;
 import com.example.nationalpetition.utils.error.exception.NotFoundException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -174,6 +175,13 @@ public class CommentServiceTest {
         Comment savedComment = commentRepository.save(Comment.newRootComment(memberId, boardId, content));
 
         CommentRetrieveRequestDto requestDto = new CommentRetrieveRequestDto(savedComment.getId(), boardId);
+        CommentRetrieveResponseDto responseDto = CommentRetrieveResponseDto.builder()
+                .commentId(savedComment.getId())
+                .boardId(boardId)
+                .content(content)
+                .memberId(memberId)
+                .parentId(savedComment.getParentId())
+                .build();
 
         // when
         commentService.retrieveComments(requestDto);
@@ -181,9 +189,9 @@ public class CommentServiceTest {
         //then
         List<Comment> dto = commentRepository.findAll().stream().collect(Collectors.toList());
         assertThat(dto).hasSize(1);
-        assertThat(savedComment.getMemberId()).isEqualTo(memberId);
-        assertThat(savedComment.getContent()).isEqualTo(content);
-        assertThat(savedComment.getBoardId()).isEqualTo(boardId);
+        assertThat(responseDto.getMemberId()).isEqualTo(memberId);
+        assertThat(responseDto.getContent()).isEqualTo(content);
+        assertThat(responseDto.getBoardId()).isEqualTo(boardId);
 
     }
 
