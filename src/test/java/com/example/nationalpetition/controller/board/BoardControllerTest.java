@@ -102,7 +102,9 @@ public class BoardControllerTest {
                                 fieldWithPath("data.content").description("내가 작성한 글"),
                                 fieldWithPath("data.petitionUrl").description("url"),
                                 fieldWithPath("data.petitionsCount").description("청원 수"),
-                                fieldWithPath("data.category").description("청원 카테고리")
+                                fieldWithPath("data.category").description("청원 카테고리"),
+                                fieldWithPath("data.boardLikeCounts").description("좋아요 개수"),
+                                fieldWithPath("data.boardUnLikeCounts").description("싫어요 개수")
                         )
                 ));
         resultActions.andExpect(status().isOk());
@@ -148,7 +150,9 @@ public class BoardControllerTest {
                                 fieldWithPath("data.content").description("내가 작성한 글"),
                                 fieldWithPath("data.petitionUrl").description("url"),
                                 fieldWithPath("data.petitionsCount").description("청원 수"),
-                                fieldWithPath("data.category").description("청원 카테고리")
+                                fieldWithPath("data.category").description("청원 카테고리"),
+                                fieldWithPath("data.boardLikeCounts").description("좋아요 개수"),
+                                fieldWithPath("data.boardUnLikeCounts").description("싫어요 개수")
                         )
                 ));
         resultActions.andExpect(status().isOk());
@@ -165,8 +169,7 @@ public class BoardControllerTest {
 
         // when & then
         final ResultActions resultActions = mockMvc.perform(
-                RestDocumentationRequestBuilders.get("/api/v1/board/{id}", board.getId())
-                        .header("Authorization", "Bearer ".concat(token.getToken()))
+                RestDocumentationRequestBuilders.get("/api/v1/getBoard/{id}", board.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -187,7 +190,9 @@ public class BoardControllerTest {
                                 fieldWithPath("data.content").description("내가 작성한 글"),
                                 fieldWithPath("data.petitionUrl").description("url"),
                                 fieldWithPath("data.petitionsCount").description("청원 수"),
-                                fieldWithPath("data.category").description("청원 카테고리")
+                                fieldWithPath("data.category").description("청원 카테고리"),
+                                fieldWithPath("data.boardLikeCounts").description("좋아요 개수"),
+                                fieldWithPath("data.boardUnLikeCounts").description("싫어요 개수")
                         )
                 ));
         resultActions.andExpect(status().isOk());
@@ -204,8 +209,7 @@ public class BoardControllerTest {
 
         // when & then
         final ResultActions resultActions = mockMvc.perform(
-                RestDocumentationRequestBuilders.get("/api/v1/board/list?search=&page=0&size=10")
-                        .header("Authorization", "Bearer ".concat(token.getToken()))
+                RestDocumentationRequestBuilders.get("/api/v1/getBoard/list?search=&page=0&size=10")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -228,7 +232,9 @@ public class BoardControllerTest {
                                 fieldWithPath("data[].content").description("내가 작성한 글"),
                                 fieldWithPath("data[].petitionUrl").description("url"),
                                 fieldWithPath("data[].petitionsCount").description("청원 수"),
-                                fieldWithPath("data[].category").description("청원 카테고리")
+                                fieldWithPath("data[].category").description("청원 카테고리"),
+                                fieldWithPath("data[].boardLikeCounts").description("좋아요 개수"),
+                                fieldWithPath("data[].boardUnLikeCounts").description("싫어요 개수")
                         )
                 ));
         resultActions.andExpect(status().isOk());

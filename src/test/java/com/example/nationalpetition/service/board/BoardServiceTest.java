@@ -8,7 +8,7 @@ import com.example.nationalpetition.domain.board.repository.BoardRepository;
 import com.example.nationalpetition.dto.board.request.BoardLikeRequest;
 import com.example.nationalpetition.dto.board.request.CreateBoardRequest;
 import com.example.nationalpetition.dto.board.request.UpdateBoardRequest;
-import com.example.nationalpetition.dto.board.response.BoardInfoResponse;
+import com.example.nationalpetition.dto.board.response.BoardInfoResponseWithLikeCount;
 import com.example.nationalpetition.testObject.BoardCreator;
 import com.example.nationalpetition.testObject.BoardLikeCreator;
 import com.example.nationalpetition.utils.error.exception.NotFoundException;
@@ -74,7 +74,7 @@ public class BoardServiceTest {
         CreateBoardRequest request = CreateBoardRequest.testInstance(600413L, "title", "content");
 
         // when
-        final BoardInfoResponse response = boardService.createBoard(request, 1L);
+        final BoardInfoResponseWithLikeCount response = boardService.createBoard(request, 1L);
 
         // then
         final List<Board> boardList = boardRepository.findAll();
@@ -131,6 +131,23 @@ public class BoardServiceTest {
         assertThat(boardList.get(0).getContent()).isEqualTo(board.getContent());
     }
 
+    @DisplayName("게시글 아이디로 게시글을 불러올 때 좋아요 개수도 가져온다")
+    @Test
+    void 게시글_불러오기2() {
+        // given
+        Board board = new Board(1L, "petitionTitle", "title", "petitionContent", "content", "url", "10000", "사회문제");
+        boardRepository.save(board);
+
+        // when
+        boardService.getBoard(board.getId());
+
+        // then
+        final List<Board> boardList = boardRepository.findAll();
+        assertThat(boardList).hasSize(1);
+        assertThat(boardList.get(0).getTitle()).isEqualTo(board.getTitle());
+        assertThat(boardList.get(0).getContent()).isEqualTo(board.getContent());
+    }
+
     @DisplayName("title 기준으로 검색하고 기본 10개씩 첫페이지는 0으로 가져온다.")
     @Test
     void 게시글_리스트_불러오기() {
@@ -139,7 +156,7 @@ public class BoardServiceTest {
 
         // when
         final Pageable pageable = PageRequest.of(0, 10, DESC, "id");
-        final List<BoardInfoResponse> responseList = boardService.retrieveBoard("", pageable);
+        final List<BoardInfoResponseWithLikeCount> responseList = boardService.retrieveBoard("", pageable);
 
         // then
         final List<Board> boardList = boardRepository.findAll();
@@ -156,7 +173,7 @@ public class BoardServiceTest {
 
         // when
         final Pageable pageable = PageRequest.of(0, 10, DESC, "id");
-        final List<BoardInfoResponse> responseList = boardService.retrieveBoard("1", pageable);
+        final List<BoardInfoResponseWithLikeCount> responseList = boardService.retrieveBoard("1", pageable);
 
         // then
         final List<Board> boardList = boardRepository.findAll();
@@ -174,7 +191,7 @@ public class BoardServiceTest {
 
         // when
         final Pageable pageable = PageRequest.of(1, 10, DESC, "id");
-        final List<BoardInfoResponse> responseList = boardService.retrieveBoard("1", pageable);
+        final List<BoardInfoResponseWithLikeCount> responseList = boardService.retrieveBoard("1", pageable);
 
         // then
         assertThat(responseList).isEmpty();
