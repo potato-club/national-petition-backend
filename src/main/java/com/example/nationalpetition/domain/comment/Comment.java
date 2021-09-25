@@ -75,5 +75,4 @@ public class Comment extends BaseTimeEntity {
         this.isDeleted = true;
     }
 
-
 }

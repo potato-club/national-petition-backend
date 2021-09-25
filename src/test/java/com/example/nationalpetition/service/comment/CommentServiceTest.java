@@ -175,23 +175,22 @@ public class CommentServiceTest {
         Comment savedComment = commentRepository.save(Comment.newRootComment(memberId, boardId, content));
 
         CommentRetrieveRequestDto requestDto = new CommentRetrieveRequestDto(savedComment.getId(), boardId);
+
         CommentRetrieveResponseDto responseDto = CommentRetrieveResponseDto.builder()
-                .commentId(savedComment.getId())
+                .commentId(1L)
                 .boardId(boardId)
                 .content(content)
                 .memberId(memberId)
-                .parentId(savedComment.getParentId())
                 .build();
 
         // when
         commentService.retrieveComments(requestDto);
 
-        //then
+        // then
         List<Comment> dto = commentRepository.findAll().stream().collect(Collectors.toList());
         assertThat(dto).hasSize(1);
         assertThat(responseDto.getMemberId()).isEqualTo(memberId);
         assertThat(responseDto.getContent()).isEqualTo(content);
-        assertThat(responseDto.getBoardId()).isEqualTo(boardId);
 
     }
 
