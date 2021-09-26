@@ -7,13 +7,11 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class CommentRetrieveRequestDto {
+
     private Long commentId;
 
-    private Long boardId;
-
     @Builder
-    public CommentRetrieveRequestDto(Long commentId, Long boardId) {
+    public CommentRetrieveRequestDto(Long commentId) {
         this.commentId = commentId;
-        this.boardId = boardId;
     }
 }

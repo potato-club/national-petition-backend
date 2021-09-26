@@ -174,7 +174,7 @@ public class CommentServiceTest {
 
         Comment savedComment = commentRepository.save(Comment.newRootComment(memberId, boardId, content));
 
-        CommentRetrieveRequestDto requestDto = new CommentRetrieveRequestDto(savedComment.getId(), boardId);
+        CommentRetrieveRequestDto requestDto = new CommentRetrieveRequestDto(savedComment.getId());
 
         CommentRetrieveResponseDto responseDto = CommentRetrieveResponseDto.builder()
                 .commentId(1L)

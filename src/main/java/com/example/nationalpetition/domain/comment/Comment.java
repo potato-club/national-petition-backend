@@ -1,13 +1,11 @@
 package com.example.nationalpetition.domain.comment;
 
 import com.example.nationalpetition.domain.BaseTimeEntity;
-import com.example.nationalpetition.dto.comment.response.CommentRetrieveResponseDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Getter
 @NoArgsConstructor

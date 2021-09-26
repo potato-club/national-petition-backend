@@ -59,7 +59,7 @@ public class CommentService {
 
     @Transactional(readOnly = true)
     public List<CommentRetrieveResponseDto> retrieveComments(CommentRetrieveRequestDto dto) {
-        List<Comment> comments = commentRepository.findByBoardIdAndIsDeletedIsFalse(dto.getBoardId());
+        List<Comment> comments = commentRepository.findByBoardIdAndIsDeletedIsFalse(dto.getCommentId());
         return comments.stream().map(comment -> CommentRetrieveResponseDto.of(comment)).collect(Collectors.toList());
     }
 

@@ -32,13 +32,14 @@ public class CommentController {
         return ApiResponse.success(commentService.updateComment(dto).getContent());
     }
 
-    @DeleteMapping("/api/v1/comment")
+    @DeleteMapping("/api/v1/comment/{memberId}")
     public ApiResponse<CommentRetrieveResponseDto> deleteComment(@RequestBody CommentDeleteDto deleteDto) {
         return ApiResponse.success(CommentRetrieveResponseDto.of(commentService.deleteComment(deleteDto)));
     }
 
-    @GetMapping("/api/v1/comment")
-    public ApiResponse<List<CommentRetrieveResponseDto>> retrieveComments(@RequestBody CommentRetrieveRequestDto requestDto) {
+    @GetMapping("/api/v1/comment/{boardId}")
+    public ApiResponse<List<CommentRetrieveResponseDto>> retrieveComments(@RequestBody CommentRetrieveRequestDto requestDto,
+                                                                          @PathVariable Long boardId) {
         return ApiResponse.success(commentService.retrieveComments(requestDto));
     }
 
