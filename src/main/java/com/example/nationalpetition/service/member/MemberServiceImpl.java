@@ -3,6 +3,7 @@ package com.example.nationalpetition.service.member;
 import com.example.nationalpetition.domain.member.entity.Member;
 import com.example.nationalpetition.domain.member.repository.MemberRepository;
 import com.example.nationalpetition.dto.member.request.NickNameRequest;
+import com.example.nationalpetition.dto.member.response.MemberResponse;
 import com.example.nationalpetition.utils.error.exception.NotFoundException;
 import com.example.nationalpetition.utils.error.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -19,8 +20,8 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
 
     @Override
-    public Member findById(Long memberId) {
-        return memberRepository.findById(memberId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_USER));
+    public MemberResponse findById(Long memberId) {
+        return MemberResponse.of(memberRepository.findById(memberId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_USER)));
     }
 
     @Override
