@@ -35,7 +35,7 @@ public class MemberController {
 	@Operation(summary = "나의 회원 정보를 불러오는 API", security = {@SecurityRequirement(name = "BearerKey")})
 	@GetMapping("/api/v1/mypage/info")
 	private ApiResponse<MemberResponse> getMyInfo(@MemberId Long memberId) {
-		return ApiResponse.success(MemberResponse.of(memberService.findById(memberId)));
+		return ApiResponse.success(memberService.findById(memberId));
 	}
 
 	@Operation(summary = "닉네임을 수정하는 API", security = {@SecurityRequirement(name = "BearerKey")})
@@ -46,5 +46,4 @@ public class MemberController {
 		final Member savedMember = memberService.addNickName(memberId, request);
 		return ApiResponse.success(MemberResponse.of(savedMember));
 	}
-
 }
