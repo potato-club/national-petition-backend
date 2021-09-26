@@ -6,7 +6,7 @@ import com.example.nationalpetition.dto.board.request.BoardLikeRequest;
 import com.example.nationalpetition.dto.board.request.CreateBoardRequest;
 import com.example.nationalpetition.dto.board.request.DeleteBoardLikeRequest;
 import com.example.nationalpetition.dto.board.request.UpdateBoardRequest;
-import com.example.nationalpetition.dto.board.response.BoardInfoResponse;
+import com.example.nationalpetition.dto.board.response.BoardInfoResponseWithLikeCount;
 import com.example.nationalpetition.service.board.BoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -25,22 +25,22 @@ public class BoardController {
     private final BoardService boardService;
 
 	@PostMapping("/api/v1/board")
-	public ApiResponse<BoardInfoResponse> createBoard(@RequestBody @Valid CreateBoardRequest request, @MemberId Long memberId) {
+	public ApiResponse<BoardInfoResponseWithLikeCount> createBoard(@RequestBody @Valid CreateBoardRequest request, @MemberId Long memberId) {
 		return ApiResponse.success(boardService.createBoard(request, memberId));
 	}
 
 	@PostMapping("/api/v1/board/update")
-	public ApiResponse<BoardInfoResponse> updateBoard(@RequestBody @Valid UpdateBoardRequest request, @MemberId Long memberId) {
+	public ApiResponse<BoardInfoResponseWithLikeCount> updateBoard(@RequestBody @Valid UpdateBoardRequest request, @MemberId Long memberId) {
 		return ApiResponse.success(boardService.updateBoard(request, memberId));
 	}
 
-	@GetMapping("/api/v1/board/{boardId}")
-	public ApiResponse<BoardInfoResponse> getBoard(@PathVariable Long boardId) {
+	@GetMapping("/api/v1/getBoard/{boardId}")
+	public ApiResponse<BoardInfoResponseWithLikeCount> getBoard(@PathVariable Long boardId) {
 		return ApiResponse.success(boardService.getBoard(boardId));
 	}
 
-	@GetMapping("/api/v1/board/list")
-	public ApiResponse<List<BoardInfoResponse>> retrieveBoard(String search, @PageableDefault(size = 10, sort = "id", direction = DESC) Pageable pageable) {
+	@GetMapping("/api/v1/getBoard/list")
+	public ApiResponse<List<BoardInfoResponseWithLikeCount>> retrieveBoard(String search, @PageableDefault(size = 10, sort = "id", direction = DESC) Pageable pageable) {
 		return ApiResponse.success(boardService.retrieveBoard(search, pageable));
 	}
 
