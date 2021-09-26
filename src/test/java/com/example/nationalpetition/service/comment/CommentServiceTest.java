@@ -47,7 +47,7 @@ public class CommentServiceTest {
                 .build();
 
         // when
-        commentService.addComment(dto, boardId);
+        commentService.addComment(dto, boardId, memberId);
 
         // then
         List<Comment> comments = commentRepository.findAll();
@@ -73,11 +73,10 @@ public class CommentServiceTest {
         CommentCreateDto createDto = CommentCreateDto.builder()
                 .parentId(parent.getId())
                 .content(content)
-                .memberId(memberId)
                 .build();
 
         // when
-        commentService.addComment(createDto, boardId);
+        commentService.addComment(createDto, boardId, memberId);
 
         // then
         List<Comment> comments = commentRepository.findAll();
@@ -101,11 +100,10 @@ public class CommentServiceTest {
         CommentCreateDto dto = CommentCreateDto.builder()
                 .parentId(parentId)
                 .content(content)
-                .memberId(memberId)
                 .build();
 
         // when & then
-        assertThatThrownBy(() -> commentService.addComment(dto, boardId))
+        assertThatThrownBy(() -> commentService.addComment(dto, boardId, memberId))
                 .isInstanceOf(NotFoundException.class);
     }
 
@@ -114,16 +112,18 @@ public class CommentServiceTest {
         // given
         String originalContent = "감자는 소금과 먹나요?";
         String updatedContent = "감자는 설탕과 먹어요";
+        Long memberId = 2L;
+        Long boardId = 1L;
 
-        Comment savedComment = commentRepository.save(Comment.newRootComment(1L, 1L, originalContent));
+
+        commentRepository.save(Comment.newRootComment(memberId, boardId, originalContent));
         CommentUpdateDto dto = CommentUpdateDto.builder()
-                .id(savedComment.getId())
-                .memberId(2L)
+                .commentId(999L)
                 .content(updatedContent)
                 .build();
 
         // when & then
-        assertThatThrownBy(() -> commentService.updateComment(dto))
+        assertThatThrownBy(() -> commentService.updateComment(memberId, dto))
                 .isInstanceOf(NotFoundException.class);
     }
 
@@ -132,21 +132,22 @@ public class CommentServiceTest {
         // given
         String originalContent = "감자는 맛이 없어요 :(";
         String newContent = "사실은 맛있어요 :)";
+        Long memberId = 1L;
 
-        Comment originalComment = commentRepository.save(Comment.newRootComment(1L, 1L, originalContent));
+        Comment originalComment = commentRepository.save(Comment.newRootComment(memberId, 1L, originalContent));
         CommentUpdateDto updateDto = CommentUpdateDto.builder()
-                .id(originalComment.getId())
-                .memberId(originalComment.getMemberId())
+                .commentId(originalComment.getId())
                 .content(newContent)
                 .build();
 
         // when
-        commentService.updateComment(updateDto);
+        commentService.updateComment(memberId, updateDto);
 
         // then
         List<Comment> comment = commentRepository.findAll();
         assertThat(comment).hasSize(1);
         assertThat(comment.get(0).getContent()).isEqualTo(updateDto.getContent());
+        assertThat(comment.get(0).getMemberId()).isEqualTo(memberId);
 
     }
 
@@ -154,15 +155,17 @@ public class CommentServiceTest {
     void 댓글을_삭제한다() {
         // given
         Comment savedComment = commentRepository.save(Comment.newRootComment(1L, 1L, "치킨이 더 맛있어요"));
-        CommentDeleteDto deleteDto = new CommentDeleteDto(savedComment.getId(), savedComment.getMemberId());
+        Long memberId = 1L;
+        CommentDeleteDto deleteDto = new CommentDeleteDto(savedComment.getId());
 
         // when
-        commentService.deleteComment(deleteDto);
+        commentService.deleteComment(memberId, deleteDto);
 
         // then
         List<Comment> deletedComment = commentRepository.findAll();
         assertThat(deletedComment).hasSize(1);
         assertThat(deletedComment.get(0).isDeleted()).isEqualTo(true);
+        assertThat(deletedComment.get(0).getMemberId()).isEqualTo(memberId);
     }
 
     @Test

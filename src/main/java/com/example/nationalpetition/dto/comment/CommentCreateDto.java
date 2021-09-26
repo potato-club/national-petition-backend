@@ -8,8 +8,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CommentCreateDto {
 
-    private Long memberId;
-
     private String content;
 
     private Long parentId;
@@ -17,7 +15,6 @@ public class CommentCreateDto {
     @Builder
     public CommentCreateDto(String content, Long memberId, Long parentId) {
         this.content = content;
-        this.memberId = memberId;
         this.parentId = parentId;
     }
 

@@ -1,5 +1,6 @@
 package com.example.nationalpetition.controller.comment;
 
+import com.example.nationalpetition.config.MemberId;
 import com.example.nationalpetition.controller.ApiResponse;
 import com.example.nationalpetition.domain.comment.Comment;
 import com.example.nationalpetition.dto.comment.CommentCreateDto;
@@ -23,18 +24,20 @@ public class CommentController {
 
     @PostMapping("/api/v1/comment/{boardId}")
     public ApiResponse<Long> addComment(@RequestBody CommentCreateDto dto,
-                                        @PathVariable Long boardId) {
-        return ApiResponse.success(commentService.addComment(dto, boardId));
+                                        @PathVariable Long boardId,
+                                        @MemberId Long memberId) {
+        return ApiResponse.success(commentService.addComment(dto, boardId, memberId));
     }
 
     @PutMapping("/api/v1/comment")
-    public ApiResponse<String> updateComment(@RequestBody CommentUpdateDto dto) {
-        return ApiResponse.success(commentService.updateComment(dto).getContent());
+    public ApiResponse<String> updateComment(@MemberId Long memberId, @RequestBody CommentUpdateDto dto) {
+        return ApiResponse.success(commentService.updateComment(memberId, dto).getContent());
     }
 
-    @DeleteMapping("/api/v1/comment/{memberId}")
-    public ApiResponse<CommentRetrieveResponseDto> deleteComment(@RequestBody CommentDeleteDto deleteDto) {
-        return ApiResponse.success(CommentRetrieveResponseDto.of(commentService.deleteComment(deleteDto)));
+    @DeleteMapping("/api/v1/comment")
+    public ApiResponse<String> deleteComment(@MemberId Long memberId, CommentDeleteDto deleteDto) {
+        commentService.deleteComment(memberId, deleteDto);
+        return ApiResponse.OK;
     }
 
     @GetMapping("/api/v1/comment/{boardId}")

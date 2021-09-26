@@ -9,11 +9,9 @@ public class CommentDeleteDto {
 
     private Long commentId;
 
-    private Long memberId;
 
-    public CommentDeleteDto(Long commentId, Long memberId) {
+    public CommentDeleteDto(Long commentId) {
         this.commentId = commentId;
-        this.memberId = memberId;
     }
 
 }

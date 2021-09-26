@@ -26,20 +26,20 @@ public class CommentService {
     private final CommentRepository commentRepository;
 
     @Transactional
-    public Long addComment(CommentCreateDto dto, Long boardId) {
+    public Long addComment(CommentCreateDto dto, Long boardId, Long memberId) {
         if (dto.getParentId() == null) {
-            return commentRepository.save(Comment.newRootComment(dto.getMemberId(), boardId, dto.getContent())).getId();
+            return commentRepository.save(Comment.newRootComment(memberId, boardId, dto.getContent())).getId();
         }
         Comment parentComment = commentRepository.findById(dto.getParentId())
                 .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_COMMENT));
         int depth = parentComment.getDepth();
-        return commentRepository.save(Comment.newChildComment(dto.getParentId(), dto.getMemberId(), boardId, depth + 1, dto.getContent())).getId();
+        return commentRepository.save(Comment.newChildComment(dto.getParentId(), memberId, boardId, depth + 1, dto.getContent())).getId();
     }
 
     @Transactional
-    public Comment updateComment(CommentUpdateDto updateDto) {
+    public Comment updateComment(Long memberId, CommentUpdateDto updateDto) {
 
-        Comment comment = commentRepository.findByIdAndMemberIdAndIsDeletedIsFalse(updateDto.getId(), updateDto.getMemberId());
+        Comment comment = commentRepository.findByIdAndMemberIdAndIsDeletedIsFalse(updateDto.getCommentId(), memberId);
         if (comment == null) {
             throw new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_COMMENT);
         }
@@ -48,20 +48,18 @@ public class CommentService {
     }
 
     @Transactional
-    public Comment deleteComment(CommentDeleteDto deleteDto) {
-        Comment comment = commentRepository.findByIdAndMemberIdAndIsDeletedIsFalse(deleteDto.getCommentId(), deleteDto.getMemberId());
+    public void deleteComment(Long memberId, CommentDeleteDto deleteDto) {
+        Comment comment = commentRepository.findByIdAndMemberIdAndIsDeletedIsFalse(deleteDto.getCommentId(), memberId);
         if (comment == null) {
             throw new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_COMMENT);
         }
         comment.delete();
-        return comment;
     }
 
     @Transactional(readOnly = true)
     public List<CommentRetrieveResponseDto> retrieveComments(CommentRetrieveRequestDto dto) {
         List<Comment> comments = commentRepository.findByBoardIdAndIsDeletedIsFalse(dto.getCommentId());
-        return comments.stream().map(comment -> CommentRetrieveResponseDto.of(comment)).collect(Collectors.toList());
+        return comments.stream().map(CommentRetrieveResponseDto::of).collect(Collectors.toList());
     }
-
 
 }
