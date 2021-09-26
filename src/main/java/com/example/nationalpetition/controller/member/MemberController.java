@@ -2,6 +2,7 @@ package com.example.nationalpetition.controller.member;
 
 import com.example.nationalpetition.config.MemberId;
 import com.example.nationalpetition.controller.ApiResponse;
+import com.example.nationalpetition.domain.member.entity.Member;
 import com.example.nationalpetition.dto.member.request.NickNameRequest;
 import com.example.nationalpetition.dto.member.response.MemberResponse;
 import com.example.nationalpetition.service.member.MemberService;
@@ -42,6 +43,7 @@ public class MemberController {
 	public ApiResponse<MemberResponse> addNickName(@MemberId Long memberId,
 												   @RequestBody @Valid NickNameRequest request, BindingResult bindingResult) throws BindException {
 		ValidationUtils.validateBindingResult(bindingResult);
-		return ApiResponse.success(MemberResponse.of(memberService.addNickName(memberId, request)));
+		final Member savedMember = memberService.addNickName(memberId, request);
+		return ApiResponse.success(MemberResponse.of(savedMember));
 	}
 }
