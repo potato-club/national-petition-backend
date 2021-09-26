@@ -1,6 +1,6 @@
 POST {{local}}/api/v1/board
 Content-Type: application/json
-Authorization: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNjMyMzg4OTQ0LCJleHAiOjE2MzIzODk1NDR9.Ju5xSV4zJ5c5f0zDFpE_5Vo7D8K-DtSzEXkPHp01LfA
+Authorization: Bearer {{TOKEN}}
 
 {
   "petitionId": "600413",
@@ -11,7 +11,7 @@ Authorization: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNjMyMzg4OTQ0LCJleHAi
 ### 게시글 수정
 POST {{local}}/api/v1/board/update
 Content-Type: application/json
-Authorization: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNjMyMzg4OTQ0LCJleHAiOjE2MzIzODk1NDR9.Ju5xSV4zJ5c5f0zDFpE_5Vo7D8K-DtSzEXkPHp01LfA
+Authorization: Bearer {{TOKEN}}
 
 {
   "boardId": 1,
@@ -20,19 +20,28 @@ Authorization: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNjMyMzg4OTQ0LCJleHAi
 }
 
 ### 게시글 불러오기
-GET {{local}}/api/v1/board/1
+GET {{local}}/api/v1/getBoard/1
 Content-Type: application/json
 
 ### 게시글 리스트 불러오기
-GET {{local}}/api/v1/board/list?search=&page=0
+GET {{local}}/api/v1/getBoard/list?search=&page=0
 Content-Type: application/json
 
 ### 게시글 찬성/반대
 POST {{local}}/api/v1/board/like
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNjMyNDY4OTIyLCJleHAiOjE2MzI0Njk1MjJ9.jKnXILgCxST05CjY4x0HTO0Di7W08kPxNRENZDrqWZQ
+Authorization: Bearer {{TOKEN}}
 
 {
   "boardId": 1,
   "boardState": "LIKE"
 }
+
+###
+GET {{local}}/test-token
+
+> {%
+client.global.set('TOKEN', response.body.data.token)
+client.log(client.global.get('TOKEN'));
+ %}
+

@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class BoardInfoResponse {
+public class BoardInfoResponseWithLikeCount {
 
     private Long boardId;
     private Long memberId;
@@ -18,9 +18,11 @@ public class BoardInfoResponse {
     private String petitionUrl;
     private String petitionsCount;
     private String category;
+    private int boardLikeCounts;
+    private int boardUnLikeCounts;
 
     @Builder
-    public BoardInfoResponse(Long boardId, Long memberId, String petitionTitle, String title, String petitionContent, String content, String petitionUrl, String petitionsCount, String category) {
+    public BoardInfoResponseWithLikeCount(Long boardId, Long memberId, String petitionTitle, String title, String petitionContent, String content, String petitionUrl, String petitionsCount, String category, int boardLikeCounts, int boardUnLikeCounts) {
         this.boardId = boardId;
         this.memberId = memberId;
         this.petitionTitle = petitionTitle;
@@ -30,10 +32,12 @@ public class BoardInfoResponse {
         this.petitionUrl = petitionUrl;
         this.petitionsCount = petitionsCount;
         this.category = category;
+        this.boardLikeCounts = boardLikeCounts;
+        this.boardUnLikeCounts = boardUnLikeCounts;
     }
 
-    public static BoardInfoResponse of(Board board) {
-        return BoardInfoResponse.builder()
+    public static BoardInfoResponseWithLikeCount of(Board board, BoardLikeAndUnLikeCounts boardLikeAndUnLikeCounts) {
+        return BoardInfoResponseWithLikeCount.builder()
                 .boardId(board.getId())
                 .memberId(board.getMemberId())
                 .petitionTitle(board.getPetitionTitle())
@@ -43,6 +47,8 @@ public class BoardInfoResponse {
                 .petitionUrl(board.getPetitionUrl())
                 .petitionsCount(board.getPetitionsCount())
                 .category(board.getCategory())
+                .boardLikeCounts(boardLikeAndUnLikeCounts.getBoardLikeCounts())
+                .boardUnLikeCounts(boardLikeAndUnLikeCounts.getBoardUnLikeCounts())
                 .build();
     }
 
