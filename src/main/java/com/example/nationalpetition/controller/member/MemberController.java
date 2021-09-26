@@ -38,10 +38,10 @@ public class MemberController {
 	}
 
 	@Operation(summary = "닉네임을 수정하는 API", security = {@SecurityRequirement(name = "BearerKey")})
-	@PutMapping("/api/v1/mypage/nickName")
+	@PostMapping("/api/v1/mypage/nickName")
 	public ApiResponse<MemberResponse> addNickName(@MemberId Long memberId,
 												   @RequestBody @Valid NickNameRequest request, BindingResult bindingResult) throws BindException {
 		ValidationUtils.validateBindingResult(bindingResult);
-		return ApiResponse.success(memberService.addNickName(memberId, request));
+		return ApiResponse.success(MemberResponse.of(memberService.addNickName(memberId, request)));
 	}
 }

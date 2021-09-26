@@ -4,12 +4,10 @@ import com.example.nationalpetition.domain.member.entity.Member;
 import com.example.nationalpetition.dto.member.request.NickNameRequest;
 import com.example.nationalpetition.dto.member.response.MemberResponse;
 
-import java.util.Optional;
-
 public interface MemberService {
     MemberResponse findById(Long memberId);
 
     Member findByEmail(String email);
 
-    MemberResponse addNickName(Long memberId, NickNameRequest request);
+    Member addNickName(Long memberId, NickNameRequest request);
 }
