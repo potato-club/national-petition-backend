@@ -2,6 +2,8 @@ package com.example.nationalpetition.utils.error.controllerAdvice;
 
 import com.example.nationalpetition.controller.ApiResponse;
 import com.example.nationalpetition.utils.error.ErrorCode;
+import com.example.nationalpetition.utils.error.exception.AlreadyExistException;
+import com.example.nationalpetition.utils.error.exception.DuplicateException;
 import com.example.nationalpetition.utils.error.exception.JwtTokenException;
 import com.example.nationalpetition.utils.error.exception.NotFoundException;
 import com.example.nationalpetition.utils.ValidationResult;
@@ -52,6 +54,18 @@ public class ExceptionControllerAdvice {
     @ResponseStatus(BAD_REQUEST)
     protected ValidationResult handleBindException(BindException bindException) {
         return ValidationResult.error(bindException, messageSource);
+    }
+
+    @ExceptionHandler(DuplicateException.class)
+    @ResponseStatus(BAD_REQUEST)
+    protected ApiResponse<Object> handleDuplicateException(DuplicateException e) {
+        return ApiResponse.error(e.getCode(), e.getMessage());
+    }
+
+    @ExceptionHandler(AlreadyExistException.class)
+    @ResponseStatus(BAD_REQUEST)
+    protected ApiResponse<Object> handleAlreadyExistException(AlreadyExistException e) {
+        return ApiResponse.error(e.getCode(), e.getMessage());
     }
 
 }

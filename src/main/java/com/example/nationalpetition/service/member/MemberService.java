@@ -9,5 +9,5 @@ public interface MemberService {
 
     Member findByEmail(String email);
 
-    Member addNickName(Long memberId, NickNameRequest request);
+    MemberResponse addNickName(Long memberId, NickNameRequest request);
 }

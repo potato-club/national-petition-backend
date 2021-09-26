@@ -18,7 +18,11 @@ public enum ErrorCode {
 
     VALIDATION_EXCEPTION("400", "유효하지 않은 값입니다."),
 
-    CONFLICT_EXCEPTION("400", "이미 존재하는 값입니다.");
+    CONFLICT_EXCEPTION("400", "이미 존재하는 값입니다."),
+
+    DUPLICATE_EXCEPTION_NICKNAME("400","닉네임이 중복됩니다."),
+
+    ALREADY_EXIST_EXCEPTION_ADD_NICKNAME("400","이미 닉네임을 등록하셨습니다.");
 
     private String code;
     private String message;
