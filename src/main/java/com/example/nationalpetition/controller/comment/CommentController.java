@@ -41,5 +41,4 @@ public class CommentController {
         return ApiResponse.success(commentService.retrieveComments(boardId));
     }
 
-
 }
