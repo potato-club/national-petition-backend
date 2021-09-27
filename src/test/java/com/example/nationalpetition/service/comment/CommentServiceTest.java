@@ -4,7 +4,6 @@ import com.example.nationalpetition.domain.comment.Comment;
 import com.example.nationalpetition.domain.comment.CommentRepository;
 import com.example.nationalpetition.dto.comment.CommentCreateDto;
 import com.example.nationalpetition.dto.comment.request.CommentDeleteDto;
-import com.example.nationalpetition.dto.comment.request.CommentRetrieveRequestDto;
 import com.example.nationalpetition.dto.comment.request.CommentUpdateDto;
 import com.example.nationalpetition.dto.comment.response.CommentRetrieveResponseDto;
 import com.example.nationalpetition.utils.error.exception.NotFoundException;
@@ -175,9 +174,7 @@ public class CommentServiceTest {
         Long boardId = 1L;
         String content = "첫 번째 게시물 입니다.";
 
-        Comment savedComment = commentRepository.save(Comment.newRootComment(memberId, boardId, content));
-
-        CommentRetrieveRequestDto requestDto = new CommentRetrieveRequestDto(savedComment.getId());
+        commentRepository.save(Comment.newRootComment(memberId, boardId, content));
 
         CommentRetrieveResponseDto responseDto = CommentRetrieveResponseDto.builder()
                 .commentId(1L)
@@ -187,7 +184,7 @@ public class CommentServiceTest {
                 .build();
 
         // when
-        commentService.retrieveComments(requestDto);
+        commentService.retrieveComments(boardId);
 
         // then
         List<Comment> dto = commentRepository.findAll().stream().collect(Collectors.toList());

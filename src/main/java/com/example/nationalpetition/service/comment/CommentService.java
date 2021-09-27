@@ -4,7 +4,6 @@ import com.example.nationalpetition.domain.comment.Comment;
 import com.example.nationalpetition.domain.comment.CommentRepository;
 import com.example.nationalpetition.dto.comment.CommentCreateDto;
 import com.example.nationalpetition.dto.comment.request.CommentDeleteDto;
-import com.example.nationalpetition.dto.comment.request.CommentRetrieveRequestDto;
 import com.example.nationalpetition.dto.comment.request.CommentUpdateDto;
 import com.example.nationalpetition.utils.error.ErrorCode;
 import com.example.nationalpetition.utils.error.exception.NotFoundException;
@@ -57,8 +56,8 @@ public class CommentService {
     }
 
     @Transactional(readOnly = true)
-    public List<CommentRetrieveResponseDto> retrieveComments(CommentRetrieveRequestDto dto) {
-        List<Comment> comments = commentRepository.findByBoardIdAndIsDeletedIsFalse(dto.getCommentId());
+    public List<CommentRetrieveResponseDto> retrieveComments(Long boardId) {
+        List<Comment> comments = commentRepository.findByBoardIdAndIsDeletedIsFalse(boardId);
         return comments.stream().map(CommentRetrieveResponseDto::of).collect(Collectors.toList());
     }
 
