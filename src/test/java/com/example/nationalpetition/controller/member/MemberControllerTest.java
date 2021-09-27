@@ -1,28 +1,36 @@
 package com.example.nationalpetition.controller.member;
 
+import com.example.nationalpetition.domain.member.entity.Member;
 import com.example.nationalpetition.domain.member.repository.MemberRepository;
+import com.example.nationalpetition.dto.member.request.NickNameRequest;
+import com.example.nationalpetition.utils.error.ErrorCode;
+import com.example.nationalpetition.utils.error.exception.AlreadyExistException;
+import com.example.nationalpetition.utils.error.exception.DuplicateException;
 import com.example.nationalpetition.utils.error.exception.NotFoundException;
 import com.example.nationalpetition.security.jwt.Token;
 import com.example.nationalpetition.security.jwt.TokenService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-
+import org.springframework.validation.BindException;
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 
 @SpringBootTest
 @AutoConfigureRestDocs(uriHost = "3.36.186.100")
@@ -34,6 +42,9 @@ class MemberControllerTest {
 
 	@Autowired
 	MemberRepository memberRepository;
+
+	@Autowired
+	ObjectMapper objectMapper;
 
 	@Autowired
 	MockMvc mockMvc;
@@ -89,4 +100,97 @@ class MemberControllerTest {
 
 	}
 
+	@Test
+	@DisplayName("회원 닉네임 등록")
+	void addNickName() throws Exception {
+	    //given
+		final Member member = memberRepository.save(Member.of("이름", "dd@dd.dd", "fdf"));
+		final Token token = tokenService.generateToken(member.getId());
+		final NickNameRequest request = new NickNameRequest("닉네임");
+		//when
+		final ResultActions resultActions = mockMvc
+				.perform(post("/api/v1/mypage/nickName")
+				       .header("Authorization", "Bearer ".concat(token.getToken()))
+					   .content(objectMapper.writeValueAsString(request))
+					   .contentType(MediaType.APPLICATION_JSON))
+				.andDo(print())
+				.andDo(document("member/addNickName",
+						preprocessResponse(prettyPrint()),
+						responseFields(
+								fieldWithPath("code").type(JsonFieldType.STRING).description("code"),
+								fieldWithPath("message").type(JsonFieldType.STRING).description("message"),
+								fieldWithPath("data.name").type(JsonFieldType.STRING).description("이름"),
+								fieldWithPath("data.email").type(JsonFieldType.STRING).description("이메일"),
+								fieldWithPath("data.picture").type(JsonFieldType.STRING).description("프로필사진"),
+								fieldWithPath("data.nickName").type(JsonFieldType.STRING).description("닉네임")
+						)
+				)
+			);
+	    //then
+		resultActions.andExpect(status().isOk());
+	}
+
+	@Test
+	@DisplayName("회원 닉네임 등록 실패 -> 닉네임 중복")
+	void addNickName_fail1() throws Exception {
+		//given
+		MemberServiceUtils.saveMember(memberRepository);
+		final Member member = memberRepository.save(Member.of("아아아", "eee@ee.ee", "piiicture"));
+		final Token token = tokenService.generateToken(member.getId());
+		final NickNameRequest request = new NickNameRequest("닉네임");
+		//when
+		final ResultActions resultActions = mockMvc
+				.perform(post("/api/v1/mypage/nickName")
+						.header("Authorization", "Bearer ".concat(token.getToken()))
+						.content(objectMapper.writeValueAsString(request))
+						.contentType(MediaType.APPLICATION_JSON))
+				.andDo(print())
+				.andDo(document("member/addNickName/Duplicate",
+						preprocessResponse(prettyPrint())))
+				.andExpect(result -> assertTrue(result.getResolvedException().getClass().isAssignableFrom(DuplicateException.class)))
+				.andExpect(result -> assertThat(result.getResolvedException().getMessage()).isEqualTo(ErrorCode.DUPLICATE_EXCEPTION_NICKNAME.getMessage()));
+		//then
+		resultActions.andExpect(status().isBadRequest());
+	}
+
+	@Test
+	@DisplayName("회원 닉네임 등록 실패 -> 이미 닉네임을 등록한 유저")
+	void addNickName_fail2() throws Exception {
+	    //given
+		final Long memberId = MemberServiceUtils.saveMember(memberRepository);
+		final Token token = tokenService.generateToken(memberId);
+		final NickNameRequest request = new NickNameRequest("닉네임22");
+		//when
+		final ResultActions resultActions = mockMvc
+				.perform(post("/api/v1/mypage/nickName")
+						.header("Authorization", "Bearer ".concat(token.getToken()))
+						.content(objectMapper.writeValueAsString(request))
+						.contentType(MediaType.APPLICATION_JSON))
+				.andDo(print())
+				.andDo(document("member/addNickName/AlreadyExist",
+						preprocessResponse(prettyPrint())))
+				.andExpect(result -> assertTrue(result.getResolvedException().getClass().isAssignableFrom(AlreadyExistException.class)))
+				.andExpect(result -> assertThat(result.getResolvedException().getMessage()).isEqualTo(ErrorCode.ALREADY_EXIST_EXCEPTION_ADD_NICKNAME.getMessage()));
+		//then
+		resultActions.andExpect(status().isBadRequest());
+	}
+
+	@Test
+	@DisplayName("회원 닉네임 등록 실패 --> 닉네임을 @Valid 오류일때")
+	void addNickName_fail3() throws Exception {
+	    //given
+		final Member member = memberRepository.save(Member.of("아아아", "eee@ee.ee", "picture"));
+		final Token token = tokenService.generateToken(member.getId());
+		final NickNameRequest request = new NickNameRequest();
+		//when
+		mockMvc
+				.perform(post("/api/v1/mypage/nickName")
+						.header("Authorization", "Bearer ".concat(token.getToken()))
+						.content(objectMapper.writeValueAsString(request))
+						.contentType(MediaType.APPLICATION_JSON))
+				.andDo(print())
+				.andDo(document("member/addNickName/Valid",
+						preprocessResponse(prettyPrint())))
+				.andExpect(result -> assertTrue(result.getResolvedException().getClass().isAssignableFrom(BindException.class)));
+	}
 }

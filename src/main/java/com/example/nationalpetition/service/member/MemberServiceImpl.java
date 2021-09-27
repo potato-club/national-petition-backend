@@ -31,9 +31,10 @@ public class MemberServiceImpl implements MemberService {
 
     @Transactional
     @Override
-    public Member addNickName(Long memberId, NickNameRequest request) {
-        final Member member = memberRepository.findById(memberId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_USER));
+    public MemberResponse addNickName(Long memberId, NickNameRequest request) {
+        MemberServiceUtils.duplicateNickName(memberRepository, request.getNickName());
+        final Member member = MemberServiceUtils.isAlreadyExistNickName(memberRepository.findById(memberId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_USER)));
         member.addNickName(request.getNickName());
-        return memberRepository.save(member);
+        return MemberResponse.of(memberRepository.save(member));
     }
 }
