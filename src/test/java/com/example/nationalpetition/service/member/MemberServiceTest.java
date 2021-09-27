@@ -2,8 +2,11 @@ package com.example.nationalpetition.service.member;
 
 import com.example.nationalpetition.controller.member.MemberServiceUtils;
 import com.example.nationalpetition.domain.member.entity.Member;
+import com.example.nationalpetition.domain.member.repository.DeleteMemberRepository;
 import com.example.nationalpetition.domain.member.repository.MemberRepository;
+import com.example.nationalpetition.dto.member.DeleteMessageConst;
 import com.example.nationalpetition.dto.member.request.NickNameRequest;
+import com.example.nationalpetition.dto.member.response.DeleteMemberResponse;
 import com.example.nationalpetition.dto.member.response.MemberResponse;
 import com.example.nationalpetition.utils.ValidationUtils;
 import com.example.nationalpetition.utils.error.ErrorCode;
@@ -15,6 +18,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -96,4 +101,21 @@ public class MemberServiceTest {
 
     }
 
+    @Test
+    @DisplayName("회원 탈퇴 성공")
+    void deleteMember() {
+        //given
+        final Long memberId = MemberServiceUtils.saveMember(memberRepository);
+        final MemberResponse member = memberService.findById(memberId);
+        //when
+        final DeleteMemberResponse result = memberService.deleteMember(memberId);
+        //then
+        assertThat(result.getName()).isEqualTo(member.getName());
+        assertThat(result.getEmail()).isEqualTo(member.getEmail());
+        assertThat(result.getMessage()).isEqualTo(DeleteMessageConst.MESSAGE);
+        assertThatThrownBy(() -> memberService.findById(memberId))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessage(ErrorCode.NOT_FOUND_EXCEPTION_USER.getMessage());
+
+    }
 }

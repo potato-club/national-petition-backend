@@ -27,9 +27,8 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -193,4 +192,31 @@ class MemberControllerTest {
 						preprocessResponse(prettyPrint())))
 				.andExpect(result -> assertTrue(result.getResolvedException().getClass().isAssignableFrom(BindException.class)));
 	}
+
+	@Test
+	@DisplayName("회원 탈퇴 성공")
+	void deleteMember() throws Exception {
+	    //given
+		final Long memberId = MemberServiceUtils.saveMember(memberRepository);
+		final Token token = tokenService.generateToken(memberId);
+		//when && then
+		mockMvc
+				.perform(delete("/api/v1/mypage/delete")
+						.header("Authorization", "Bearer ".concat(token.getToken())))
+				.andDo(print())
+				.andDo(document("member/delete",
+						preprocessResponse(prettyPrint()),
+						responseFields(
+								fieldWithPath("code").type(JsonFieldType.STRING).description("code"),
+								fieldWithPath("message").type(JsonFieldType.STRING).description("message"),
+								fieldWithPath("data.name").type(JsonFieldType.STRING).description("이름"),
+								fieldWithPath("data.email").type(JsonFieldType.STRING).description("이메일"),
+								fieldWithPath("data.deletedDate").type(JsonFieldType.STRING).description("삭제한 날짜"),
+								fieldWithPath("data.message").type(JsonFieldType.STRING).description("메세지")
+
+						)
+						)
+				);
+	}
+
 }
