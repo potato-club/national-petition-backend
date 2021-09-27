@@ -47,8 +47,8 @@ public class CommentService {
     }
 
     @Transactional
-    public void deleteComment(Long memberId, CommentDeleteDto deleteDto) {
-        Comment comment = commentRepository.findByIdAndMemberIdAndIsDeletedIsFalse(deleteDto.getCommentId(), memberId);
+    public void deleteComment(Long memberId, Long commentId) {
+        Comment comment = commentRepository.findByIdAndMemberIdAndIsDeletedIsFalse(commentId, memberId);
         if (comment == null) {
             throw new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_COMMENT);
         }

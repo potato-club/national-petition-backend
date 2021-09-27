@@ -31,9 +31,9 @@ public class CommentController {
         return ApiResponse.success(commentService.updateComment(memberId, dto).getContent());
     }
 
-    @DeleteMapping("/api/v1/comment")
-    public ApiResponse<String> deleteComment(@MemberId Long memberId, CommentDeleteDto deleteDto) {
-        commentService.deleteComment(memberId, deleteDto);
+    @DeleteMapping("/api/v1/comment/{commentId}")
+    public ApiResponse<String> deleteComment(@MemberId Long memberId, @PathVariable Long commentId) {
+        commentService.deleteComment(memberId, commentId);
         return ApiResponse.OK;
     }
 

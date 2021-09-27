@@ -153,12 +153,12 @@ public class CommentServiceTest {
     @Test
     void 댓글을_삭제한다() {
         // given
-        Comment savedComment = commentRepository.save(Comment.newRootComment(1L, 1L, "치킨이 더 맛있어요"));
+        Comment comment = commentRepository.save(Comment.newRootComment(1L, 1L, "치킨이 더 맛있어요"));
         Long memberId = 1L;
-        CommentDeleteDto deleteDto = new CommentDeleteDto(savedComment.getId());
+        Long commentId = comment.getId();
 
         // when
-        commentService.deleteComment(memberId, deleteDto);
+        commentService.deleteComment(memberId, commentId);
 
         // then
         List<Comment> deletedComment = commentRepository.findAll();
