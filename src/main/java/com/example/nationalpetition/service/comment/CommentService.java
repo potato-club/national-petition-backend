@@ -3,7 +3,6 @@ package com.example.nationalpetition.service.comment;
 import com.example.nationalpetition.domain.comment.Comment;
 import com.example.nationalpetition.domain.comment.CommentRepository;
 import com.example.nationalpetition.dto.comment.CommentCreateDto;
-import com.example.nationalpetition.dto.comment.request.CommentDeleteDto;
 import com.example.nationalpetition.dto.comment.request.CommentUpdateDto;
 import com.example.nationalpetition.utils.error.ErrorCode;
 import com.example.nationalpetition.utils.error.exception.NotFoundException;
