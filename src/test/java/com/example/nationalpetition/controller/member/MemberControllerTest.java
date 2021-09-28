@@ -209,10 +209,7 @@ class MemberControllerTest {
 						responseFields(
 								fieldWithPath("code").type(JsonFieldType.STRING).description("code"),
 								fieldWithPath("message").type(JsonFieldType.STRING).description("message"),
-								fieldWithPath("data.name").type(JsonFieldType.STRING).description("이름"),
-								fieldWithPath("data.email").type(JsonFieldType.STRING).description("이메일"),
-								fieldWithPath("data.deletedDate").type(JsonFieldType.STRING).description("삭제한 날짜"),
-								fieldWithPath("data.message").type(JsonFieldType.STRING).description("메세지")
+								fieldWithPath("data").type(JsonFieldType.STRING).description("탈퇴 메세지")
 
 						)
 						)

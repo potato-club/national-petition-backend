@@ -2,7 +2,6 @@ package com.example.nationalpetition.service.member;
 
 import com.example.nationalpetition.domain.member.entity.Member;
 import com.example.nationalpetition.dto.member.request.NickNameRequest;
-import com.example.nationalpetition.dto.member.response.DeleteMemberResponse;
 import com.example.nationalpetition.dto.member.response.MemberResponse;
 
 public interface MemberService {
@@ -12,5 +11,5 @@ public interface MemberService {
 
     MemberResponse addNickName(Long memberId, NickNameRequest request);
 
-    DeleteMemberResponse deleteMember(Long memberId);
+    String deleteMember(Long memberId);
 }

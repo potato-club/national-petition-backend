@@ -6,9 +6,7 @@ import com.example.nationalpetition.domain.member.repository.DeleteMemberReposit
 import com.example.nationalpetition.domain.member.repository.MemberRepository;
 import com.example.nationalpetition.dto.member.DeleteMessageConst;
 import com.example.nationalpetition.dto.member.request.NickNameRequest;
-import com.example.nationalpetition.dto.member.response.DeleteMemberResponse;
 import com.example.nationalpetition.dto.member.response.MemberResponse;
-import com.example.nationalpetition.utils.ValidationUtils;
 import com.example.nationalpetition.utils.error.ErrorCode;
 import com.example.nationalpetition.utils.error.exception.AlreadyExistException;
 import com.example.nationalpetition.utils.error.exception.DuplicateException;
@@ -19,7 +17,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -31,6 +28,9 @@ public class MemberServiceTest {
 
     @Autowired
     MemberRepository memberRepository;
+
+    @Autowired
+    DeleteMemberRepository deleteMemberRepository;
 
     @AfterEach
     public void clear() {
@@ -106,13 +106,11 @@ public class MemberServiceTest {
     void deleteMember() {
         //given
         final Long memberId = MemberServiceUtils.saveMember(memberRepository);
-        final MemberResponse member = memberService.findById(memberId);
         //when
-        final DeleteMemberResponse result = memberService.deleteMember(memberId);
+        final String message = memberService.deleteMember(memberId);
         //then
-        assertThat(result.getName()).isEqualTo(member.getName());
-        assertThat(result.getEmail()).isEqualTo(member.getEmail());
-        assertThat(result.getMessage()).isEqualTo(DeleteMessageConst.MESSAGE);
+        assertThat(message).isEqualTo(DeleteMessageConst.MESSAGE);
+        assertThat(deleteMemberRepository.findAll().size()).isEqualTo(1);
         assertThatThrownBy(() -> memberService.findById(memberId))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessage(ErrorCode.NOT_FOUND_EXCEPTION_USER.getMessage());

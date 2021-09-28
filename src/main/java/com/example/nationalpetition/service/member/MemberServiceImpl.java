@@ -4,8 +4,8 @@ import com.example.nationalpetition.domain.member.entity.DeleteMember;
 import com.example.nationalpetition.domain.member.entity.Member;
 import com.example.nationalpetition.domain.member.repository.DeleteMemberRepository;
 import com.example.nationalpetition.domain.member.repository.MemberRepository;
+import com.example.nationalpetition.dto.member.DeleteMessageConst;
 import com.example.nationalpetition.dto.member.request.NickNameRequest;
-import com.example.nationalpetition.dto.member.response.DeleteMemberResponse;
 import com.example.nationalpetition.dto.member.response.MemberResponse;
 import com.example.nationalpetition.utils.error.exception.NotFoundException;
 import com.example.nationalpetition.utils.error.ErrorCode;
@@ -44,11 +44,11 @@ public class MemberServiceImpl implements MemberService {
 
     @Transactional
     @Override
-    public DeleteMemberResponse deleteMember(Long memberId) {
+    public String deleteMember(Long memberId) {
         final Member member = memberRepository.findById(memberId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_USER));
         final DeleteMember deleteMember = DeleteMember.of(member);
         deleteMemberRepository.save(deleteMember);
         memberRepository.delete(member);
-        return DeleteMemberResponse.of(deleteMember);
+        return DeleteMessageConst.MESSAGE;
     }
 }
