@@ -1,9 +1,12 @@
 package com.example.nationalpetition.service.member;
 
 import com.example.nationalpetition.controller.member.MemberServiceUtils;
+import com.example.nationalpetition.domain.board.Board;
+import com.example.nationalpetition.domain.board.repository.BoardRepository;
 import com.example.nationalpetition.domain.member.entity.Member;
 import com.example.nationalpetition.domain.member.repository.DeleteMemberRepository;
 import com.example.nationalpetition.domain.member.repository.MemberRepository;
+import com.example.nationalpetition.dto.board.response.BoardInfoResponseInMyPage;
 import com.example.nationalpetition.dto.member.DeleteMessageConst;
 import com.example.nationalpetition.dto.member.request.NickNameRequest;
 import com.example.nationalpetition.dto.member.response.MemberResponse;
@@ -16,9 +19,16 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+
+import java.util.List;
 
 
 import static org.assertj.core.api.Assertions.*;
+import static org.springframework.data.domain.Sort.Direction.DESC;
 
 @SpringBootTest
 public class MemberServiceTest {
@@ -31,6 +41,9 @@ public class MemberServiceTest {
 
     @Autowired
     DeleteMemberRepository deleteMemberRepository;
+
+    @Autowired
+    BoardRepository boardRepository;
 
     @AfterEach
     public void clear() {
@@ -101,6 +114,65 @@ public class MemberServiceTest {
 
     }
 
+    @Test
+    @DisplayName("마이페이지 - 내가 쓴 게시글 조회")
+    void getMyBoardList() {
+        //given
+        final Long memberId = MemberServiceUtils.saveMember(memberRepository);
+        for (int i = 0; i < 12; i++) {
+            Board board = Board.builder()
+                    .memberId(memberId)
+                    .content("content")
+                    .category("category")
+                    .petitionContent("petitionContent")
+                    .petitionsCount("10000")
+                    .petitionTitle("petitionTitle")
+                    .petitionUrl("url")
+                    .title("title" + i)
+                    .build();
+            boardRepository.save(board);
+        }
+        final Pageable pageable = PageRequest.of(0, 10, Sort.by(DESC, "id"));
+        //when
+        final List<BoardInfoResponseInMyPage> myBoardList = memberService.getMyBoardList(memberId, pageable);
+        //then
+        assertThat(boardRepository.findAll().size()).isEqualTo(12);
+        assertThat(myBoardList.size()).isEqualTo(10);
+        assertThat(myBoardList.get(0).getTitle()).isEqualTo("title11");
+        assertThat(myBoardList.get(9).getBoardId()).isEqualTo(3L);
+    }
+
+    @Test
+    @DisplayName("마이페이지 - 페이징 테스트")
+    void getMyBoardList2() {
+        //given
+        final Long memberId = MemberServiceUtils.saveMember(memberRepository);
+        for (int i = 0; i < 12; i++) {
+            Board board = Board.builder()
+                    .memberId(memberId)
+                    .content("content")
+                    .category("category")
+                    .petitionContent("petitionContent")
+                    .petitionsCount("10000")
+                    .petitionTitle("petitionTitle")
+                    .petitionUrl("url")
+                    .title("title" + i)
+                    .build();
+            boardRepository.save(board);
+        }
+        final Pageable pageable = PageRequest.of(0, 10, Sort.by(DESC, "id"));
+        //when
+        final Page<Board> page = boardRepository.findByMemberIdAndIsDeletedIsFalse(memberId, pageable);
+        //then
+        assertThat(page.getTotalElements()).isEqualTo(12);
+        assertThat(page.getContent().size()).isEqualTo(10);
+        assertThat(page.getNumber()).isEqualTo(0);
+        assertThat(page.getTotalPages()).isEqualTo(2);
+        assertThat(page.isFirst()).isTrue();
+        assertThat(page.hasNext()).isTrue();
+
+
+    }
     @Test
     @DisplayName("회원 탈퇴 성공")
     void deleteMember() {
