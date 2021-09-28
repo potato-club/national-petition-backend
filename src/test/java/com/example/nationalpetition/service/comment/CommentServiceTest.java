@@ -4,6 +4,7 @@ import com.example.nationalpetition.domain.comment.Comment;
 import com.example.nationalpetition.domain.comment.CommentRepository;
 import com.example.nationalpetition.dto.comment.CommentCreateDto;
 import com.example.nationalpetition.dto.comment.request.CommentUpdateDto;
+import com.example.nationalpetition.dto.comment.response.CommentRetrieveResponseDto;
 import com.example.nationalpetition.utils.error.exception.NotFoundException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -43,7 +45,7 @@ public class CommentServiceTest {
                 .build();
 
         // when
-        commentService.addComment(dto, boardId);
+        commentService.addComment(dto, boardId, memberId);
 
         // then
         List<Comment> comments = commentRepository.findAll();
@@ -69,11 +71,10 @@ public class CommentServiceTest {
         CommentCreateDto createDto = CommentCreateDto.builder()
                 .parentId(parent.getId())
                 .content(content)
-                .memberId(memberId)
                 .build();
 
         // when
-        commentService.addComment(createDto, boardId);
+        commentService.addComment(createDto, boardId, memberId);
 
         // then
         List<Comment> comments = commentRepository.findAll();
@@ -97,11 +98,10 @@ public class CommentServiceTest {
         CommentCreateDto dto = CommentCreateDto.builder()
                 .parentId(parentId)
                 .content(content)
-                .memberId(memberId)
                 .build();
 
         // when & then
-        assertThatThrownBy(() -> commentService.addComment(dto, boardId))
+        assertThatThrownBy(() -> commentService.addComment(dto, boardId, memberId))
                 .isInstanceOf(NotFoundException.class);
     }
 
@@ -110,16 +110,18 @@ public class CommentServiceTest {
         // given
         String originalContent = "감자는 소금과 먹나요?";
         String updatedContent = "감자는 설탕과 먹어요";
+        Long memberId = 2L;
+        Long boardId = 1L;
 
-        Comment savedComment = commentRepository.save(Comment.newRootComment(1L, 1L, originalContent));
+
+        commentRepository.save(Comment.newRootComment(memberId, boardId, originalContent));
         CommentUpdateDto dto = CommentUpdateDto.builder()
-                .id(savedComment.getId())
-                .memberId(2L)
+                .commentId(999L)
                 .content(updatedContent)
                 .build();
 
         // when & then
-        assertThatThrownBy(() -> commentService.updateComment(dto))
+        assertThatThrownBy(() -> commentService.updateComment(memberId, dto))
                 .isInstanceOf(NotFoundException.class);
     }
 
@@ -128,21 +130,66 @@ public class CommentServiceTest {
         // given
         String originalContent = "감자는 맛이 없어요 :(";
         String newContent = "사실은 맛있어요 :)";
+        Long memberId = 1L;
 
-        Comment originalComment = commentRepository.save(Comment.newRootComment(1L, 1L, originalContent));
+        Comment originalComment = commentRepository.save(Comment.newRootComment(memberId, 1L, originalContent));
         CommentUpdateDto updateDto = CommentUpdateDto.builder()
-                .id(originalComment.getId())
-                .memberId(originalComment.getMemberId())
+                .commentId(originalComment.getId())
                 .content(newContent)
                 .build();
 
         // when
-        commentService.updateComment(updateDto);
+        commentService.updateComment(memberId, updateDto);
 
         // then
         List<Comment> comment = commentRepository.findAll();
         assertThat(comment).hasSize(1);
         assertThat(comment.get(0).getContent()).isEqualTo(updateDto.getContent());
+        assertThat(comment.get(0).getMemberId()).isEqualTo(memberId);
+
+    }
+
+    @Test
+    void 댓글을_삭제한다() {
+        // given
+        Comment comment = commentRepository.save(Comment.newRootComment(1L, 1L, "치킨이 더 맛있어요"));
+        Long memberId = 1L;
+        Long commentId = comment.getId();
+
+        // when
+        commentService.deleteComment(memberId, commentId);
+
+        // then
+        List<Comment> deletedComment = commentRepository.findAll();
+        assertThat(deletedComment).hasSize(1);
+        assertThat(deletedComment.get(0).isDeleted()).isEqualTo(true);
+        assertThat(deletedComment.get(0).getMemberId()).isEqualTo(memberId);
+    }
+
+    @Test
+    void 댓글을_불러온다() {
+        // given
+        Long memberId = 1L;
+        Long boardId = 1L;
+        String content = "첫 번째 게시물 입니다.";
+
+        commentRepository.save(Comment.newRootComment(memberId, boardId, content));
+
+        CommentRetrieveResponseDto responseDto = CommentRetrieveResponseDto.builder()
+                .commentId(1L)
+                .boardId(boardId)
+                .content(content)
+                .memberId(memberId)
+                .build();
+
+        // when
+        commentService.retrieveComments(boardId);
+
+        // then
+        List<Comment> dto = commentRepository.findAll().stream().collect(Collectors.toList());
+        assertThat(dto).hasSize(1);
+        assertThat(responseDto.getMemberId()).isEqualTo(memberId);
+        assertThat(responseDto.getContent()).isEqualTo(content);
 
     }
 

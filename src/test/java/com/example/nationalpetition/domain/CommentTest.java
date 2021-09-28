@@ -21,4 +21,16 @@ public class CommentTest {
         assertThat(comment.getContent()).isEqualTo(newContent);
     }
 
+    @Test
+    void 댓글이_삭제됐는지_확인하는_테스트() {
+        // given
+        Comment comment = Comment.newChildComment(1L, 1L, 1L, 1, "감자는 사실...");
+
+        // when
+        comment.delete();
+
+        // then
+        assertThat(comment.isDeleted()).isEqualTo(true);
+    }
+
 }

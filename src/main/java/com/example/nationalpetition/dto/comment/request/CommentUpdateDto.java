@@ -8,16 +8,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CommentUpdateDto {
 
-    private Long id;
-
-    private Long memberId;
+    private Long commentId;
 
     private String content;
 
     @Builder
-    public CommentUpdateDto(Long id, Long memberId, String content) {
-        this.id = id;
-        this.memberId = memberId;
+    public CommentUpdateDto(Long commentId, String content) {
+        this.commentId = commentId;
         this.content = content;
     }
 
