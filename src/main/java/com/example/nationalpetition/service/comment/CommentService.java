@@ -1,9 +1,9 @@
 package com.example.nationalpetition.service.comment;
 
-import com.example.nationalpetition.domain.comment.Comment;
-import com.example.nationalpetition.domain.comment.CommentRepository;
+import com.example.nationalpetition.domain.comment.*;
 import com.example.nationalpetition.dto.comment.CommentCreateDto;
 import com.example.nationalpetition.dto.comment.request.CommentUpdateDto;
+import com.example.nationalpetition.dto.comment.request.LikeCommentRequestDto;
 import com.example.nationalpetition.utils.error.ErrorCode;
 import com.example.nationalpetition.utils.error.exception.NotFoundException;
 import com.example.nationalpetition.dto.comment.response.CommentRetrieveResponseDto;
@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 public class CommentService {
 
     private final CommentRepository commentRepository;
+    private final LikeCommentRepository likeCommentRepository;
 
     @Transactional
     public Long addComment(CommentCreateDto dto, Long boardId, Long memberId) {
@@ -58,6 +59,20 @@ public class CommentService {
     public List<CommentRetrieveResponseDto> retrieveComments(Long boardId) {
         List<Comment> comments = commentRepository.findByBoardIdAndIsDeletedIsFalse(boardId);
         return comments.stream().map(CommentRetrieveResponseDto::of).collect(Collectors.toList());
+    }
+
+    @Transactional
+    public LikeComment addStatus(Long memberId, LikeCommentRequestDto requestDto) {
+        commentRepository.findById(requestDto.getCommentId())
+                .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_COMMENT));
+
+        LikeComment likeComment = likeCommentRepository
+                .findByIdAndLikeCommentStatus(requestDto.getCommentId(), requestDto.getLikeCommentStatus());
+
+        if (likeComment != null) {
+            likeComment.update(likeComment.getLikeCommentStatus());
+        }
+        return likeCommentRepository.save(LikeComment.of(requestDto.getCommentId(), requestDto.getLikeCommentStatus(), memberId));
     }
 
 }

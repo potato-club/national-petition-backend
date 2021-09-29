@@ -4,6 +4,7 @@ import com.example.nationalpetition.config.MemberId;
 import com.example.nationalpetition.controller.ApiResponse;
 import com.example.nationalpetition.dto.comment.CommentCreateDto;
 import com.example.nationalpetition.dto.comment.request.CommentUpdateDto;
+import com.example.nationalpetition.dto.comment.request.LikeCommentRequestDto;
 import com.example.nationalpetition.dto.comment.response.CommentRetrieveResponseDto;
 import com.example.nationalpetition.service.comment.CommentService;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +40,12 @@ public class CommentController {
     @GetMapping("/api/v1/comment/{boardId}")
     public ApiResponse<List<CommentRetrieveResponseDto>> retrieveComments(@PathVariable Long boardId) {
         return ApiResponse.success(commentService.retrieveComments(boardId));
+    }
+
+    @PostMapping("/api/v1/comment/like")
+    public ApiResponse<String> likeComment(@MemberId Long memberId, @RequestBody LikeCommentRequestDto likeCommentRequestDto) {
+        commentService.addStatus(memberId, likeCommentRequestDto);
+        return ApiResponse.OK;
     }
 
 }
