@@ -34,6 +34,9 @@ public class MemberServiceImpl implements MemberService {
     private final BoardLikeRepository boardLikeRepository;
     private final CommentRepository commentRepository;
     private final DeleteMemberRepository deleteMemberRepository;
+    private final BoardRepository boardRepository;
+    private final BoardLikeRepository boardLikeRepository;
+    private final CommentRepository commentRepository;
 
     @Override
     public MemberResponse findById(Long memberId) {
@@ -71,5 +74,14 @@ public class MemberServiceImpl implements MemberService {
         deleteMemberRepository.save(deleteMember);
         memberRepository.delete(member);
         return DeleteMessageConst.MESSAGE;
+    }
+
+    @Override
+    public List<BoardInfoResponseInMyPage> getMyBoardList(Long memberId, Pageable pageable) {
+        return boardRepository.findByMemberIdAndIsDeletedIsFalse(memberId, pageable)
+                .stream()
+                .map(b -> BoardInfoResponseInMyPage.of(b, boardLikeRepository.countLikeByBoardId(b.getId()).orElse(BoardLikeAndUnLikeCounts.of(0, 0)),
+                        commentRepository.findCommentCountByBoardIdAndIsDeletedIsFalse(b.getId())))
+                .collect(Collectors.toList());
     }
 }

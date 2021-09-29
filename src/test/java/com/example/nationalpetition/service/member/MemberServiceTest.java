@@ -2,12 +2,20 @@ package com.example.nationalpetition.service.member;
 
 import com.example.nationalpetition.controller.member.MemberServiceUtils;
 import com.example.nationalpetition.domain.board.Board;
+import com.example.nationalpetition.domain.board.BoardState;
+import com.example.nationalpetition.domain.board.repository.BoardLikeRepository;
+import com.example.nationalpetition.domain.board.repository.BoardRepository;
+import com.example.nationalpetition.domain.comment.Comment;
+import com.example.nationalpetition.domain.comment.CommentRepository;
+import com.example.nationalpetition.domain.board.Board;
 import com.example.nationalpetition.domain.board.repository.BoardRepository;
 import com.example.nationalpetition.domain.comment.Comment;
 import com.example.nationalpetition.domain.comment.CommentRepository;
 import com.example.nationalpetition.domain.member.entity.Member;
 import com.example.nationalpetition.domain.member.repository.DeleteMemberRepository;
 import com.example.nationalpetition.domain.member.repository.MemberRepository;
+import com.example.nationalpetition.dto.board.request.BoardLikeRequest;
+import com.example.nationalpetition.dto.board.response.BoardInfoResponseInMyPage;
 import com.example.nationalpetition.dto.board.response.BoardInfoResponseInMyPage;
 import com.example.nationalpetition.dto.member.DeleteMessageConst;
 import com.example.nationalpetition.dto.member.request.NickNameRequest;
@@ -25,9 +33,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.springframework.data.domain.Sort.Direction.DESC;
@@ -40,6 +54,15 @@ public class MemberServiceTest {
 
     @Autowired
     MemberRepository memberRepository;
+
+    @Autowired
+    BoardRepository boardRepository;
+
+    @Autowired
+    BoardLikeRepository boardLikeRepository;
+
+    @Autowired
+    CommentRepository commentRepository;
 
     @Autowired
     DeleteMemberRepository deleteMemberRepository;
@@ -198,6 +221,90 @@ public class MemberServiceTest {
         assertThatThrownBy(() -> memberService.findById(memberId))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessage(ErrorCode.NOT_FOUND_EXCEPTION_USER.getMessage());
+
+    }
+
+    @Test
+    @DisplayName("마이페이지 - 내가 쓴 게시글 조회")
+    void getMyBoardList() {
+        //given
+        final Long memberId = MemberServiceUtils.saveMember(memberRepository);
+        for (int i = 0; i < 12; i++) {
+            Board board = Board.builder()
+                    .memberId(memberId)
+                    .content("content")
+                    .category("category")
+                    .petitionContent("petitionContent")
+                    .petitionsCount("10000")
+                    .petitionTitle("petitionTitle")
+                    .petitionUrl("url")
+                    .title("title" + i)
+                    .build();
+            boardRepository.save(board);
+        }
+
+        for (int i = 0; i < 10; i++) {
+            commentRepository.save(Comment.newRootComment(memberId, 12L, "댓글" + i));
+            commentRepository.save(Comment.newChildComment((long) i, memberId, 12L, 2, "대댓글" + i));
+        }
+
+        BoardLikeRequest likeRequest = BoardLikeRequest.testInstance(12L, BoardState.LIKE);
+        BoardLikeRequest unlikeRequest = BoardLikeRequest.testInstance(12L, BoardState.UNLIKE);
+        for (long i = 0; i < 10; i++) {
+            boardLikeRepository.save(likeRequest.toEntity(i));
+            boardLikeRepository.save(unlikeRequest.toEntity(i + 10));
+        }
+
+        final Pageable pageable = PageRequest.of(0, 10, Sort.by(DESC, "id"));
+        //when
+        final List<BoardInfoResponseInMyPage> myBoardList = memberService.getMyBoardList(memberId, pageable);
+        //then
+        assertThat(boardRepository.findAll().size()).isEqualTo(12);
+        assertThat(myBoardList.size()).isEqualTo(10);
+        assertThat(myBoardList.get(9).getBoardId()).isEqualTo(3L);
+        assertThat(myBoardList.get(0).getBoardId()).isEqualTo(12L);
+
+        assertThat(myBoardList.get(0).getContent()).isEqualTo("content");
+        assertThat(myBoardList.get(0).getCategory()).isEqualTo("category");
+        assertThat(myBoardList.get(0).getPetitionTitle()).isEqualTo("petitionTitle");
+        assertThat(myBoardList.get(0).getTitle()).isEqualTo("title11");
+
+        assertThat(myBoardList.get(0).getBoardLikeCounts()).isEqualTo(10);
+        assertThat(myBoardList.get(0).getBoardUnLikeCounts()).isEqualTo(10);
+
+
+        assertThat(myBoardList.get(0).getCommentCount()).isEqualTo(20);
+    }
+
+    @Test
+    @DisplayName("마이페이지 - 페이징 테스트")
+    void getMyBoardList2() {
+        //given
+        final Long memberId = MemberServiceUtils.saveMember(memberRepository);
+        for (int i = 0; i < 12; i++) {
+            Board board = Board.builder()
+                    .memberId(memberId)
+                    .content("content")
+                    .category("category")
+                    .petitionContent("petitionContent")
+                    .petitionsCount("10000")
+                    .petitionTitle("petitionTitle")
+                    .petitionUrl("url")
+                    .title("title" + i)
+                    .build();
+            boardRepository.save(board);
+        }
+        final Pageable pageable = PageRequest.of(0, 10, Sort.by(DESC, "id"));
+        //when
+        final Page<Board> page = boardRepository.findByMemberIdAndIsDeletedIsFalse(memberId, pageable);
+        //then
+        assertThat(page.getTotalElements()).isEqualTo(12);
+        assertThat(page.getContent().size()).isEqualTo(10);
+        assertThat(page.getNumber()).isEqualTo(0);
+        assertThat(page.getTotalPages()).isEqualTo(2);
+        assertThat(page.isFirst()).isTrue();
+        assertThat(page.hasNext()).isTrue();
+
 
     }
 }

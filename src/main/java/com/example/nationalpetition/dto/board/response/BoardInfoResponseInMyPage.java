@@ -4,28 +4,35 @@ import com.example.nationalpetition.domain.board.Board;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
+
+import static org.springframework.format.annotation.DateTimeFormat.*;
 
 @Getter
 @NoArgsConstructor
 public class BoardInfoResponseInMyPage {
 
     private Long boardId;
+    private String petitionTitle;
     private String title;
     private String content;
     private String category;
-    private int boardLikeCounts;
-    private int boardUnLikeCounts;
-    private LocalDateTime createdDate;
+    private long boardLikeCounts;
+    private long boardUnLikeCounts;
     private long commentCount;
+    @DateTimeFormat(iso = ISO.DATE)
+    private LocalDateTime createdDate;
+
 
     // TODO : 나중에 댓글 총 개수 추가, 작성일 어떻게 나타낼건지 회의해서 수정
 
     @Builder
-    public BoardInfoResponseInMyPage(Long boardId, String title, String content, String category, int boardLikeCounts,
-                                     int boardUnLikeCounts, LocalDateTime createdDate, long commentCount) {
+    public BoardInfoResponseInMyPage(Long boardId, String petitionTitle, String title, String content, String category, long boardLikeCounts,
+                                     long boardUnLikeCounts, LocalDateTime createdDate, long commentCount) {
         this.boardId = boardId;
+        this.petitionTitle = petitionTitle;
         this.title = title;
         this.content = content;
         this.category = category;
@@ -38,6 +45,7 @@ public class BoardInfoResponseInMyPage {
     public static BoardInfoResponseInMyPage of(Board board, BoardLikeAndUnLikeCounts boardLikeAndUnLikeCounts, long commentCount) {
         return new BoardInfoResponseInMyPage().builder()
                 .boardId(board.getId())
+                .petitionTitle(board.getPetitionTitle())
                 .title(board.getTitle())
                 .content(board.getContent())
                 .category(board.getCategory())

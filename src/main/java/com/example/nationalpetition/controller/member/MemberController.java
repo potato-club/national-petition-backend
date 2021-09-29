@@ -2,6 +2,7 @@ package com.example.nationalpetition.controller.member;
 
 import com.example.nationalpetition.config.MemberId;
 import com.example.nationalpetition.controller.ApiResponse;
+import com.example.nationalpetition.dto.board.response.BoardInfoResponseInMyPage;
 import com.example.nationalpetition.domain.member.entity.Member;
 import com.example.nationalpetition.dto.board.response.BoardInfoResponseInMyPage;
 import com.example.nationalpetition.dto.board.response.BoardInfoResponseWithLikeCount;
@@ -20,6 +21,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
+
+import static org.springframework.data.domain.Sort.Direction.DESC;
+
 import java.util.List;
 
 import static org.springframework.data.domain.Sort.Direction.DESC;
@@ -64,5 +69,12 @@ public class MemberController {
 	@DeleteMapping("/api/v1/mypage/delete")
 	public ApiResponse<String> deleteMember(@MemberId Long memberId) {
 		return ApiResponse.success(memberService.deleteMember(memberId));
+	}
+
+	@Operation(summary = "마이페이지 - 내가 작성한 글 리스트 조회 API", security = {@SecurityRequirement(name = "BearerKey")})
+	@GetMapping("/api/v1/mypage/boardList")
+	public ApiResponse<List<BoardInfoResponseInMyPage>> getMyBoardList(@MemberId Long memberId,
+																	   @PageableDefault(sort = "id", direction = DESC) Pageable pageable) {
+		return ApiResponse.success(memberService.getMyBoardList(memberId, pageable));
 	}
 }
