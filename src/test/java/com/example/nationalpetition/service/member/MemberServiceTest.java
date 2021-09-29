@@ -178,8 +178,6 @@ public class MemberServiceTest {
         //then
         assertThat(boardRepository.findAll().size()).isEqualTo(12);
         assertThat(myBoardList.size()).isEqualTo(10);
-        assertThat(myBoardList.get(9).getBoardId()).isEqualTo(3L);
-        assertThat(myBoardList.get(0).getBoardId()).isEqualTo(12L);
 
         assertThat(myBoardList.get(0).getContent()).isEqualTo("content");
         assertThat(myBoardList.get(0).getCategory()).isEqualTo("category");
