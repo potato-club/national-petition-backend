@@ -52,6 +52,7 @@ public class BoardService {
                 .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_BOARD));
         BoardLikeAndUnLikeCounts boardLikeAndUnLikeCounts = boardLikeRepository.countLikeByBoardId(board.getId())
                 .orElse(BoardLikeAndUnLikeCounts.of(0, 0));
+        System.out.println("boardLikeAndUnLikeCounts = " + boardLikeAndUnLikeCounts);
         return BoardInfoResponseWithLikeCount.of(board, boardLikeAndUnLikeCounts);
     }
 

@@ -10,17 +10,17 @@ import lombok.ToString;
 @NoArgsConstructor
 public class BoardLikeAndUnLikeCounts {
 
-    private int boardLikeCounts;
+    private long boardLikeCounts;
 
-    private int boardUnLikeCounts;
+    private long boardUnLikeCounts;
 
     @QueryProjection
-    public BoardLikeAndUnLikeCounts(int boardLikeCounts, int boardUnLikeCounts) {
+    public BoardLikeAndUnLikeCounts(long boardLikeCounts, long boardUnLikeCounts) {
         this.boardLikeCounts = boardLikeCounts;
         this.boardUnLikeCounts = boardUnLikeCounts;
     }
 
-    public static BoardLikeAndUnLikeCounts of(int boardLikeCounts, int boardUnLikeCounts) {
+    public static BoardLikeAndUnLikeCounts of(long boardLikeCounts, long boardUnLikeCounts) {
         return new BoardLikeAndUnLikeCounts(boardLikeCounts, boardUnLikeCounts);
     }
 

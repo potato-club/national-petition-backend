@@ -18,11 +18,11 @@ public class BoardInfoResponseWithLikeCount {
     private String petitionUrl;
     private String petitionsCount;
     private String category;
-    private int boardLikeCounts;
-    private int boardUnLikeCounts;
+    private long boardLikeCounts;
+    private long boardUnLikeCounts;
 
     @Builder
-    public BoardInfoResponseWithLikeCount(Long boardId, Long memberId, String petitionTitle, String title, String petitionContent, String content, String petitionUrl, String petitionsCount, String category, int boardLikeCounts, int boardUnLikeCounts) {
+    public BoardInfoResponseWithLikeCount(Long boardId, Long memberId, String petitionTitle, String title, String petitionContent, String content, String petitionUrl, String petitionsCount, String category, long boardLikeCounts, long boardUnLikeCounts) {
         this.boardId = boardId;
         this.memberId = memberId;
         this.petitionTitle = petitionTitle;
