@@ -18,11 +18,13 @@ public class BoardInfoResponseInMyPage {
     private int boardLikeCounts;
     private int boardUnLikeCounts;
     private LocalDateTime createdDate;
+    private long commentCount;
 
     // TODO : 나중에 댓글 총 개수 추가, 작성일 어떻게 나타낼건지 회의해서 수정
 
     @Builder
-    public BoardInfoResponseInMyPage(Long boardId, String title, String content, String category, int boardLikeCounts, int boardUnLikeCounts, LocalDateTime createdDate) {
+    public BoardInfoResponseInMyPage(Long boardId, String title, String content, String category, int boardLikeCounts,
+                                     int boardUnLikeCounts, LocalDateTime createdDate, long commentCount) {
         this.boardId = boardId;
         this.title = title;
         this.content = content;
@@ -30,9 +32,10 @@ public class BoardInfoResponseInMyPage {
         this.boardLikeCounts = boardLikeCounts;
         this.boardUnLikeCounts = boardUnLikeCounts;
         this.createdDate = createdDate;
+        this.commentCount = commentCount;
     }
 
-    public static BoardInfoResponseInMyPage of(Board board, BoardLikeAndUnLikeCounts boardLikeAndUnLikeCounts) {
+    public static BoardInfoResponseInMyPage of(Board board, BoardLikeAndUnLikeCounts boardLikeAndUnLikeCounts, long commentCount) {
         return new BoardInfoResponseInMyPage().builder()
                 .boardId(board.getId())
                 .title(board.getTitle())
@@ -41,6 +44,7 @@ public class BoardInfoResponseInMyPage {
                 .boardLikeCounts(boardLikeAndUnLikeCounts.getBoardLikeCounts())
                 .boardUnLikeCounts(boardLikeAndUnLikeCounts.getBoardUnLikeCounts())
                 .createdDate(board.getCreatedDate())
+                .commentCount(commentCount)
                 .build();
     }
 }
