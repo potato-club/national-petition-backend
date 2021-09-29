@@ -3,6 +3,8 @@ package com.example.nationalpetition.service.member;
 import com.example.nationalpetition.controller.member.MemberServiceUtils;
 import com.example.nationalpetition.domain.board.Board;
 import com.example.nationalpetition.domain.board.repository.BoardRepository;
+import com.example.nationalpetition.domain.comment.Comment;
+import com.example.nationalpetition.domain.comment.CommentRepository;
 import com.example.nationalpetition.domain.member.entity.Member;
 import com.example.nationalpetition.domain.member.repository.DeleteMemberRepository;
 import com.example.nationalpetition.domain.member.repository.MemberRepository;
@@ -44,6 +46,9 @@ public class MemberServiceTest {
 
     @Autowired
     BoardRepository boardRepository;
+
+    @Autowired
+    CommentRepository commentRepository;
 
     @AfterEach
     public void clear() {
@@ -132,6 +137,11 @@ public class MemberServiceTest {
                     .build();
             boardRepository.save(board);
         }
+
+        for (int i = 0; i < 10; i++) {
+            commentRepository.save(Comment.newRootComment(memberId, 12L, "댓글" + i));
+            commentRepository.save(Comment.newChildComment((long) i, memberId, 12L, 2, "대댓글" + i));
+        }
         final Pageable pageable = PageRequest.of(0, 10, Sort.by(DESC, "id"));
         //when
         final List<BoardInfoResponseInMyPage> myBoardList = memberService.getMyBoardList(memberId, pageable);
@@ -140,6 +150,8 @@ public class MemberServiceTest {
         assertThat(myBoardList.size()).isEqualTo(10);
         assertThat(myBoardList.get(0).getTitle()).isEqualTo("title11");
         assertThat(myBoardList.get(9).getBoardId()).isEqualTo(3L);
+
+        assertThat(myBoardList.get(0).getCommentCount()).isEqualTo(20);
     }
 
     @Test

@@ -2,6 +2,7 @@ package com.example.nationalpetition.service.member;
 
 import com.example.nationalpetition.domain.board.repository.BoardLikeRepository;
 import com.example.nationalpetition.domain.board.repository.BoardRepository;
+import com.example.nationalpetition.domain.comment.CommentRepository;
 import com.example.nationalpetition.domain.member.entity.DeleteMember;
 import com.example.nationalpetition.domain.member.entity.Member;
 import com.example.nationalpetition.domain.member.repository.DeleteMemberRepository;
@@ -31,6 +32,7 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final BoardRepository boardRepository;
     private final BoardLikeRepository boardLikeRepository;
+    private final CommentRepository commentRepository;
     private final DeleteMemberRepository deleteMemberRepository;
 
     @Override
@@ -56,7 +58,8 @@ public class MemberServiceImpl implements MemberService {
     public List<BoardInfoResponseInMyPage> getMyBoardList(Long memberId, Pageable pageable) {
         return boardRepository.findByMemberIdAndIsDeletedIsFalse(memberId, pageable)
                 .stream()
-                .map(b -> BoardInfoResponseInMyPage.of(b, boardLikeRepository.countLikeByBoardId(b.getId()).orElse(BoardLikeAndUnLikeCounts.of(0, 0))))
+                .map(b -> BoardInfoResponseInMyPage.of(b, boardLikeRepository.countLikeByBoardId(b.getId()).orElse(BoardLikeAndUnLikeCounts.of(0, 0)),
+                    commentRepository.findCommentCountByBoardIdAndIsDeletedIsFalse(b.getId())))
                 .collect(Collectors.toList());
     }
 
