@@ -184,11 +184,11 @@ public class MemberServiceTest {
         assertThat(myBoardList.get(0).getPetitionTitle()).isEqualTo("petitionTitle");
         assertThat(myBoardList.get(0).getTitle()).isEqualTo("title11");
 
-        assertThat(myBoardList.get(0).getBoardLikeCounts()).isEqualTo(10);
-        assertThat(myBoardList.get(0).getBoardUnLikeCounts()).isEqualTo(10);
+        assertThat(myBoardList.get(0).getBoardLikeCounts()).isEqualTo(10L);
+        assertThat(myBoardList.get(0).getBoardUnLikeCounts()).isEqualTo(10L);
 
 
-        assertThat(myBoardList.get(0).getCommentCount()).isEqualTo(20);
+        assertThat(myBoardList.get(0).getCommentCount()).isEqualTo(20L);
     }
 
     @Test
