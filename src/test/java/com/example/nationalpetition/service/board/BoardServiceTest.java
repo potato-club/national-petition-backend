@@ -22,6 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+
+import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -65,6 +67,13 @@ public class BoardServiceTest {
                     .title("title" + i)
                     .build();
             boardRepository.save(board);
+        }
+    }
+
+    public void insertBoardLike4(Long boardId) {
+        for (long i = 1; i < 5; i++) {
+            BoardLike boardLike = BoardLikeCreator.create(boardId, i, BoardState.LIKE);
+            boardLikeRepository.save(boardLike);
         }
     }
 
@@ -146,6 +155,40 @@ public class BoardServiceTest {
         assertThat(boardList).hasSize(1);
         assertThat(boardList.get(0).getTitle()).isEqualTo(board.getTitle());
         assertThat(boardList.get(0).getContent()).isEqualTo(board.getContent());
+    }
+
+    @DisplayName("여러 사람이 한 게시글에 찬성을 했을 경우 특정 게시글 불러오기")
+    @Test
+    void 게시글_불러오기3() {
+        // given
+        Board board = BoardCreator.create(1L, "title", "content");
+        boardRepository.save(board);
+        insertBoardLike4(board.getId());
+
+        // when
+        BoardInfoResponseWithLikeCount response = boardService.getBoard(board.getId());
+
+        // then
+        assertThat(response.getBoardLikeCounts()).isEqualTo(4);
+    }
+
+    @DisplayName("2명 찬성 1명 반대 했을 경우")
+    @Test
+    void 게시글_불러오기4() {
+        // given
+        Board board = BoardCreator.create(1L, "title", "content");
+        boardRepository.save(board);
+        BoardLike boardLike1 = BoardLikeCreator.create(board.getId(), 1L, BoardState.LIKE);
+        BoardLike boardLike2 = BoardLikeCreator.create(board.getId(), 2L, BoardState.LIKE);
+        BoardLike boardLike3 = BoardLikeCreator.create(board.getId(), 3L, BoardState.UNLIKE);
+        boardLikeRepository.saveAll(Arrays.asList(boardLike1, boardLike2, boardLike3));
+
+        // when
+        BoardInfoResponseWithLikeCount response = boardService.getBoard(board.getId());
+
+        // then
+        assertThat(response.getBoardLikeCounts()).isEqualTo(2);
+        assertThat(response.getBoardUnLikeCounts()).isEqualTo(1);
     }
 
     @DisplayName("title 기준으로 검색하고 기본 10개씩 첫페이지는 0으로 가져온다.")
