@@ -41,6 +41,8 @@ import org.springframework.data.domain.Sort;
 import java.util.List;
 
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
@@ -266,12 +268,13 @@ public class MemberServiceTest {
         assertThat(myBoardList.get(0).getCategory()).isEqualTo("category");
         assertThat(myBoardList.get(0).getPetitionTitle()).isEqualTo("petitionTitle");
         assertThat(myBoardList.get(0).getTitle()).isEqualTo("title11");
+        assertThat(myBoardList.get(0).getCreatedDate()).isEqualTo(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE));
 
-        assertThat(myBoardList.get(0).getBoardLikeCounts()).isEqualTo(10L);
-        assertThat(myBoardList.get(0).getBoardUnLikeCounts()).isEqualTo(10L);
+        assertThat(myBoardList.get(0).getBoardLikeCounts()).isEqualTo(10);
+        assertThat(myBoardList.get(0).getBoardUnLikeCounts()).isEqualTo(10);
 
+        assertThat(myBoardList.get(0).getCommentCount()).isEqualTo(20);
 
-        assertThat(myBoardList.get(0).getCommentCount()).isEqualTo(20L);
     }
 
     @Test

@@ -4,11 +4,9 @@ import com.example.nationalpetition.domain.board.Board;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
-
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
-import static org.springframework.format.annotation.DateTimeFormat.*;
 
 @Getter
 @NoArgsConstructor
@@ -22,8 +20,7 @@ public class BoardInfoResponseInMyPage {
     private long boardLikeCounts;
     private long boardUnLikeCounts;
     private long commentCount;
-    @DateTimeFormat(iso = ISO.DATE)
-    private LocalDateTime createdDate;
+    private String createdDate;
 
 
     // TODO : 나중에 댓글 총 개수 추가, 작성일 어떻게 나타낼건지 회의해서 수정
@@ -38,7 +35,7 @@ public class BoardInfoResponseInMyPage {
         this.category = category;
         this.boardLikeCounts = boardLikeCounts;
         this.boardUnLikeCounts = boardUnLikeCounts;
-        this.createdDate = createdDate;
+        this.createdDate = createdDate.format(DateTimeFormatter.ISO_DATE);
         this.commentCount = commentCount;
     }
 
