@@ -3,9 +3,6 @@ package com.example.nationalpetition.controller.member;
 import com.example.nationalpetition.config.MemberId;
 import com.example.nationalpetition.controller.ApiResponse;
 import com.example.nationalpetition.dto.board.response.BoardInfoResponseInMyPage;
-import com.example.nationalpetition.domain.member.entity.Member;
-import com.example.nationalpetition.dto.board.response.BoardInfoResponseInMyPage;
-import com.example.nationalpetition.dto.board.response.BoardInfoResponseWithLikeCount;
 import com.example.nationalpetition.dto.member.request.NickNameRequest;
 import com.example.nationalpetition.dto.member.response.MemberResponse;
 import com.example.nationalpetition.service.member.MemberService;
@@ -19,15 +16,10 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
 import javax.validation.Valid;
 import java.util.List;
-
 import static org.springframework.data.domain.Sort.Direction.DESC;
 
-import java.util.List;
-
-import static org.springframework.data.domain.Sort.Direction.DESC;
 
 @Slf4j
 @RequiredArgsConstructor

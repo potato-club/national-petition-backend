@@ -1,13 +1,8 @@
 package com.example.nationalpetition.service.member;
 
-import com.example.nationalpetition.controller.member.MemberServiceUtils;
 import com.example.nationalpetition.domain.board.Board;
 import com.example.nationalpetition.domain.board.BoardState;
 import com.example.nationalpetition.domain.board.repository.BoardLikeRepository;
-import com.example.nationalpetition.domain.board.repository.BoardRepository;
-import com.example.nationalpetition.domain.comment.Comment;
-import com.example.nationalpetition.domain.comment.CommentRepository;
-import com.example.nationalpetition.domain.board.Board;
 import com.example.nationalpetition.domain.board.repository.BoardRepository;
 import com.example.nationalpetition.domain.comment.Comment;
 import com.example.nationalpetition.domain.comment.CommentRepository;
@@ -16,8 +11,6 @@ import com.example.nationalpetition.domain.member.repository.DeleteMemberReposit
 import com.example.nationalpetition.domain.member.repository.MemberRepository;
 import com.example.nationalpetition.dto.board.request.BoardLikeRequest;
 import com.example.nationalpetition.dto.board.response.BoardInfoResponseInMyPage;
-import com.example.nationalpetition.dto.board.response.BoardInfoResponseInMyPage;
-import com.example.nationalpetition.dto.board.response.BoardInfoResponseWithLikeCount;
 import com.example.nationalpetition.dto.member.DeleteMessageConst;
 import com.example.nationalpetition.dto.member.request.NickNameRequest;
 import com.example.nationalpetition.dto.member.response.MemberResponse;
@@ -35,17 +28,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.springframework.data.domain.Sort.Direction.DESC;
@@ -63,9 +49,6 @@ public class MemberServiceTest {
     BoardRepository boardRepository;
 
     @Autowired
-    BoardService boardService;
-
-    @Autowired
     BoardLikeRepository boardLikeRepository;
 
     @Autowired
@@ -77,6 +60,10 @@ public class MemberServiceTest {
     @AfterEach
     public void clear() {
         memberRepository.deleteAll();
+        boardRepository.deleteAll();
+        boardLikeRepository.deleteAll();
+        commentRepository.deleteAll();
+        deleteMemberRepository.deleteAll();
     }
 
     @Test
@@ -143,6 +130,7 @@ public class MemberServiceTest {
 
     }
 
+    @Transactional
     @Test
     @DisplayName("마이페이지 - 내가 쓴 게시글 조회")
     void getMyBoardList() {
