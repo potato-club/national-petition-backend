@@ -78,6 +78,10 @@ public class MemberServiceTest {
     @AfterEach
     public void clear() {
         memberRepository.deleteAll();
+        boardRepository.deleteAll();
+        boardLikeRepository.deleteAll();
+        commentRepository.deleteAll();
+        deleteMemberRepository.deleteAll();
     }
 
     @Test
