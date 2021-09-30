@@ -125,24 +125,25 @@ public class BoardServiceTest {
 
     @DisplayName("게시글 아이디로 게시글을 불러온다")
     @Test
-    void 게시글_불러오기() {
+    void 특정_게시글_불러오기() {
         // given
         Board board = new Board(1L, "petitionTitle", "title", "petitionContent", "content", "url", "10000", "사회문제");
         boardRepository.save(board);
 
         // when
-        boardService.getBoard(board.getId());
+        BoardInfoResponseWithLikeCount response = boardService.getBoard(board.getId());
 
         // then
         final List<Board> boardList = boardRepository.findAll();
         assertThat(boardList).hasSize(1);
         assertThat(boardList.get(0).getTitle()).isEqualTo(board.getTitle());
         assertThat(boardList.get(0).getContent()).isEqualTo(board.getContent());
+        assertThat(response.getViewCounts()).isEqualTo(1);
     }
 
     @DisplayName("게시글 아이디로 게시글을 불러올 때 좋아요 개수도 가져온다")
     @Test
-    void 게시글_불러오기2() {
+    void 특정_게시글_불러오기2() {
         // given
         Board board = new Board(1L, "petitionTitle", "title", "petitionContent", "content", "url", "10000", "사회문제");
         boardRepository.save(board);
@@ -159,7 +160,7 @@ public class BoardServiceTest {
 
     @DisplayName("여러 사람이 한 게시글에 찬성을 했을 경우 특정 게시글 불러오기")
     @Test
-    void 게시글_불러오기3() {
+    void 특정_게시글_불러오기3() {
         // given
         Board board = BoardCreator.create(1L, "title", "content");
         boardRepository.save(board);
@@ -174,7 +175,7 @@ public class BoardServiceTest {
 
     @DisplayName("2명 찬성 1명 반대 했을 경우")
     @Test
-    void 게시글_불러오기4() {
+    void 특정_게시글_불러오기4() {
         // given
         Board board = BoardCreator.create(1L, "title", "content");
         boardRepository.save(board);

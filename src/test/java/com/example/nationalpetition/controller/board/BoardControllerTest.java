@@ -103,8 +103,11 @@ public class BoardControllerTest {
                                 fieldWithPath("data.petitionUrl").description("url"),
                                 fieldWithPath("data.petitionsCount").description("청원 수"),
                                 fieldWithPath("data.category").description("청원 카테고리"),
+                                fieldWithPath("data.viewCounts").description("조회수"),
+                                fieldWithPath("data.boardCommentCounts").description("댓글 개수"),
                                 fieldWithPath("data.boardLikeCounts").description("좋아요 개수"),
-                                fieldWithPath("data.boardUnLikeCounts").description("싫어요 개수")
+                                fieldWithPath("data.boardUnLikeCounts").description("싫어요 개수"),
+                                fieldWithPath("data.createdDate").description("생성날짜")
                         )
                 ));
         resultActions.andExpect(status().isOk());
@@ -151,8 +154,11 @@ public class BoardControllerTest {
                                 fieldWithPath("data.petitionUrl").description("url"),
                                 fieldWithPath("data.petitionsCount").description("청원 수"),
                                 fieldWithPath("data.category").description("청원 카테고리"),
+                                fieldWithPath("data.viewCounts").description("조회수"),
+                                fieldWithPath("data.boardCommentCounts").description("댓글 개수"),
                                 fieldWithPath("data.boardLikeCounts").description("좋아요 개수"),
-                                fieldWithPath("data.boardUnLikeCounts").description("싫어요 개수")
+                                fieldWithPath("data.boardUnLikeCounts").description("싫어요 개수"),
+                                fieldWithPath("data.createdDate").description("생성날짜")
                         )
                 ));
         resultActions.andExpect(status().isOk());
@@ -191,8 +197,11 @@ public class BoardControllerTest {
                                 fieldWithPath("data.petitionUrl").description("url"),
                                 fieldWithPath("data.petitionsCount").description("청원 수"),
                                 fieldWithPath("data.category").description("청원 카테고리"),
+                                fieldWithPath("data.viewCounts").description("조회수"),
+                                fieldWithPath("data.boardCommentCounts").description("댓글 개수"),
                                 fieldWithPath("data.boardLikeCounts").description("좋아요 개수"),
-                                fieldWithPath("data.boardUnLikeCounts").description("싫어요 개수")
+                                fieldWithPath("data.boardUnLikeCounts").description("싫어요 개수"),
+                                fieldWithPath("data.createdDate").description("생성날짜")
                         )
                 ));
         resultActions.andExpect(status().isOk());
@@ -233,8 +242,11 @@ public class BoardControllerTest {
                                 fieldWithPath("data[].petitionUrl").description("url"),
                                 fieldWithPath("data[].petitionsCount").description("청원 수"),
                                 fieldWithPath("data[].category").description("청원 카테고리"),
+                                fieldWithPath("data[].viewCounts").description("조회수"),
+                                fieldWithPath("data[].boardCommentCounts").description("댓글 개수"),
                                 fieldWithPath("data[].boardLikeCounts").description("좋아요 개수"),
-                                fieldWithPath("data[].boardUnLikeCounts").description("싫어요 개수")
+                                fieldWithPath("data[].boardUnLikeCounts").description("싫어요 개수"),
+                                fieldWithPath("data[].createdDate").description("생성날짜")
                         )
                 ));
         resultActions.andExpect(status().isOk());

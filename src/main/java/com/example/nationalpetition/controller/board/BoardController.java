@@ -26,36 +26,38 @@ public class BoardController {
 
     private final BoardService boardService;
 
-	@Operation(summary = "닉네임을 등록하는 API", security = {@SecurityRequirement(name = "BearerKey")})
+	@Operation(summary = "게시글 등록하는 API", security = {@SecurityRequirement(name = "BearerKey")})
 	@PostMapping("/api/v1/board")
 	public ApiResponse<BoardInfoResponseWithLikeCount> createBoard(@RequestBody @Valid CreateBoardRequest request, @MemberId Long memberId) {
 		return ApiResponse.success(boardService.createBoard(request, memberId));
 	}
 
-	@Operation(summary = "닉네임을 등록하는 API", security = {@SecurityRequirement(name = "BearerKey")})
+	@Operation(summary = "게시글 수정하는 API", security = {@SecurityRequirement(name = "BearerKey")})
 	@PostMapping("/api/v1/board/update")
 	public ApiResponse<BoardInfoResponseWithLikeCount> updateBoard(@RequestBody @Valid UpdateBoardRequest request, @MemberId Long memberId) {
 		return ApiResponse.success(boardService.updateBoard(request, memberId));
 	}
 
+	@Operation(summary = "특정 게시글 불러오는 API")
 	@GetMapping("/api/v1/getBoard/{boardId}")
 	public ApiResponse<BoardInfoResponseWithLikeCount> getBoard(@PathVariable Long boardId) {
 		return ApiResponse.success(boardService.getBoard(boardId));
 	}
 
+	@Operation(summary = "게시글 리스트 불러오는 API")
 	@GetMapping("/api/v1/getBoard/list")
 	public ApiResponse<List<BoardInfoResponseWithLikeCount>> retrieveBoard(String search, @PageableDefault(size = 10, sort = "id", direction = DESC) Pageable pageable) {
 		return ApiResponse.success(boardService.retrieveBoard(search, pageable));
 	}
 
-	@Operation(summary = "닉네임을 등록하는 API", security = {@SecurityRequirement(name = "BearerKey")})
+	@Operation(summary = "게시글 찬성 / 반대하는 API", security = {@SecurityRequirement(name = "BearerKey")})
 	@PostMapping("/api/v1/board/like")
 	public ApiResponse<String> boardLikeOrUnLike(@RequestBody @Valid BoardLikeRequest request, @MemberId Long memberId) {
 		boardService.boardLikeOrUnLike(request, memberId);
 		return ApiResponse.OK;
 	}
 
-	@Operation(summary = "닉네임을 등록하는 API", security = {@SecurityRequirement(name = "BearerKey")})
+	@Operation(summary = "게시글 찬성 / 반대 한것을 삭제하는 API", security = {@SecurityRequirement(name = "BearerKey")})
 	@DeleteMapping("/api/v1/board/like")
 	public ApiResponse<String> deleteBoardLikeOrUnLike(@RequestBody @Valid DeleteBoardLikeRequest request, @MemberId Long memberId) {
 		boardService.deleteBoardLikeOrUnLike(request.getBoardId(), memberId);
