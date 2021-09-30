@@ -1,6 +1,7 @@
 package com.example.nationalpetition.domain.board;
 
 import com.example.nationalpetition.domain.BaseTimeEntity;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -8,7 +9,7 @@ import javax.persistence.*;
 
 @Entity
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(
         uniqueConstraints={
                 @UniqueConstraint(

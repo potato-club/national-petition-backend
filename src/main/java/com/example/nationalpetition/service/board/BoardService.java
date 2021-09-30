@@ -46,13 +46,13 @@ public class BoardService {
         return BoardInfoResponseWithLikeCount.of(board, boardLikeAndUnLikeCounts);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public BoardInfoResponseWithLikeCount getBoard(Long boardId) {
         final Board board = boardRepository.findByIdAndIsDeletedFalse(boardId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_BOARD));
         BoardLikeAndUnLikeCounts boardLikeAndUnLikeCounts = boardLikeRepository.countLikeByBoardId(board.getId())
                 .orElse(BoardLikeAndUnLikeCounts.of(0, 0));
-        System.out.println("boardLikeAndUnLikeCounts = " + boardLikeAndUnLikeCounts);
+        board.incrementViewCount();
         return BoardInfoResponseWithLikeCount.of(board, boardLikeAndUnLikeCounts);
     }
 
