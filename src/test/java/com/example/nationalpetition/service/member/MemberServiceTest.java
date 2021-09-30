@@ -139,7 +139,6 @@ public class MemberServiceTest {
         게시글생성하기(memberId, 12);
         댓글대댓글생성하기(memberId, 12L, 10);
         좋아요싫어요생성하기(12L,10);
-        게시글조회수증가시키기(12L, 10);
 
         final Pageable pageable = PageRequest.of(0, 10, Sort.by(DESC, "id"));
         //when
@@ -153,8 +152,6 @@ public class MemberServiceTest {
 
         assertThat(myBoardList.get(0).getBoardLikeCounts()).isEqualTo(10);
         assertThat(myBoardList.get(0).getBoardUnLikeCounts()).isEqualTo(10);
-
-        assertThat(myBoardList.get(0).getViewCounts()).isEqualTo(10);
 
         assertThat(myBoardList.get(0).getBoardCommentCounts()).isEqualTo(20);
     }
@@ -237,11 +234,4 @@ public class MemberServiceTest {
         return memberRepository.save(member).getId();
     }
 
-    protected void 게시글조회수증가시키기(Long boardId, int count) {
-        final Board board = boardRepository.findById(boardId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_BOARD));
-        for (int i = 0; i < count; i++) {
-            board.incrementViewCount();
-        }
-        boardRepository.save(board);
-    }
 }
