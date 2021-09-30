@@ -14,7 +14,6 @@ import com.example.nationalpetition.dto.board.response.BoardInfoResponseInMyPage
 import com.example.nationalpetition.dto.member.DeleteMessageConst;
 import com.example.nationalpetition.dto.member.request.NickNameRequest;
 import com.example.nationalpetition.dto.member.response.MemberResponse;
-import com.example.nationalpetition.service.board.BoardService;
 import com.example.nationalpetition.utils.error.ErrorCode;
 import com.example.nationalpetition.utils.error.exception.AlreadyExistException;
 import com.example.nationalpetition.utils.error.exception.DuplicateException;
@@ -30,6 +29,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 
 
@@ -64,6 +64,7 @@ public class MemberServiceTest {
         boardLikeRepository.deleteAll();
         commentRepository.deleteAll();
         deleteMemberRepository.deleteAll();
+
     }
 
     @Test
@@ -130,15 +131,17 @@ public class MemberServiceTest {
 
     }
 
-    @Transactional
+
+
     @Test
     @DisplayName("마이페이지 - 내가 쓴 게시글 조회")
     void getMyBoardList() {
         //given
         final Long memberId = 회원가입하기();
-        게시글생성하기(memberId, 12);
-        댓글대댓글생성하기(memberId, 12L, 10);
-        좋아요싫어요생성하기(12L,10);
+        final Long boardId = 게시글생성하기(memberId, 12);
+        댓글대댓글생성하기(memberId, boardId, 10);
+        좋아요싫어요생성하기(boardId,10);
+        게시글조회수증가시키기(boardId, 10);
 
         final Pageable pageable = PageRequest.of(0, 10, Sort.by(DESC, "id"));
         //when
@@ -147,11 +150,13 @@ public class MemberServiceTest {
         assertThat(boardRepository.findAll().size()).isEqualTo(12);
         assertThat(myBoardList.size()).isEqualTo(10);
 
-        assertThat(myBoardList.get(0).getTitle()).isEqualTo("title11");
+        assertThat(myBoardList.get(0).getTitle()).isEqualTo("titleLast");
         assertThat(myBoardList.get(9).getTitle()).isEqualTo("title2");
 
         assertThat(myBoardList.get(0).getBoardLikeCounts()).isEqualTo(10);
         assertThat(myBoardList.get(0).getBoardUnLikeCounts()).isEqualTo(10);
+
+        assertThat(myBoardList.get(0).getViewCounts()).isEqualTo(10);
 
         assertThat(myBoardList.get(0).getBoardCommentCounts()).isEqualTo(20);
     }
@@ -196,8 +201,8 @@ public class MemberServiceTest {
 
 
 
-    protected void 게시글생성하기(Long memberId, int count) {
-        for (int i = 0; i < count; i++) {
+    protected Long 게시글생성하기(Long memberId, int count) {
+        for (int i = 0; i < count-1; i++) {
             Board board = Board.builder()
                     .memberId(memberId)
                     .content("content")
@@ -210,6 +215,18 @@ public class MemberServiceTest {
                     .build();
             boardRepository.save(board);
         }
+        Board board = Board.builder()
+                .memberId(memberId)
+                .content("content")
+                .category("category")
+                .petitionContent("petitionContent")
+                .petitionsCount("10000")
+                .petitionTitle("petitionTitle")
+                .petitionUrl("url")
+                .title("titleLast")
+                .build();
+        return boardRepository.save(board).getId();
+
     }
 
 
@@ -232,6 +249,14 @@ public class MemberServiceTest {
         final Member member = Member.of("이름", "aa@naver.com", "picturepicture");
         member.addNickName("닉네임");
         return memberRepository.save(member).getId();
+    }
+
+    protected void 게시글조회수증가시키기(Long boardId, int count) {
+        final Board board = boardRepository.findById(boardId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_BOARD));
+        for (int i = 0; i < count; i++) {
+            board.incrementViewCount();
+        }
+        boardRepository.save(board);
     }
 
 }
