@@ -71,10 +71,4 @@ public class MemberController {
 		return ApiResponse.success(memberService.deleteMember(memberId));
 	}
 
-	@Operation(summary = "마이페이지 - 내가 작성한 글 리스트 조회 API", security = {@SecurityRequirement(name = "BearerKey")})
-	@GetMapping("/api/v1/mypage/boardList")
-	public ApiResponse<List<BoardInfoResponseInMyPage>> getMyBoardList(@MemberId Long memberId,
-																	   @PageableDefault(sort = "id", direction = DESC) Pageable pageable) {
-		return ApiResponse.success(memberService.getMyBoardList(memberId, pageable));
-	}
 }

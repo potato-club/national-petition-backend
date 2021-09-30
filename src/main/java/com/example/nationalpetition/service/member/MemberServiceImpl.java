@@ -32,11 +32,9 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final BoardRepository boardRepository;
     private final BoardLikeRepository boardLikeRepository;
-    private final CommentRepository commentRepository;
     private final DeleteMemberRepository deleteMemberRepository;
-    private final BoardRepository boardRepository;
-    private final BoardLikeRepository boardLikeRepository;
     private final CommentRepository commentRepository;
+
 
     @Override
     public MemberResponse findById(Long memberId) {
@@ -57,12 +55,13 @@ public class MemberServiceImpl implements MemberService {
         return MemberResponse.of(memberRepository.save(member));
     }
 
+    // TODO : 순조가 댓글개수 가져오는 기능 추가하면 commentRepository 에서 조회수 찾아오는거 수정하기
     @Override
     public List<BoardInfoResponseInMyPage> getMyBoardList(Long memberId, Pageable pageable) {
         return boardRepository.findByMemberIdAndIsDeletedIsFalse(memberId, pageable)
                 .stream()
                 .map(b -> BoardInfoResponseInMyPage.of(b, boardLikeRepository.countLikeByBoardId(b.getId()).orElse(BoardLikeAndUnLikeCounts.of(0, 0)),
-                    commentRepository.findCommentCountByBoardIdAndIsDeletedIsFalse(b.getId())))
+                        commentRepository.findCommentCountByBoardIdAndIsDeletedIsFalse(b.getId())))
                 .collect(Collectors.toList());
     }
 
@@ -76,12 +75,4 @@ public class MemberServiceImpl implements MemberService {
         return DeleteMessageConst.MESSAGE;
     }
 
-    @Override
-    public List<BoardInfoResponseInMyPage> getMyBoardList(Long memberId, Pageable pageable) {
-        return boardRepository.findByMemberIdAndIsDeletedIsFalse(memberId, pageable)
-                .stream()
-                .map(b -> BoardInfoResponseInMyPage.of(b, boardLikeRepository.countLikeByBoardId(b.getId()).orElse(BoardLikeAndUnLikeCounts.of(0, 0)),
-                        commentRepository.findCommentCountByBoardIdAndIsDeletedIsFalse(b.getId())))
-                .collect(Collectors.toList());
-    }
 }
