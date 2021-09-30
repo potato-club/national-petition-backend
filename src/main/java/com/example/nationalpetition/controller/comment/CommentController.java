@@ -48,4 +48,10 @@ public class CommentController {
         return ApiResponse.OK;
     }
 
+    @DeleteMapping("/api/v1/comment/unlike")
+    public ApiResponse<String> deleteStatus(@MemberId Long memberId, @RequestBody LikeCommentRequestDto likeCommentRequestDto) {
+        commentService.deleteStatus(memberId, likeCommentRequestDto);
+        return ApiResponse.OK;
+    }
+
 }

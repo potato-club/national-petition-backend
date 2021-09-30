@@ -72,7 +72,26 @@ public class CommentService {
         if (likeComment != null) {
             likeComment.update(likeComment.getLikeCommentStatus());
         }
-        return likeCommentRepository.save(LikeComment.of(requestDto.getCommentId(), requestDto.getLikeCommentStatus(), memberId));
+
+        return likeCommentRepository.save(LikeComment.of(requestDto.getCommentId(),
+                requestDto.getLikeCommentStatus(), memberId));
+    }
+
+    @Transactional
+    public void deleteStatus(Long memberId, LikeCommentRequestDto requestDto) {
+        commentRepository.findById(requestDto.getCommentId())
+                .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_COMMENT));
+        LikeComment likeComment = likeCommentRepository
+                .findByIdAndLikeCommentStatus(requestDto.getCommentId(), requestDto.getLikeCommentStatus());
+
+        if (likeComment == null) {
+            throw new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_COMMENT);
+        }
+
+        if (likeComment.getLikeCommentStatus() == requestDto.getLikeCommentStatus()) {
+            likeCommentRepository.deleteById(likeComment.getId());
+        }
+
     }
 
 }

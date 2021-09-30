@@ -32,6 +32,7 @@ public class CommentServiceTest {
     @AfterEach
     void cleanUp() {
         commentRepository.deleteAll();
+        likeCommentRepository.deleteAll();
     }
 
     @Test
@@ -244,6 +245,54 @@ public class CommentServiceTest {
         // then
         assertThat(requestDto.getLikeCommentStatus()).isEqualTo(unLikeStatus);
 
+    }
+
+    @Test
+    void 댓글_좋아요를_취소할때() {
+        // given
+        Long memberId = 1L;
+        Long boardId = 1L;
+        String content = "감자가 더 좋아요";
+        LikeCommentStatus likeStatus = LikeCommentStatus.LIKE;
+
+        Comment comment = commentRepository.save(Comment.newRootComment(memberId, boardId, content));
+
+        likeCommentRepository.save(LikeComment.of(comment.getId(), likeStatus, memberId));
+
+        LikeCommentRequestDto requestDto = LikeCommentRequestDto.builder()
+                .commentId(comment.getId())
+                .status(likeStatus)
+                .build();
+
+        // when
+        commentService.deleteStatus(comment.getMemberId(), requestDto);
+
+        // then
+        List<LikeComment> comments = likeCommentRepository.findAll();
+        assertThat(comments).isEmpty();
+    }
+
+    @Test
+    void 댓골_좋아요가_표시되었을때_좋아요를_누른다() {
+        // given
+        Long memberId = 1L;
+        Long boardId = 1L;
+        String content = "감자쨩";
+        LikeCommentStatus likeCommentStatus = LikeCommentStatus.LIKE;
+        LikeCommentStatus unLikeCommentStatus = LikeCommentStatus.UNLIKE;
+
+        Comment comment = commentRepository.save(Comment.newRootComment(memberId, boardId, content));
+
+        likeCommentRepository.save(LikeComment.of(comment.getId(), unLikeCommentStatus, memberId));
+
+        LikeCommentRequestDto requestDto = LikeCommentRequestDto.builder()
+                .commentId(comment.getId())
+                .status(likeCommentStatus)
+                .build();
+
+        // when & then
+        assertThatThrownBy(() -> commentService.deleteStatus(comment.getMemberId(), requestDto))
+                .isInstanceOf(NotFoundException.class);
     }
 
 }
