@@ -31,9 +31,16 @@ public class BoardService {
 
     @Transactional
     public BoardInfoResponseWithLikeCount createBoard(CreateBoardRequest request, Long memberId) {
-        PetitionResponse petitionInfo = petitionClient.getPetitionInfo(request.getPetitionId());
+        Long petitionId = extractionPetitionId(request.getPetitionUrl());
+        PetitionResponse petitionInfo = petitionClient.getPetitionInfo(petitionId);
         final Board board = boardRepository.save(request.toEntity(petitionInfo, memberId));
         return BoardInfoResponseWithLikeCount.of(board, BoardLikeAndUnLikeCounts.of(0, 0));
+    }
+
+    private Long extractionPetitionId(String petitionUrl) {
+        String baseUrl = "www1.president.go.kr/petitions/";
+        String replace = petitionUrl.replace(baseUrl, "");
+        return Long.valueOf(replace);
     }
 
     @Transactional

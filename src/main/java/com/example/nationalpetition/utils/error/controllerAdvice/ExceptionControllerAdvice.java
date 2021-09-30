@@ -2,10 +2,7 @@ package com.example.nationalpetition.utils.error.controllerAdvice;
 
 import com.example.nationalpetition.controller.ApiResponse;
 import com.example.nationalpetition.utils.error.ErrorCode;
-import com.example.nationalpetition.utils.error.exception.AlreadyExistException;
-import com.example.nationalpetition.utils.error.exception.DuplicateException;
-import com.example.nationalpetition.utils.error.exception.JwtTokenException;
-import com.example.nationalpetition.utils.error.exception.NotFoundException;
+import com.example.nationalpetition.utils.error.exception.*;
 import com.example.nationalpetition.utils.ValidationResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
@@ -65,6 +62,18 @@ public class ExceptionControllerAdvice {
     @ExceptionHandler(AlreadyExistException.class)
     @ResponseStatus(BAD_REQUEST)
     protected ApiResponse<Object> handleAlreadyExistException(AlreadyExistException e) {
+        return ApiResponse.error(e.getCode(), e.getMessage());
+    }
+
+    @ExceptionHandler(BadGatewayException.class)
+    @ResponseStatus(BAD_REQUEST)
+    protected ApiResponse<Object> handleBadGatewayException(BadGatewayException e) {
+        return ApiResponse.error(e.getCode(), e.getMessage());
+    }
+
+    @ExceptionHandler(ValidationException.class)
+    @ResponseStatus(BAD_REQUEST)
+    protected ApiResponse<Object> handleValidationException(ValidationException e) {
         return ApiResponse.error(e.getCode(), e.getMessage());
     }
 
