@@ -2,13 +2,17 @@ package com.example.nationalpetition.service.comment;
 
 import com.example.nationalpetition.domain.comment.*;
 import com.example.nationalpetition.dto.comment.CommentCreateDto;
+import com.example.nationalpetition.dto.comment.CommentDto;
 import com.example.nationalpetition.dto.comment.request.CommentUpdateDto;
 import com.example.nationalpetition.dto.comment.request.LikeCommentRequestDto;
+import com.example.nationalpetition.dto.comment.response.CommentPageResponseDto;
 import com.example.nationalpetition.utils.error.ErrorCode;
 import com.example.nationalpetition.utils.error.exception.NotFoundException;
 import com.example.nationalpetition.dto.comment.response.CommentRetrieveResponseDto;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -98,6 +102,18 @@ public class CommentService {
     private void validateExistedComment(LikeCommentRequestDto requestDto) {
         commentRepository.findById(requestDto.getCommentId())
                 .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_COMMENT));
+    }
+
+    @Transactional
+    public CommentPageResponseDto pageRequest(int page, int size) {
+        Page<Comment> commentList = commentRepository.findAll(PageRequest.of(page, size));
+        return CommentPageResponseDto.builder()
+                .contents(commentList.stream()
+                        .map(CommentDto::of)
+                        .collect(Collectors.toList()))
+                .totalPages(commentList.getTotalPages())
+                .totalElements(commentList.getTotalElements())
+                .build();
     }
 
 }

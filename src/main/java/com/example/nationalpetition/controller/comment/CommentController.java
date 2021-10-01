@@ -5,6 +5,7 @@ import com.example.nationalpetition.controller.ApiResponse;
 import com.example.nationalpetition.dto.comment.CommentCreateDto;
 import com.example.nationalpetition.dto.comment.request.CommentUpdateDto;
 import com.example.nationalpetition.dto.comment.request.LikeCommentRequestDto;
+import com.example.nationalpetition.dto.comment.response.CommentPageResponseDto;
 import com.example.nationalpetition.dto.comment.response.CommentRetrieveResponseDto;
 import com.example.nationalpetition.service.comment.CommentService;
 import lombok.RequiredArgsConstructor;
@@ -53,5 +54,12 @@ public class CommentController {
         commentService.deleteStatus(memberId, likeCommentRequestDto);
         return ApiResponse.OK;
     }
+
+    @GetMapping("/api/v1/comment/page")
+    public ApiResponse<CommentPageResponseDto> commentPage(@RequestParam int page,
+                                                           @RequestParam int size) {
+        return ApiResponse.success(commentService.pageRequest(page, size));
+    }
+
 
 }
