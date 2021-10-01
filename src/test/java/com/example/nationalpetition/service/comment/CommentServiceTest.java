@@ -1,9 +1,9 @@
 package com.example.nationalpetition.service.comment;
 
-import com.example.nationalpetition.domain.comment.Comment;
-import com.example.nationalpetition.domain.comment.CommentRepository;
+import com.example.nationalpetition.domain.comment.*;
 import com.example.nationalpetition.dto.comment.CommentCreateDto;
 import com.example.nationalpetition.dto.comment.request.CommentUpdateDto;
+import com.example.nationalpetition.dto.comment.request.LikeCommentRequestDto;
 import com.example.nationalpetition.dto.comment.response.CommentRetrieveResponseDto;
 import com.example.nationalpetition.utils.error.exception.NotFoundException;
 import org.junit.jupiter.api.AfterEach;
@@ -26,9 +26,13 @@ public class CommentServiceTest {
     @Autowired
     private CommentService commentService;
 
+    @Autowired
+    private LikeCommentRepository likeCommentRepository;
+
     @AfterEach
     void cleanUp() {
         commentRepository.deleteAll();
+        likeCommentRepository.deleteAll();
     }
 
     @Test
@@ -191,6 +195,104 @@ public class CommentServiceTest {
         assertThat(responseDto.getMemberId()).isEqualTo(memberId);
         assertThat(responseDto.getContent()).isEqualTo(content);
 
+    }
+
+    @Test
+    void 댓글_좋아요를_누른다() {
+        // given
+        Long memberId = 1L;
+        Long boardId = 1L;
+        String content = "저는 감자보다 고구마가 더 좋은데요? ㅡ,.ㅡ";
+        LikeCommentStatus likeStatus = LikeCommentStatus.LIKE;
+
+        Comment comment = commentRepository.save(Comment.newRootComment(memberId, boardId, content));
+
+        LikeCommentRequestDto dto = LikeCommentRequestDto.builder()
+                .commentId(comment.getId())
+                .status(likeStatus)
+                .build();
+
+        // when
+        commentService.addStatus(memberId, dto);
+
+        // then
+        List<LikeComment> comments = likeCommentRepository.findAll();
+        assertThat(comments.get(0).getLikeCommentStatus()).isEqualTo(likeStatus);
+
+    }
+
+    @Test
+    void 댓글_좋아요를_누른상태에서_싫어요를_누른다() {
+        // given
+        Long memberId = 1L;
+        Long boardId = 1L;
+        String content = "저는 감자보다 고구마가 더 좋은데요? ㅡ,.ㅡ";
+        LikeCommentStatus likeStatus = LikeCommentStatus.LIKE;
+        LikeCommentStatus unLikeStatus = LikeCommentStatus.UNLIKE;
+
+        Comment comment = commentRepository.save(Comment.newRootComment(memberId, boardId, content));
+
+        LikeComment likeComment = likeCommentRepository.save(LikeComment.of(comment.getId(), likeStatus, memberId));
+
+        LikeCommentRequestDto requestDto = LikeCommentRequestDto.builder()
+                .commentId(comment.getId())
+                .status(unLikeStatus)
+                .build();
+
+        // when
+        commentService.addStatus(likeComment.getMemberId(), requestDto);
+
+        // then
+        assertThat(requestDto.getLikeCommentStatus()).isEqualTo(unLikeStatus);
+
+    }
+
+    @Test
+    void 댓글_좋아요를_취소할때() {
+        // given
+        Long memberId = 1L;
+        Long boardId = 1L;
+        String content = "감자가 더 좋아요";
+        LikeCommentStatus likeStatus = LikeCommentStatus.LIKE;
+
+        Comment comment = commentRepository.save(Comment.newRootComment(memberId, boardId, content));
+
+        likeCommentRepository.save(LikeComment.of(comment.getId(), likeStatus, memberId));
+
+        LikeCommentRequestDto requestDto = LikeCommentRequestDto.builder()
+                .commentId(comment.getId())
+                .status(likeStatus)
+                .build();
+
+        // when
+        commentService.deleteStatus(comment.getMemberId(), requestDto);
+
+        // then
+        List<LikeComment> comments = likeCommentRepository.findAll();
+        assertThat(comments).isEmpty();
+    }
+
+    @Test
+    void 댓골_좋아요가_표시되었을때_좋아요를_누른다() {
+        // given
+        Long memberId = 1L;
+        Long boardId = 1L;
+        String content = "감자쨩";
+        LikeCommentStatus likeCommentStatus = LikeCommentStatus.LIKE;
+        LikeCommentStatus unLikeCommentStatus = LikeCommentStatus.UNLIKE;
+
+        Comment comment = commentRepository.save(Comment.newRootComment(memberId, boardId, content));
+
+        likeCommentRepository.save(LikeComment.of(comment.getId(), unLikeCommentStatus, memberId));
+
+        LikeCommentRequestDto requestDto = LikeCommentRequestDto.builder()
+                .commentId(comment.getId())
+                .status(likeCommentStatus)
+                .build();
+
+        // when & then
+        assertThatThrownBy(() -> commentService.deleteStatus(comment.getMemberId(), requestDto))
+                .isInstanceOf(NotFoundException.class);
     }
 
 }
