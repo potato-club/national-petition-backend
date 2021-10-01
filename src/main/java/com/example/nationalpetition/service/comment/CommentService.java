@@ -97,7 +97,7 @@ public class CommentService {
 
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public CommentPageResponseDto pageRequest(int page, int size) {
         Page<Comment> commentList = commentRepository.findAll(PageRequest.of(page, size));
         return CommentPageResponseDto.builder()
