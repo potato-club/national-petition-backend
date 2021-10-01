@@ -59,4 +59,4 @@ jobs:
         run: |
           IMAGE=`cat ./image.txt`
           echo image=$IMAGE
-          kubectl set image deployment/petition-api-deployment petition-api=$IMAGE --record
+          kubectl set image deployment/petition-api-deployment petition-api=$IMAGE --namespace dev --record
