@@ -20,3 +20,7 @@ spring:
         format_sql: true
         default_batch_size: true
         use_sql_comments: true
+
+redirect:
+  baseUri: http://localhost:8080
+  addNickNameUri : http://localhost:8080/nickName
