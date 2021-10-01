@@ -1,7 +1,7 @@
 package com.example.nationalpetition.service.comment;
 
 import com.example.nationalpetition.domain.comment.*;
-import com.example.nationalpetition.dto.comment.CommentCreateDto;
+import com.example.nationalpetition.dto.comment.request.CommentCreateDto;
 import com.example.nationalpetition.dto.comment.CommentDto;
 import com.example.nationalpetition.dto.comment.request.CommentUpdateDto;
 import com.example.nationalpetition.dto.comment.request.LikeCommentRequestDto;
