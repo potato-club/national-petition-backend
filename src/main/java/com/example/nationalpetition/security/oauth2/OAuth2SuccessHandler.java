@@ -7,6 +7,7 @@ import com.example.nationalpetition.security.jwt.Token;
 import com.example.nationalpetition.security.jwt.TokenService;
 import com.example.nationalpetition.utils.error.ErrorCode;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -20,6 +21,12 @@ import java.io.IOException;
 @Slf4j
 @Component
 public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
+
+    @Value("${redirect.baseUri}")
+    private String baseUri;
+
+    @Value("${redirect.addNickNameUri")
+    private String addNickNameUri;
 
     private final TokenService tokenService;
     private final MemberRepository memberRepository;
@@ -37,16 +44,13 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         final Token token = tokenService.generateToken(member.getId());
 
         if (!StringUtils.hasText(member.getNickName())) {
-            /**
-             * 나중에 프론트 URL로 고칠 예정
-             */
-            response.sendRedirect("http://ec2-3-36-186-100.ap-northeast-2.compute.amazonaws.com/nickName?token=" + token.getToken());
+
+            // TODO : 나중에 프론트 URL로 고칠 예정
+            response.sendRedirect(addNickNameUri + "?token".concat(token.getToken()) + "&refreshToken".concat(token.getRefreshToken()));
             return;
         }
-        /**
-         * 나중에 프론트 URL로 고칠 예정
-         */
-        response.sendRedirect("http://ec2-3-36-186-100.ap-northeast-2.compute.amazonaws.com/");
+        // TODO : 나중에 프론트 URL로 고칠 예정
+        response.sendRedirect(baseUri + "?token".concat(token.getToken()) + "&refreshToken".concat(token.getRefreshToken()));
     }
 
 }
