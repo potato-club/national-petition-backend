@@ -8,7 +8,6 @@ import com.example.nationalpetition.utils.error.ErrorCode;
 import com.example.nationalpetition.utils.error.exception.NotFoundException;
 import com.example.nationalpetition.dto.comment.response.CommentRetrieveResponseDto;
 
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -62,9 +61,10 @@ public class CommentService {
     }
 
     @Transactional
-    public LikeComment addStatus(Long memberId, LikeCommentRequestDto requestDto) {
-        commentRepository.findById(requestDto.getCommentId())
-                .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_COMMENT));
+    public void addStatus(Long memberId, LikeCommentRequestDto requestDto) {
+
+        validateExistedComment(requestDto);
+
 
         LikeComment likeComment = likeCommentRepository
                 .findByIdAndLikeCommentStatus(requestDto.getCommentId(), requestDto.getLikeCommentStatus());
@@ -73,14 +73,15 @@ public class CommentService {
             likeComment.update(likeComment.getLikeCommentStatus());
         }
 
-        return likeCommentRepository.save(LikeComment.of(requestDto.getCommentId(),
+        likeCommentRepository.save(LikeComment.of(requestDto.getCommentId(),
                 requestDto.getLikeCommentStatus(), memberId));
     }
 
     @Transactional
     public void deleteStatus(Long memberId, LikeCommentRequestDto requestDto) {
-        commentRepository.findById(requestDto.getCommentId())
-                .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_COMMENT));
+
+        validateExistedComment(requestDto);
+
         LikeComment likeComment = likeCommentRepository
                 .findByIdAndLikeCommentStatus(requestDto.getCommentId(), requestDto.getLikeCommentStatus());
 
@@ -92,6 +93,11 @@ public class CommentService {
             likeCommentRepository.deleteById(likeComment.getId());
         }
 
+    }
+
+    private void validateExistedComment(LikeCommentRequestDto requestDto) {
+        commentRepository.findById(requestDto.getCommentId())
+                .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_COMMENT));
     }
 
 }
