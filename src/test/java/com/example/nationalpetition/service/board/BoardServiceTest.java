@@ -80,7 +80,7 @@ public class BoardServiceTest {
     @Test
     void 사용자가_청원_게시글을_생성한다() {
         // given
-        CreateBoardRequest request = CreateBoardRequest.testInstance(600413L, "title", "content");
+        CreateBoardRequest request = CreateBoardRequest.testInstance("title", "content", "www1.president.go.kr/petitions/6004");
 
         // when
         final BoardInfoResponseWithLikeCount response = boardService.createBoard(request, 1L);

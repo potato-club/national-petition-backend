@@ -68,7 +68,7 @@ public class BoardControllerTest {
     @Test
     void 청원_게시글_생성한다() throws Exception {
         // given
-        CreateBoardRequest request = CreateBoardRequest.testInstance(1L, "title", "content");
+        CreateBoardRequest request = CreateBoardRequest.testInstance("title", "content", "www1.president.go.kr/petitions/1");
 
         Token token = tokenService.generateToken(1L);
 
@@ -87,9 +87,9 @@ public class BoardControllerTest {
                                 headerWithName("Authorization").description("토큰")
                         ),
                         requestFields(
-                                fieldWithPath("petitionId").description("청원글 아이디"),
                                 fieldWithPath("title").description("나의 청원 제목"),
-                                fieldWithPath("content").description("나의 청원 글")
+                                fieldWithPath("content").description("나의 청원 글"),
+                                fieldWithPath("petitionUrl").description("청원 url")
                         ),
                         responseFields(
                                 fieldWithPath("code").description("code"),

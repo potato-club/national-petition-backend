@@ -3,9 +3,9 @@ Content-Type: application/json
 Authorization: Bearer {{TOKEN}}
 
 {
-  "petitionId": "600413",
   "title": "신고요",
-  "content": "이것좀 봐주세요"
+  "content": "이것좀 봐주세요",
+  "petitionUrl": "www1.president.go.kr/petitions/6004"
 }
 
 ### 게시글 수정

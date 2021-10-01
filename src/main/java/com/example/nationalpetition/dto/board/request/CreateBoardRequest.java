@@ -1,5 +1,6 @@
 package com.example.nationalpetition.dto.board.request;
 
+import com.example.nationalpetition.config.validator.PetitionUrl;
 import com.example.nationalpetition.domain.board.Board;
 import com.example.nationalpetition.external.petition.dto.response.PetitionResponse;
 import lombok.Getter;
@@ -11,21 +12,21 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class CreateBoardRequest {
 
-    @NotNull
-    private Long petitionId;
-
     private String title;
 
     private String content;
 
-    public CreateBoardRequest(Long petitionId, String title, String content) {
-        this.petitionId = petitionId;
+    @PetitionUrl
+    private String petitionUrl;
+
+    public CreateBoardRequest(String title, String content, String petitionUrl) {
         this.title = title;
         this.content = content;
+        this.petitionUrl = petitionUrl;
     }
 
-    public static CreateBoardRequest testInstance(Long petitionId, String title, String content) {
-        return new CreateBoardRequest(petitionId, title, content);
+    public static CreateBoardRequest testInstance(String title, String content, String petitionUrl) {
+        return new CreateBoardRequest(title, content, petitionUrl);
     }
 
     public Board toEntity(PetitionResponse petitionInfo, Long memberId) {
@@ -34,6 +35,7 @@ public class CreateBoardRequest {
                 .petitionContent(petitionInfo.getContent())
                 .petitionsCount(petitionInfo.getPetitionsCount())
                 .memberId(memberId)
+                .petitionUrl(petitionUrl)
                 .title(title)
                 .content(content)
                 .build();

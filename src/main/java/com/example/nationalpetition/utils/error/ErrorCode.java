@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public enum ErrorCode {
 
+    BAD_GATEWAY_EXCEPTION("400", "외부 API 호출중에 애러가 발생했습니다."),
+
     NOT_FOUND_EXCEPTION_USER("400", "해당 하는 유저를 찾을 수 없습니다."),
     NOT_FOUND_EXCEPTION_BOARD("400", "해당 하는 게시글을 찾을 수 없습니다."),
     NOT_FOUND_EXCEPTION_COMMENT("404", "해당 하는 댓글을 찾을 수 없습니다."),
