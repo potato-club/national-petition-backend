@@ -3,6 +3,7 @@ package com.example.nationalpetition.dto.comment.response;
 import com.example.nationalpetition.dto.comment.CommentDto;
 import lombok.Builder;
 
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 public class CommentPageResponseDto {
