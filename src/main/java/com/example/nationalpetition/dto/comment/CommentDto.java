@@ -1,10 +1,13 @@
 package com.example.nationalpetition.dto.comment;
 
 import com.example.nationalpetition.domain.comment.Comment;
-import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+@Getter
+@NoArgsConstructor
 public class CommentDto {
     private Long id;
 
@@ -18,7 +21,6 @@ public class CommentDto {
 
     private boolean isDeleted;
 
-    @JsonFormat()
     private LocalDateTime localDateTime;
 
     private CommentDto(Comment comment) {
