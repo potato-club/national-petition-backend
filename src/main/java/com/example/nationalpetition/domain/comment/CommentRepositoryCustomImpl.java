@@ -29,4 +29,13 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom{
                         comment.isDeleted.isFalse()
                 ).fetch();
     }
+
+    @Override
+    public Long findCommentCountByBoardIdAndIsDeletedIsFalse(Long boardId) {
+        return queryFactory
+                .selectFrom(comment)
+                .where(comment.boardId.eq(boardId),
+                        comment.isDeleted.isFalse())
+                .fetchCount();
+    }
 }

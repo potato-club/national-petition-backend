@@ -1,5 +1,7 @@
 package com.example.nationalpetition.controller.member;
 
+import com.example.nationalpetition.domain.board.Board;
+import com.example.nationalpetition.domain.board.repository.BoardRepository;
 import com.example.nationalpetition.domain.member.entity.Member;
 import com.example.nationalpetition.domain.member.repository.MemberRepository;
 import com.example.nationalpetition.dto.member.request.NickNameRequest;
@@ -20,6 +22,7 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.validation.BindException;
+import java.util.Arrays;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -27,6 +30,9 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -43,6 +49,9 @@ class MemberControllerTest {
 	MemberRepository memberRepository;
 
 	@Autowired
+	BoardRepository boardRepository;
+
+	@Autowired
 	ObjectMapper objectMapper;
 
 	@Autowired
@@ -51,6 +60,7 @@ class MemberControllerTest {
 	@AfterEach
 	void clear() {
 		memberRepository.deleteAll();
+		boardRepository.deleteAll();
 	}
 
 
@@ -194,6 +204,47 @@ class MemberControllerTest {
 	}
 
 	@Test
+	@DisplayName("마이페이지 - 내가 쓴 게시글 조회")
+	void getMyBoardList() throws Exception {
+	    //given
+		final Long memberId = MemberServiceUtils.saveMember(memberRepository);
+		final Token token = tokenService.generateToken(memberId);
+		Board board1 = new Board(memberId, "petitionTitle", "title1", "petitionContent", "content", "url", "10000", "사회문제");
+		Board board2 = new Board(memberId, "petitionTitle", "title1", "petitionContent", "content", "url", "10000", "사회문제");
+		boardRepository.saveAll(Arrays.asList(board1, board2));
+
+		//when
+		final ResultActions resultActions = mockMvc
+				.perform(get("/api/v1/mypage/boardList?page=0&size=10")
+						.header("Authorization", "Bearer ".concat(token.getToken())))
+				.andDo(print())
+				.andDo(document("member/boardList",
+						preprocessResponse(prettyPrint()),
+						requestParameters(
+								parameterWithName("page").description("페이지 번호, 기본값 = 0"),
+								parameterWithName("size").description("한 페이지 당 조회 개수, 기본값 = 10")
+						),
+						responseFields(
+								fieldWithPath("code").type(JsonFieldType.STRING).description("code"),
+								fieldWithPath("message").type(JsonFieldType.STRING).description("message"),
+								fieldWithPath("data[].boardId").type(JsonFieldType.NUMBER).description("게시글 Id"),
+								fieldWithPath("data[].memberId").type(JsonFieldType.NUMBER).description("회원 Id"),
+								fieldWithPath("data[].petitionTitle").type(JsonFieldType.STRING).description("청원 제목"),
+								fieldWithPath("data[].title").type(JsonFieldType.STRING).description("나의 작성한 제목"),
+								fieldWithPath("data[].content").type(JsonFieldType.STRING).description("내가 작성한 글"),
+								fieldWithPath("data[].category").type(JsonFieldType.STRING).description("청원 카테고리"),
+								fieldWithPath("data[].boardLikeCounts").type(JsonFieldType.NUMBER).description("좋아요 개수"),
+								fieldWithPath("data[].boardUnLikeCounts").type(JsonFieldType.NUMBER).description("싫어요 개수"),
+								fieldWithPath("data[].viewCounts").type(JsonFieldType.NUMBER).description("조회수"),
+								fieldWithPath("data[].boardCommentCounts").type(JsonFieldType.NUMBER).description("댓글 개수"),
+								fieldWithPath("data[].createdDate").type(JsonFieldType.STRING).description("작성일")
+						)));
+
+		//then
+		resultActions.andExpect(status().isOk());
+	}
+
+	@Test
 	@DisplayName("회원 탈퇴 성공")
 	void deleteMember() throws Exception {
 	    //given
@@ -215,5 +266,8 @@ class MemberControllerTest {
 						)
 				);
 	}
+
+
+
 
 }
