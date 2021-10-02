@@ -5,6 +5,7 @@ import com.example.nationalpetition.controller.ApiResponse;
 import com.example.nationalpetition.dto.board.response.BoardInfoResponseInMyPage;
 import com.example.nationalpetition.dto.member.request.NickNameRequest;
 import com.example.nationalpetition.dto.member.response.MemberResponse;
+import com.example.nationalpetition.security.oauth2.OAuth2Dto;
 import com.example.nationalpetition.service.member.MemberService;
 import com.example.nationalpetition.utils.ValidationUtils;
 import io.swagger.v3.oas.annotations.Operation;
@@ -32,8 +33,8 @@ public class MemberController {
 	 * 테스트용
 	 */
 	@GetMapping("/nickName")
-	public String inputNickName(@RequestParam String token) {
-		return token;
+	public OAuth2Dto inputNickName(@RequestParam String register, @RequestParam String token, @RequestParam String refreshToken) {
+		return OAuth2Dto.of(register, token, refreshToken);
 	}
 
 	@Operation(summary = "나의 회원 정보를 불러오는 API", security = {@SecurityRequirement(name = "BearerKey")})

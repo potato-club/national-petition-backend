@@ -45,12 +45,12 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
         if (!StringUtils.hasText(member.getNickName())) {
 
-            // TODO : 나중에 프론트 URL로 고칠 예정
-            response.sendRedirect(addNickNameUri + "?token".concat(token.getToken()) + "&refreshToken".concat(token.getRefreshToken()));
+            // TODO : 나중에 환경변수 다시 설정할 예정 ㅜㅜ
+            response.sendRedirect("http://localhost:3000/user/login" + "?register=false" + "&token=" + token.getToken() + "&refreshToken=" + token.getRefreshToken());
             return;
         }
-        // TODO : 나중에 프론트 URL로 고칠 예정
-        response.sendRedirect(baseUri + "?token".concat(token.getToken()) + "&refreshToken".concat(token.getRefreshToken()));
+        // TODO : 나중에 환경변수 다시 설정할 예정 ㅜㅜ
+        response.sendRedirect("http://localhost:3000/user/login" + "?register=true" + "&token=" + token.getToken() + "&refreshToken=" + token.getRefreshToken());
     }
 
 }
