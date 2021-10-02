@@ -33,8 +33,8 @@ public class MemberController {
 	 * 테스트용
 	 */
 	@GetMapping("/nickName")
-	public OAuth2Dto inputNickName(@RequestParam String register, @RequestParam String token, @RequestParam String refreshToken) {
-		return OAuth2Dto.of(register, token, refreshToken);
+	public OAuth2Dto inputNickName(@RequestParam String register, @RequestParam String idToken, @RequestParam String refreshToken) {
+		return OAuth2Dto.of(register, idToken, refreshToken);
 	}
 
 	@Operation(summary = "나의 회원 정보를 불러오는 API", security = {@SecurityRequirement(name = "BearerKey")})
