@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 
@@ -32,13 +33,13 @@ public class CommentController {
 
     @Operation(summary = "댓글 수정하는 API", security = {@SecurityRequirement(name = "BearerKey")})
     @PutMapping("/api/v1/comment")
-    public ApiResponse<String> updateComment(@MemberId Long memberId, @RequestBody CommentUpdateDto dto) {
+    public ApiResponse<String> updateComment(@MemberId Long memberId, @RequestBody @Valid CommentUpdateDto dto) {
         return ApiResponse.success(commentService.updateComment(memberId, dto).getContent());
     }
 
     @Operation(summary = "댓글 삭제하는 API", security = {@SecurityRequirement(name = "BearerKey")})
     @DeleteMapping("/api/v1/comment/{commentId}")
-    public ApiResponse<String> deleteComment(@MemberId Long memberId, @PathVariable Long commentId) {
+    public ApiResponse<String> deleteComment(@MemberId Long memberId, @PathVariable @Valid Long commentId) {
         commentService.deleteComment(memberId, commentId);
         return ApiResponse.OK;
     }
@@ -58,15 +59,15 @@ public class CommentController {
 
     @Operation(summary = "댓글에 좋아요/싫어요 제거하는 API", security = {@SecurityRequirement(name = "BearerKey")})
     @DeleteMapping("/api/v1/comment/unlike")
-    public ApiResponse<String> deleteStatus(@MemberId Long memberId, @RequestBody LikeCommentRequestDto likeCommentRequestDto) {
+    public ApiResponse<String> deleteStatus(@MemberId Long memberId, @RequestBody @Valid LikeCommentRequestDto likeCommentRequestDto) {
         commentService.deleteStatus(memberId, likeCommentRequestDto);
         return ApiResponse.OK;
     }
 
-    @Operation(summary = "페이지네이션")
+    @Operation(summary = "댓글 페이지네이션 API")
     @GetMapping("/api/v1/comment/page")
-    public ApiResponse<CommentPageResponseDto> commentPage(@RequestParam int page,
-                                                           @RequestParam int size) {
+    public ApiResponse<CommentPageResponseDto> commentPage(@RequestParam @Valid int page,
+                                                           @RequestParam @Valid int size) {
         return ApiResponse.success(commentService.pageRequest(page, size));
     }
 

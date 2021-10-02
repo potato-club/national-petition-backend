@@ -26,6 +26,7 @@ public class CommentService {
 
     private final CommentRepository commentRepository;
     private final LikeCommentRepository likeCommentRepository;
+    private final int finalDepth = 3;
 
     @Transactional
     public Long addComment(CommentCreateDto dto, Long boardId, Long memberId) {
@@ -34,13 +35,17 @@ public class CommentService {
         }
         Comment parentComment = commentRepository.findById(dto.getParentId())
                 .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_COMMENT));
+
         int depth = parentComment.getDepth();
+
+        if (parentComment.getParentId() > finalDepth) {
+
+        }
         return commentRepository.save(Comment.newChildComment(dto.getParentId(), memberId, boardId, depth + 1, dto.getContent())).getId();
     }
 
     @Transactional
     public Comment updateComment(Long memberId, CommentUpdateDto updateDto) {
-
         Comment comment = commentRepository.findByIdAndMemberIdAndIsDeletedIsFalse(updateDto.getCommentId(), memberId);
         if (comment == null) {
             throw new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_COMMENT);
@@ -65,29 +70,29 @@ public class CommentService {
     }
 
     @Transactional
-    public void addStatus(Long memberId, LikeCommentRequestDto requestDto) {
+    public LikeComment addStatus(Long memberId, LikeCommentRequestDto requestDto) {
 
         validateExistedComment(requestDto);
 
-
         LikeComment likeComment = likeCommentRepository
-                .findByIdAndLikeCommentStatus(requestDto.getCommentId(), requestDto.getLikeCommentStatus());
+                .findByIdAndMemberIdAndLikeCommentStatus(requestDto.getCommentId(),
+                        memberId, requestDto.getLikeCommentStatus());
 
         if (likeComment != null) {
             likeComment.update(likeComment.getLikeCommentStatus());
         }
 
-        likeCommentRepository.save(LikeComment.of(requestDto.getCommentId(),
+        return likeCommentRepository.save(LikeComment.of(requestDto.getCommentId(),
                 requestDto.getLikeCommentStatus(), memberId));
     }
 
     @Transactional
     public void deleteStatus(Long memberId, LikeCommentRequestDto requestDto) {
-
         validateExistedComment(requestDto);
 
         LikeComment likeComment = likeCommentRepository
-                .findByIdAndLikeCommentStatus(requestDto.getCommentId(), requestDto.getLikeCommentStatus());
+                .findByIdAndMemberIdAndLikeCommentStatus(requestDto.getCommentId(), memberId,
+                        requestDto.getLikeCommentStatus());
 
         if (likeComment == null) {
             throw new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_COMMENT);
@@ -106,7 +111,7 @@ public class CommentService {
 
     @Transactional
     public CommentPageResponseDto pageRequest(int page, int size) {
-        Page<Comment> commentList = commentRepository.findAll(PageRequest.of(page, size));
+        Page<Comment> commentList = commentRepository.findAllByIsDeletedIsFalse(PageRequest.of(page, size));
         return CommentPageResponseDto.builder()
                 .contents(commentList.stream()
                         .map(CommentDto::of)

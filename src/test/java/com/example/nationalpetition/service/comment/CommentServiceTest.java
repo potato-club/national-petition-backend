@@ -243,7 +243,7 @@ public class CommentServiceTest {
         commentService.addStatus(likeComment.getMemberId(), requestDto);
 
         // then
-        assertThat(requestDto.getLikeCommentStatus()).isEqualTo(unLikeStatus);
+        assertThat(unLikeStatus).isEqualTo(likeComment.getLikeCommentStatus());
 
     }
 

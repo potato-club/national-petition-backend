@@ -1,6 +1,5 @@
 package com.example.nationalpetition.utils.error;
 
-import com.example.nationalpetition.utils.error.exception.ValidationException;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,7 +23,9 @@ public enum ErrorCode {
 
     DUPLICATE_EXCEPTION_NICKNAME("400","닉네임이 중복됩니다."),
 
-    ALREADY_EXIST_EXCEPTION_ADD_NICKNAME("400","이미 닉네임을 등록하셨습니다.");
+    ALREADY_EXIST_EXCEPTION_ADD_NICKNAME("400","이미 닉네임을 등록하셨습니다."),
+
+    CREATE_COMMENT_EXCEPTION("403", "더 이상 댓글을 달 수 없습니다.");
 
     private String code;
     private String message;

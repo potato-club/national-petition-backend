@@ -1,5 +1,5 @@
 package com.example.nationalpetition.domain.comment;
 
 public interface LikeCommentRepositoryCustom {
-    LikeComment findByIdAndLikeCommentStatus(Long id, LikeCommentStatus status);
+    LikeComment findByIdAndMemberIdAndLikeCommentStatus(Long id, Long memberId, LikeCommentStatus status);
 }
