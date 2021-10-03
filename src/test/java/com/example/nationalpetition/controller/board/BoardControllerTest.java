@@ -14,6 +14,7 @@ import com.example.nationalpetition.security.jwt.TokenService;
 import com.example.nationalpetition.testObject.BoardLikeCreator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +59,13 @@ public class BoardControllerTest {
     @Autowired
     private BoardLikeRepository boardLikeRepository;
 
+    private Token token;
+
+    @BeforeEach
+    void setUpToken() {
+        token = tokenService.generateToken(1L);
+    }
+
     @AfterEach
     void clean() {
         boardRepository.deleteAll();
@@ -69,8 +77,6 @@ public class BoardControllerTest {
     void 청원_게시글_생성한다() throws Exception {
         // given
         CreateBoardRequest request = CreateBoardRequest.testInstance("title", "content", "www1.president.go.kr/petitions/1");
-
-        Token token = tokenService.generateToken(1L);
 
         // when & then
         final ResultActions resultActions = mockMvc.perform(
@@ -113,6 +119,40 @@ public class BoardControllerTest {
         resultActions.andExpect(status().isOk());
     }
 
+    @DisplayName("청원 크롤링 서버에서 가져와서 나의 제목과 컨텐츠와 함께 저장한다 하지만 petitionUrl이 틀릴경우 예외가 발생한다")
+    @Test
+    void 청원_게시글_생성하는데_petitionUrl_이_틀릴경우_예외발생() throws Exception {
+        // given
+        CreateBoardRequest request = CreateBoardRequest.testInstance("title", "content", "www.president.go.kr/petitions/1");
+
+        // when & then
+        final ResultActions resultActions = mockMvc.perform(
+                        post("/api/v1/board")
+                                .header("Authorization", "Bearer ".concat(token.getToken()))
+                                .content(objectMapper.writeValueAsString(request))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andDo(document("board/createException",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestHeaders(
+                                headerWithName("Authorization").description("토큰")
+                        ),
+                        requestFields(
+                                fieldWithPath("title").description("나의 청원 제목"),
+                                fieldWithPath("content").description("나의 청원 글"),
+                                fieldWithPath("petitionUrl").description("청원 url")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").description("code"),
+                                fieldWithPath("message").description("메세지"),
+                                fieldWithPath("data").description("")
+                        )
+                ));
+        resultActions.andExpect(status().is4xxClientError());
+    }
+
     @DisplayName("내가_작성한_게시글을_수정한다")
     @Test
     void 청원_게시글_수정한다() throws Exception {
@@ -120,8 +160,6 @@ public class BoardControllerTest {
         Board board = new Board(1L, "petitionTitle", "title", "petitionContent", "content", "url", "10000", "사회문제");
         boardRepository.save(board);
         UpdateBoardRequest request = UpdateBoardRequest.testInstance(board.getId(), "updateTitle", "updateContent");
-
-        Token token = tokenService.generateToken(1L);
 
         // when & then
         final ResultActions resultActions = mockMvc.perform(
@@ -168,8 +206,6 @@ public class BoardControllerTest {
     @Test
     void 게시글을_불러온다() throws Exception {
         // given
-        Token token = tokenService.generateToken(1L);
-
         Board board = new Board(1L, "petitionTitle", "title", "petitionContent", "content", "url", "10000", "사회문제");
         boardRepository.save(board);
 
@@ -210,8 +246,6 @@ public class BoardControllerTest {
     @Test
     void 게시글리스트를_불러온다() throws Exception {
         // given
-        Token token = tokenService.generateToken(1L);
-
         Board board1 = new Board(1L, "petitionTitle", "title1", "petitionContent", "content", "url", "10000", "사회문제");
         Board board2 = new Board(1L, "petitionTitle", "title2", "petitionContent", "content", "url", "10000", "사회문제");
         boardRepository.saveAll(Arrays.asList(board1, board2));
@@ -255,8 +289,6 @@ public class BoardControllerTest {
     @Test
     void 게시글_찬성_반대() throws Exception {
         // given
-        Token token = tokenService.generateToken(1L);
-
         Board board1 = new Board(1L, "petitionTitle", "title1", "petitionContent", "content", "url", "10000", "사회문제");
         Board board2 = new Board(1L, "petitionTitle", "title2", "petitionContent", "content", "url", "10000", "사회문제");
         boardRepository.saveAll(Arrays.asList(board1, board2));
