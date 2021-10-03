@@ -54,9 +54,11 @@ public class TokenService {
 					.parseClaimsJws(token)
 					.getBody()
 					.getSubject());
-		} catch (MalformedJwtException | ExpiredJwtException | UnsupportedJwtException | IllegalArgumentException e) {
+		} catch (MalformedJwtException  | UnsupportedJwtException | IllegalArgumentException e) {
 			log.info("잘못된 JWT 서명입니다.", e);
 			throw new JwtTokenException(ErrorCode.JWT_TOKEN_EXCEPTION_INVALID);
+		} catch (ExpiredJwtException e) {
+			throw new JwtTokenException(ErrorCode.JWT_TOKEN_EXCEPTION_EXPIRED);
 		}
 	}
 

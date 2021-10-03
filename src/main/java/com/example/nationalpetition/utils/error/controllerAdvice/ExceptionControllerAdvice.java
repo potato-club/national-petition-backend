@@ -13,8 +13,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.*;
 
 @RestControllerAdvice
 @Slf4j
@@ -41,7 +40,7 @@ public class ExceptionControllerAdvice {
     }
 
     @ExceptionHandler(JwtTokenException.class)
-    @ResponseStatus(BAD_REQUEST)
+    @ResponseStatus(UNAUTHORIZED)
     protected ApiResponse<Object> handleJwtTokenException(JwtTokenException e) {
         log.error(e.getMessage(), e);
         return ApiResponse.error(e.getCode(), e.getMessage());
@@ -54,19 +53,19 @@ public class ExceptionControllerAdvice {
     }
 
     @ExceptionHandler(DuplicateException.class)
-    @ResponseStatus(BAD_REQUEST)
+    @ResponseStatus(CONFLICT)
     protected ApiResponse<Object> handleDuplicateException(DuplicateException e) {
         return ApiResponse.error(e.getCode(), e.getMessage());
     }
 
     @ExceptionHandler(AlreadyExistException.class)
-    @ResponseStatus(BAD_REQUEST)
+    @ResponseStatus(CONFLICT)
     protected ApiResponse<Object> handleAlreadyExistException(AlreadyExistException e) {
         return ApiResponse.error(e.getCode(), e.getMessage());
     }
 
     @ExceptionHandler(BadGatewayException.class)
-    @ResponseStatus(BAD_REQUEST)
+    @ResponseStatus(BAD_GATEWAY)
     protected ApiResponse<Object> handleBadGatewayException(BadGatewayException e) {
         return ApiResponse.error(e.getCode(), e.getMessage());
     }

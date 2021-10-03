@@ -159,7 +159,7 @@ class MemberControllerTest {
 				.andExpect(result -> assertTrue(result.getResolvedException().getClass().isAssignableFrom(DuplicateException.class)))
 				.andExpect(result -> assertThat(result.getResolvedException().getMessage()).isEqualTo(ErrorCode.DUPLICATE_EXCEPTION_NICKNAME.getMessage()));
 		//then
-		resultActions.andExpect(status().isBadRequest());
+		resultActions.andExpect(status().isConflict());
 	}
 
 	@Test
@@ -181,7 +181,7 @@ class MemberControllerTest {
 				.andExpect(result -> assertTrue(result.getResolvedException().getClass().isAssignableFrom(AlreadyExistException.class)))
 				.andExpect(result -> assertThat(result.getResolvedException().getMessage()).isEqualTo(ErrorCode.ALREADY_EXIST_EXCEPTION_ADD_NICKNAME.getMessage()));
 		//then
-		resultActions.andExpect(status().isBadRequest());
+		resultActions.andExpect(status().isConflict());
 	}
 
 	@Test
