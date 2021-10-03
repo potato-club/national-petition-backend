@@ -17,6 +17,9 @@ potato;
 [[resources_board_create]]
 === Creating a Board
 
+Request Header
+include::{snippets}/board/unlike/request-headers.adoc[]
+
 Request HTTP Example
 include::{snippets}/board/create/http-request.adoc[]
 
@@ -26,8 +29,26 @@ include::{snippets}/board/create/request-fields.adoc[]
 Response
 include::{snippets}/board/create/http-response.adoc[]
 
+[[resources_board_create_petition_exception]]
+=== PetitionUrl Exception
+
+Request Header
+include::{snippets}/board/unlike/request-headers.adoc[]
+
+Request HTTP Example
+include::{snippets}/board/createException/http-request.adoc[]
+
+Request Fields
+include::{snippets}/board/createException/request-fields.adoc[]
+
+Response
+include::{snippets}/board/createException/http-response.adoc[]
+
 [[resources_board_update]]
 === update a Board
+
+Request Header
+include::{snippets}/board/unlike/request-headers.adoc[]
 
 Request HTTP Example
 include::{snippets}/board/update/http-request.adoc[]
@@ -75,6 +96,9 @@ include::{snippets}/petitionRank/response-fields.adoc[]
 
 === boardLike
 
+Request Header
+include::{snippets}/board/unlike/request-headers.adoc[]
+
 Request HTTP Example
 include::{snippets}/board/like/http-request.adoc[]
 
@@ -85,6 +109,9 @@ Response
 include::{snippets}/board/like/http-response.adoc[]
 
 === boardLike 삭제
+
+Request Header
+include::{snippets}/board/unlike/request-headers.adoc[]
 
 Request Header
 include::{snippets}/board/unlike/request-headers.adoc[]

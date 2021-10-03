@@ -11,6 +11,7 @@ import com.example.nationalpetition.dto.board.request.UpdateBoardRequest;
 import com.example.nationalpetition.dto.board.response.BoardInfoResponseWithLikeCount;
 import com.example.nationalpetition.testObject.BoardCreator;
 import com.example.nationalpetition.testObject.BoardLikeCreator;
+import com.example.nationalpetition.utils.error.ErrorCode;
 import com.example.nationalpetition.utils.error.exception.NotFoundException;
 import com.example.nationalpetition.external.petition.PetitionClient;
 import com.example.nationalpetition.external.petition.dto.response.PetitionResponse;
@@ -55,7 +56,7 @@ public class BoardServiceTest {
 
     // 테스트를 위한 코드
     public void insert10() {
-        for(int i = 1; i < 11; i++) {
+        for (int i = 1; i < 11; i++) {
             Board board = Board.builder()
                     .memberId(1L)
                     .content("content")
@@ -119,8 +120,9 @@ public class BoardServiceTest {
 
         // when & then
         assertThatThrownBy(
-            () -> boardService.updateBoard(request, 1L)
-        ).isInstanceOf(NotFoundException.class);
+                () -> boardService.updateBoard(request, 1L)
+        ).isInstanceOf(NotFoundException.class)
+                .hasMessage(ErrorCode.NOT_FOUND_EXCEPTION_BOARD.getMessage());
     }
 
     @DisplayName("게시글 아이디로 게시글을 불러온다")
@@ -147,15 +149,21 @@ public class BoardServiceTest {
         // given
         Board board = new Board(1L, "petitionTitle", "title", "petitionContent", "content", "url", "10000", "사회문제");
         boardRepository.save(board);
+        BoardLike boardLike = BoardLikeCreator.create(board.getId(), board.getMemberId(), BoardState.LIKE);
+        boardLikeRepository.save(boardLike);
 
         // when
-        boardService.getBoard(board.getId());
+        BoardInfoResponseWithLikeCount response = boardService.getBoard(board.getId());
 
         // then
         final List<Board> boardList = boardRepository.findAll();
+        List<BoardLike> boardLikeList = boardLikeRepository.findAll();
         assertThat(boardList).hasSize(1);
         assertThat(boardList.get(0).getTitle()).isEqualTo(board.getTitle());
         assertThat(boardList.get(0).getContent()).isEqualTo(board.getContent());
+        assertThat(boardLikeList).hasSize(1);
+        assertThat(response.getBoardLikeCounts()).isEqualTo(1);
+        assertThat(response.getBoardUnLikeCounts()).isEqualTo(0);
     }
 
     @DisplayName("여러 사람이 한 게시글에 찬성을 했을 경우 특정 게시글 불러오기")
