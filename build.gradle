@@ -41,11 +41,26 @@ asciidoctor {
     inputs.dir snippetsDir
 }
 
+asciidoctor.doFirst {
+    //asciidoctor 실행전 기존에 생성된 API 문서 삭제
+    delete file('src/main/resources/static/docs')
+}
+
+task copyDocument(type: Copy) {
+    dependsOn asciidoctor
+    from file("build/docs/asciidoc")
+    into file("src/main/resources/static/docs")
+}
+
+build {
+    dependsOn copyDocument
+}
+
 bootJar {
     dependsOn asciidoctor
     copy {
         from "${asciidoctor.outputDir}"
-        into 'src/main/resources/static/docs'
+        into "BOOT-INF/classes/static/docs"
     }
 }
 
