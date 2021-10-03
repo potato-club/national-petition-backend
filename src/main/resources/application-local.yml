@@ -23,4 +23,4 @@ spring:
 
 redirect:
   baseUri: http://localhost:8080
-  addNickNameUri : /nickName
+  addNickNameUri: ${redirect.baseUri}/nickName
