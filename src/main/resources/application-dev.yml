@@ -36,5 +36,5 @@ jwt:
   secret: ${JWT_SECRET}
 
 redirect:
-  baseUri: http://localhost:3000
+  baseUri: https://d2gqxpfawxnoj9.cloudfront.net
   addNickNameUri : ${redirect.baseUri}/user/login
