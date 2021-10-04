@@ -34,7 +34,6 @@ spring:
               - email
 jwt:
   secret: ${JWT_SECRET}
-
-redirect:
-  baseUri: https://d2gqxpfawxnoj9.cloudfront.net
-  addNickNameUri : ${redirect.baseUri}/user/login
+google:
+  redirect:
+    uri: ${GOOGLE_REDIRECT_URI}

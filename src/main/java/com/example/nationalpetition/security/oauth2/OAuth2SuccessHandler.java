@@ -25,7 +25,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
-	@Value("${redirect.addNickNameUri}")
+	@Value("${google.redirect.uri}")
 	private String redirectUri;
 
 	private final TokenService tokenService;

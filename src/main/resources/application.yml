@@ -3,5 +3,4 @@ spring:
     active: local
     group:
       local:
-        - jwt
         - oauth

@@ -22,7 +22,8 @@ spring:
         format_sql: true
         default_batch_size: true
         use_sql_comments: true
-
-redirect:
-  baseUri: http://localhost:8080
-  addNickNameUri: ${redirect.baseUri}/nickName
+google:
+  redirect:
+    uri: http://localhost:8080/nickName
+jwt:
+  secret: local-potato
