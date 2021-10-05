@@ -9,7 +9,6 @@ import com.example.nationalpetition.dto.comment.request.CommentUpdateDto;
 import com.example.nationalpetition.dto.comment.request.LikeCommentRequestDto;
 import com.example.nationalpetition.dto.comment.response.CommentPageResponseDto;
 import com.example.nationalpetition.utils.error.ErrorCode;
-import com.example.nationalpetition.utils.error.exception.ConflictException;
 import com.example.nationalpetition.utils.error.exception.CreateCommentException;
 import com.example.nationalpetition.utils.error.exception.NotFoundException;
 import com.example.nationalpetition.dto.comment.response.CommentRetrieveResponseDto;
@@ -48,7 +47,6 @@ public class CommentService {
         if (parentComment.getParentId() > finalDepth) {
             throw new CreateCommentException(ErrorCode.CREATE_COMMENT_EXCEPTION);
         }
-
 
         Board board = boardRepository.findById(boardId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_BOARD));
         board.incrementViewCount();
