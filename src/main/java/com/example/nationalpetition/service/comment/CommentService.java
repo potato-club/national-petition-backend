@@ -1,5 +1,7 @@
 package com.example.nationalpetition.service.comment;
 
+import com.example.nationalpetition.domain.board.Board;
+import com.example.nationalpetition.domain.board.repository.BoardRepository;
 import com.example.nationalpetition.domain.comment.*;
 import com.example.nationalpetition.dto.comment.request.CommentCreateDto;
 import com.example.nationalpetition.dto.comment.CommentDto;
@@ -7,6 +9,8 @@ import com.example.nationalpetition.dto.comment.request.CommentUpdateDto;
 import com.example.nationalpetition.dto.comment.request.LikeCommentRequestDto;
 import com.example.nationalpetition.dto.comment.response.CommentPageResponseDto;
 import com.example.nationalpetition.utils.error.ErrorCode;
+import com.example.nationalpetition.utils.error.exception.ConflictException;
+import com.example.nationalpetition.utils.error.exception.CreateCommentException;
 import com.example.nationalpetition.utils.error.exception.NotFoundException;
 import com.example.nationalpetition.dto.comment.response.CommentRetrieveResponseDto;
 
@@ -26,21 +30,28 @@ public class CommentService {
 
     private final CommentRepository commentRepository;
     private final LikeCommentRepository likeCommentRepository;
+    private final BoardRepository boardRepository;
     private final int finalDepth = 3;
 
     @Transactional
     public Long addComment(CommentCreateDto dto, Long boardId, Long memberId) {
+
         if (dto.getParentId() == null) {
             return commentRepository.save(Comment.newRootComment(memberId, boardId, dto.getContent())).getId();
         }
+
         Comment parentComment = commentRepository.findById(dto.getParentId())
                 .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_COMMENT));
 
         int depth = parentComment.getDepth();
 
         if (parentComment.getParentId() > finalDepth) {
-
+            throw new CreateCommentException(ErrorCode.CREATE_COMMENT_EXCEPTION);
         }
+
+
+        Board board = boardRepository.findById(boardId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_BOARD));
+        board.incrementViewCount();
         return commentRepository.save(Comment.newChildComment(dto.getParentId(), memberId, boardId, depth + 1, dto.getContent())).getId();
     }
 
@@ -60,6 +71,8 @@ public class CommentService {
         if (comment == null) {
             throw new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_COMMENT);
         }
+        Board board = boardRepository.findById(comment.getBoardId()).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_BOARD));
+        board.decreaseViewCount();
         comment.delete();
     }
 
