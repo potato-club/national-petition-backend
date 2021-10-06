@@ -24,8 +24,8 @@ public class TokenService {
 	}
 
 	public Token generateToken(Long memberId) {
-		// 토큰 인증시간 = 10분, refresh 토큰 만료 시간 = 3주
-		final long tokenPeriod = 1000L * 60L * 10L;
+		// 토큰 인증시간 = 30분, refresh 토큰 만료 시간 = 3주
+		final long tokenPeriod = 1000L * 60L * 30L;
 		final long refreshPeriod = 1000L * 60L * 60L * 24L * 30L * 3L;
 
 		final Claims claims = Jwts.claims().setSubject(String.valueOf(memberId));

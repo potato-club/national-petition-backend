@@ -9,9 +9,9 @@ import com.example.nationalpetition.domain.member.repository.DeleteMemberReposit
 import com.example.nationalpetition.domain.member.repository.MemberRepository;
 import com.example.nationalpetition.dto.board.response.BoardInfoResponseInMyPage;
 import com.example.nationalpetition.dto.board.response.BoardLikeAndUnLikeCounts;
-import com.example.nationalpetition.dto.member.DeleteMessageConst;
 import com.example.nationalpetition.dto.member.request.NickNameRequest;
 import com.example.nationalpetition.dto.member.response.MemberResponse;
+import com.example.nationalpetition.utils.message.MessageType;
 import com.example.nationalpetition.utils.error.exception.NotFoundException;
 import com.example.nationalpetition.utils.error.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -48,11 +48,13 @@ public class MemberServiceImpl implements MemberService {
 
     @Transactional
     @Override
-    public MemberResponse addNickName(Long memberId, NickNameRequest request) {
-        MemberServiceUtils.duplicateNickName(memberRepository, request.getNickName());
+    public MessageType addNickName(Long memberId, NickNameRequest request) {
+        if (memberRepository.duplicateNickName(request.getNickName())) {
+            return MessageType.NICKNAME_DUPLICATE;
+        }
         final Member member = MemberServiceUtils.isAlreadyExistNickName(memberRepository.findById(memberId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_USER)));
         member.addNickName(request.getNickName());
-        return MemberResponse.of(memberRepository.save(member));
+        return MessageType.NICKNAME_SUCCESS;
     }
 
     // TODO : 순조가 댓글개수 가져오는 기능 추가하면 commentRepository 에서 조회수 찾아오는거 수정하기
@@ -67,12 +69,12 @@ public class MemberServiceImpl implements MemberService {
 
     @Transactional
     @Override
-    public String deleteMember(Long memberId) {
+    public MessageType deleteMember(Long memberId) {
         final Member member = memberRepository.findById(memberId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_USER));
         final DeleteMember deleteMember = DeleteMember.of(member);
         deleteMemberRepository.save(deleteMember);
         memberRepository.delete(member);
-        return DeleteMessageConst.MESSAGE;
+        return MessageType.DELETE_MEMBER;
     }
 
 }

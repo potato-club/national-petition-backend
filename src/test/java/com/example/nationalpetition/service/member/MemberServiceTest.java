@@ -6,17 +6,17 @@ import com.example.nationalpetition.domain.board.repository.BoardLikeRepository;
 import com.example.nationalpetition.domain.board.repository.BoardRepository;
 import com.example.nationalpetition.domain.comment.Comment;
 import com.example.nationalpetition.domain.comment.CommentRepository;
+import com.example.nationalpetition.domain.member.entity.DeleteMember;
 import com.example.nationalpetition.domain.member.entity.Member;
 import com.example.nationalpetition.domain.member.repository.DeleteMemberRepository;
 import com.example.nationalpetition.domain.member.repository.MemberRepository;
 import com.example.nationalpetition.dto.board.request.BoardLikeRequest;
 import com.example.nationalpetition.dto.board.response.BoardInfoResponseInMyPage;
-import com.example.nationalpetition.dto.member.DeleteMessageConst;
 import com.example.nationalpetition.dto.member.request.NickNameRequest;
 import com.example.nationalpetition.dto.member.response.MemberResponse;
+import com.example.nationalpetition.utils.message.MessageType;
 import com.example.nationalpetition.utils.error.ErrorCode;
 import com.example.nationalpetition.utils.error.exception.AlreadyExistException;
-import com.example.nationalpetition.utils.error.exception.DuplicateException;
 import com.example.nationalpetition.utils.error.exception.NotFoundException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -27,9 +27,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
 import java.util.List;
 
 
@@ -97,12 +95,9 @@ public class MemberServiceTest {
         final Member member = memberRepository.save(Member.of("이름", "email@email.com", "picture"));
         final NickNameRequest request = new NickNameRequest("닉네임");
         //when
-        final MemberResponse memberResponse = memberService.addNickName(member.getId(), request);
+        final MessageType message = memberService.addNickName(member.getId(), request);
         //then
-        assertThat(memberResponse.getNickName()).isEqualTo("닉네임");
-        assertThat(memberResponse.getName()).isEqualTo("이름");
-        assertThat(memberResponse.getEmail()).isEqualTo("email@email.com");
-        assertThat(memberResponse.getPicture()).isEqualTo("picture");
+        assertThat(message).isEqualTo(MessageType.NICKNAME_SUCCESS);
     }
 
     @Test
@@ -112,10 +107,10 @@ public class MemberServiceTest {
         회원가입하기();
         final Member member = memberRepository.save(Member.of("아아아", "eee@ee.ee", "piiicture"));
         final NickNameRequest request = new NickNameRequest("닉네임");
-        //when && then
-        assertThatThrownBy(() -> memberService.addNickName(member.getId(), request))
-                .isInstanceOf(DuplicateException.class)
-                .hasMessage(ErrorCode.DUPLICATE_EXCEPTION_NICKNAME.getMessage());
+        //when
+        final MessageType message = memberService.addNickName(member.getId(), request);
+        //then
+        assertThat(message).isEqualTo(MessageType.NICKNAME_DUPLICATE);
     }
 
     @Test
@@ -128,7 +123,6 @@ public class MemberServiceTest {
         assertThatThrownBy(() -> memberService.addNickName(memberId, request))
                 .isInstanceOf(AlreadyExistException.class)
                 .hasMessage(ErrorCode.ALREADY_EXIST_EXCEPTION_ADD_NICKNAME.getMessage());
-
     }
 
 
@@ -189,14 +183,65 @@ public class MemberServiceTest {
         //given
         final Long memberId = 회원가입하기();
         //when
-        final String message = memberService.deleteMember(memberId);
+        final MessageType message = memberService.deleteMember(memberId);
         //then
-        assertThat(message).isEqualTo(DeleteMessageConst.MESSAGE);
+        assertThat(message).isEqualTo(MessageType.DELETE_MEMBER);
         assertThat(deleteMemberRepository.findAll().size()).isEqualTo(1);
         assertThatThrownBy(() -> memberService.findById(memberId))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessage(ErrorCode.NOT_FOUND_EXCEPTION_USER.getMessage());
+    }
 
+
+    @Test
+    @DisplayName("ID값으로 회원 찾기")
+    void findById() {
+        //given
+        final Long memberId = 회원가입하기();
+        //when
+        final MemberResponse memberResponse = memberService.findById(memberId);
+        //then
+        assertThat(memberResponse.getName()).isEqualTo("이름");
+        assertThat(memberResponse.getNickName()).isEqualTo("닉네임");
+        assertThat(memberResponse.getEmail()).isEqualTo("aa@naver.com");
+    }
+
+    @Test
+    @DisplayName("Id값으로 회원 찾기 - 실패")
+    void findById_fail() {
+        //given
+        final Long memberId = 회원가입하기();
+        //when && then
+        assertThatThrownBy(() -> memberService.findById(memberId + 1L))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessage(ErrorCode.NOT_FOUND_EXCEPTION_USER.getMessage());
+
+    }
+
+    @Test
+    @DisplayName("이메일로 회원 찾기")
+    void findByEmail() {
+        //given
+        회원가입하기();
+        final String email = "aa@naver.com";
+        //when
+        final Member member = memberService.findByEmail(email);
+        //then
+        assertThat(member.getName()).isEqualTo("이름");
+        assertThat(member.getNickName()).isEqualTo("닉네임");
+        assertThat(member.getEmail()).isEqualTo("aa@naver.com");
+    }
+
+    @Test
+    @DisplayName("이메일로 회원 찾기 - 실패")
+    void findByEmail_fail() {
+        //given
+        회원가입하기();
+        final String email = "fail@naver.com";
+        //when && then
+        assertThatThrownBy(() -> memberService.findByEmail(email))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessage(ErrorCode.NOT_FOUND_EXCEPTION_USER.getMessage());
     }
 
 

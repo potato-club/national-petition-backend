@@ -7,6 +7,7 @@ import com.example.nationalpetition.dto.member.request.NickNameRequest;
 import com.example.nationalpetition.dto.member.response.MemberResponse;
 import com.example.nationalpetition.security.oauth2.OAuth2Dto;
 import com.example.nationalpetition.service.member.MemberService;
+import com.example.nationalpetition.utils.message.MessageType;
 import com.example.nationalpetition.utils.ValidationUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -45,7 +46,7 @@ public class MemberController {
 
 	@Operation(summary = "닉네임을 등록하는 API", security = {@SecurityRequirement(name = "BearerKey")})
 	@PostMapping("/api/v1/mypage/nickName")
-	public ApiResponse<MemberResponse> addNickName(@MemberId Long memberId,
+	public ApiResponse<MessageType> addNickName(@MemberId Long memberId,
 												   @RequestBody @Valid NickNameRequest request, BindingResult bindingResult) throws BindException {
 		ValidationUtils.validateBindingResult(bindingResult);
 		return ApiResponse.success(memberService.addNickName(memberId, request));
@@ -60,7 +61,7 @@ public class MemberController {
 
 	@Operation(summary = "회원을 탈퇴하는 API", security = {@SecurityRequirement(name = "BearerKey")})
 	@DeleteMapping("/api/v1/mypage/delete")
-	public ApiResponse<String> deleteMember(@MemberId Long memberId) {
+	public ApiResponse<MessageType> deleteMember(@MemberId Long memberId) {
 		return ApiResponse.success(memberService.deleteMember(memberId));
 	}
 
