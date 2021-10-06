@@ -24,6 +24,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+import javax.transaction.Transactional;
 import java.util.Arrays;
 import java.util.List;
 
@@ -95,12 +96,13 @@ public class BoardServiceTest {
 
     @DisplayName("내가 올린 청원게시글을 수정한다")
     @Test
+    @Transactional
     void 게시글_수정() {
         // given
         Board board = new Board(1L, "petitionTitle", "title", "petitionContent", "content", "url", "10000", "사회문제");
         boardRepository.save(board);
 
-        UpdateBoardRequest request = UpdateBoardRequest.testInstance(board.getId(), "title", "content");
+        UpdateBoardRequest request = UpdateBoardRequest.testInstance(board.getId(), "updateTitle", "updateContent");
 
         // when
         boardService.updateBoard(request, 1L);
@@ -249,7 +251,7 @@ public class BoardServiceTest {
         assertThat(responseList).isEmpty();
     }
 
-    @DisplayName("게시글 찬성/반대를 한다. 이미 게시글에 찬성이나 반대를 했으면 boardState의 값으로 업데이트 쳐주고 찬성/반대를 한적이 없으면 새로 생성해준다.")
+    @DisplayName("게시글 찬성/반대를 한다. 이미 게시글에 찬성이나 반대를 했으면 boardState 의 값으로 업데이트 쳐주고 찬성/반대를 한적이 없으면 새로 생성해준다.")
     @Test
     void 게시글_찬성_반대1() {
         // given
@@ -267,6 +269,7 @@ public class BoardServiceTest {
 
     @DisplayName("이미 찬성을 한 상태에서 반대로 변경")
     @Test
+    @Transactional
     void 게시글_찬성_반대2() {
         // given
         Board board = BoardCreator.create(1L, "title", "content");
@@ -282,6 +285,7 @@ public class BoardServiceTest {
         // then
         List<BoardLike> boardLikeList = boardLikeRepository.findAll();
         assertThat(boardLikeList).hasSize(1);
+        assertThat(boardLikeList.get(0).getBoardState()).isEqualTo(BoardState.UNLIKE);
     }
 
     @DisplayName("찬성/반대 삭제")

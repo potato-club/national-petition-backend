@@ -11,6 +11,6 @@ spring:
               - email
 jwt:
   secret: test
-redirect:
-  baseUri: baseUri
-  addNickNameUri : nickNameUri
+google:
+  redirect:
+    uri: uri
