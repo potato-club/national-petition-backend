@@ -6,6 +6,7 @@ import com.example.nationalpetition.domain.board.repository.BoardLikeRepository;
 import com.example.nationalpetition.domain.board.repository.BoardRepository;
 import com.example.nationalpetition.domain.comment.Comment;
 import com.example.nationalpetition.domain.comment.CommentRepository;
+import com.example.nationalpetition.domain.member.entity.DeleteMember;
 import com.example.nationalpetition.domain.member.entity.Member;
 import com.example.nationalpetition.domain.member.repository.DeleteMemberRepository;
 import com.example.nationalpetition.domain.member.repository.MemberRepository;
@@ -122,7 +123,6 @@ public class MemberServiceTest {
         assertThatThrownBy(() -> memberService.addNickName(memberId, request))
                 .isInstanceOf(AlreadyExistException.class)
                 .hasMessage(ErrorCode.ALREADY_EXIST_EXCEPTION_ADD_NICKNAME.getMessage());
-
     }
 
 
@@ -190,7 +190,58 @@ public class MemberServiceTest {
         assertThatThrownBy(() -> memberService.findById(memberId))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessage(ErrorCode.NOT_FOUND_EXCEPTION_USER.getMessage());
+    }
 
+
+    @Test
+    @DisplayName("ID값으로 회원 찾기")
+    void findById() {
+        //given
+        final Long memberId = 회원가입하기();
+        //when
+        final MemberResponse memberResponse = memberService.findById(memberId);
+        //then
+        assertThat(memberResponse.getName()).isEqualTo("이름");
+        assertThat(memberResponse.getNickName()).isEqualTo("닉네임");
+        assertThat(memberResponse.getEmail()).isEqualTo("aa@naver.com");
+    }
+
+    @Test
+    @DisplayName("Id값으로 회원 찾기 - 실패")
+    void findById_fail() {
+        //given
+        final Long memberId = 회원가입하기();
+        //when && then
+        assertThatThrownBy(() -> memberService.findById(memberId + 1L))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessage(ErrorCode.NOT_FOUND_EXCEPTION_USER.getMessage());
+
+    }
+
+    @Test
+    @DisplayName("이메일로 회원 찾기")
+    void findByEmail() {
+        //given
+        회원가입하기();
+        final String email = "aa@naver.com";
+        //when
+        final Member member = memberService.findByEmail(email);
+        //then
+        assertThat(member.getName()).isEqualTo("이름");
+        assertThat(member.getNickName()).isEqualTo("닉네임");
+        assertThat(member.getEmail()).isEqualTo("aa@naver.com");
+    }
+
+    @Test
+    @DisplayName("이메일로 회원 찾기 - 실패")
+    void findByEmail_fail() {
+        //given
+        회원가입하기();
+        final String email = "fail@naver.com";
+        //when && then
+        assertThatThrownBy(() -> memberService.findByEmail(email))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessage(ErrorCode.NOT_FOUND_EXCEPTION_USER.getMessage());
     }
 
 
