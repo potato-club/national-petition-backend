@@ -128,10 +128,8 @@ class MemberControllerTest {
 						responseFields(
 								fieldWithPath("code").type(JsonFieldType.STRING).description("code"),
 								fieldWithPath("message").type(JsonFieldType.STRING).description("message"),
-								fieldWithPath("data.name").type(JsonFieldType.STRING).description("이름"),
-								fieldWithPath("data.email").type(JsonFieldType.STRING).description("이메일"),
-								fieldWithPath("data.picture").type(JsonFieldType.STRING).description("프로필사진"),
-								fieldWithPath("data.nickName").type(JsonFieldType.STRING).description("닉네임")
+								fieldWithPath("data").type(JsonFieldType.STRING).description("data")
+
 						)
 				)
 			);
@@ -155,11 +153,16 @@ class MemberControllerTest {
 						.contentType(MediaType.APPLICATION_JSON))
 				.andDo(print())
 				.andDo(document("member/addNickName/Duplicate",
-						preprocessResponse(prettyPrint())))
-				.andExpect(result -> assertTrue(result.getResolvedException().getClass().isAssignableFrom(DuplicateException.class)))
-				.andExpect(result -> assertThat(result.getResolvedException().getMessage()).isEqualTo(ErrorCode.DUPLICATE_EXCEPTION_NICKNAME.getMessage()));
+						preprocessResponse(prettyPrint()),
+						responseFields(
+								fieldWithPath("code").type(JsonFieldType.STRING).description("code"),
+								fieldWithPath("message").type(JsonFieldType.STRING).description("message"),
+								fieldWithPath("data").type(JsonFieldType.STRING).description("data")
+						)
+					)
+				);
 		//then
-		resultActions.andExpect(status().isConflict());
+		resultActions.andExpect(status().isOk());
 	}
 
 	@Test

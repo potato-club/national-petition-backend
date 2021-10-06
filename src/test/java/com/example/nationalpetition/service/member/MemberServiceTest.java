@@ -11,7 +11,7 @@ import com.example.nationalpetition.domain.member.repository.DeleteMemberReposit
 import com.example.nationalpetition.domain.member.repository.MemberRepository;
 import com.example.nationalpetition.dto.board.request.BoardLikeRequest;
 import com.example.nationalpetition.dto.board.response.BoardInfoResponseInMyPage;
-import com.example.nationalpetition.dto.member.DeleteMessageConst;
+import com.example.nationalpetition.dto.member.MessageConst;
 import com.example.nationalpetition.dto.member.request.NickNameRequest;
 import com.example.nationalpetition.dto.member.response.MemberResponse;
 import com.example.nationalpetition.utils.error.ErrorCode;
@@ -27,9 +27,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
 import java.util.List;
 
 
@@ -97,12 +95,9 @@ public class MemberServiceTest {
         final Member member = memberRepository.save(Member.of("이름", "email@email.com", "picture"));
         final NickNameRequest request = new NickNameRequest("닉네임");
         //when
-        final MemberResponse memberResponse = memberService.addNickName(member.getId(), request);
+        final String message = memberService.addNickName(member.getId(), request);
         //then
-        assertThat(memberResponse.getNickName()).isEqualTo("닉네임");
-        assertThat(memberResponse.getName()).isEqualTo("이름");
-        assertThat(memberResponse.getEmail()).isEqualTo("email@email.com");
-        assertThat(memberResponse.getPicture()).isEqualTo("picture");
+        assertThat(message).isEqualTo(MessageConst.SUCCESS);
     }
 
     @Test
@@ -112,10 +107,10 @@ public class MemberServiceTest {
         회원가입하기();
         final Member member = memberRepository.save(Member.of("아아아", "eee@ee.ee", "piiicture"));
         final NickNameRequest request = new NickNameRequest("닉네임");
-        //when && then
-        assertThatThrownBy(() -> memberService.addNickName(member.getId(), request))
-                .isInstanceOf(DuplicateException.class)
-                .hasMessage(ErrorCode.DUPLICATE_EXCEPTION_NICKNAME.getMessage());
+        //when
+        final String message = memberService.addNickName(member.getId(), request);
+        //then
+        assertThat(message).isEqualTo(MessageConst.DUPLICATE);
     }
 
     @Test
@@ -191,7 +186,7 @@ public class MemberServiceTest {
         //when
         final String message = memberService.deleteMember(memberId);
         //then
-        assertThat(message).isEqualTo(DeleteMessageConst.MESSAGE);
+        assertThat(message).isEqualTo(MessageConst.MESSAGE);
         assertThat(deleteMemberRepository.findAll().size()).isEqualTo(1);
         assertThatThrownBy(() -> memberService.findById(memberId))
                 .isInstanceOf(NotFoundException.class)

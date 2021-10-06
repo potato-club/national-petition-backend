@@ -13,7 +13,7 @@ public interface MemberService {
 
     Member findByEmail(String email);
 
-    MemberResponse addNickName(Long memberId, NickNameRequest request);
+    String addNickName(Long memberId, NickNameRequest request);
 
     String deleteMember(Long memberId);
 

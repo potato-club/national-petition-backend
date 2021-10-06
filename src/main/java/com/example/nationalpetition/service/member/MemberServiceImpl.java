@@ -9,7 +9,7 @@ import com.example.nationalpetition.domain.member.repository.DeleteMemberReposit
 import com.example.nationalpetition.domain.member.repository.MemberRepository;
 import com.example.nationalpetition.dto.board.response.BoardInfoResponseInMyPage;
 import com.example.nationalpetition.dto.board.response.BoardLikeAndUnLikeCounts;
-import com.example.nationalpetition.dto.member.DeleteMessageConst;
+import com.example.nationalpetition.dto.member.MessageConst;
 import com.example.nationalpetition.dto.member.request.NickNameRequest;
 import com.example.nationalpetition.dto.member.response.MemberResponse;
 import com.example.nationalpetition.utils.error.exception.NotFoundException;
@@ -48,11 +48,13 @@ public class MemberServiceImpl implements MemberService {
 
     @Transactional
     @Override
-    public MemberResponse addNickName(Long memberId, NickNameRequest request) {
-        MemberServiceUtils.duplicateNickName(memberRepository, request.getNickName());
+    public String addNickName(Long memberId, NickNameRequest request) {
+        if (memberRepository.duplicateNickName(request.getNickName())) {
+            return MessageConst.DUPLICATE;
+        }
         final Member member = MemberServiceUtils.isAlreadyExistNickName(memberRepository.findById(memberId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_USER)));
         member.addNickName(request.getNickName());
-        return MemberResponse.of(memberRepository.save(member));
+        return MessageConst.SUCCESS;
     }
 
     // TODO : 순조가 댓글개수 가져오는 기능 추가하면 commentRepository 에서 조회수 찾아오는거 수정하기
@@ -72,7 +74,7 @@ public class MemberServiceImpl implements MemberService {
         final DeleteMember deleteMember = DeleteMember.of(member);
         deleteMemberRepository.save(deleteMember);
         memberRepository.delete(member);
-        return DeleteMessageConst.MESSAGE;
+        return MessageConst.MESSAGE;
     }
 
 }
