@@ -22,6 +22,7 @@ public class CustomOAuth2Service implements OAuth2UserService {
         this.memberRepository = memberRepository;
     }
 
+    @Transactional
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         final OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuth2UserService = new DefaultOAuth2UserService();
