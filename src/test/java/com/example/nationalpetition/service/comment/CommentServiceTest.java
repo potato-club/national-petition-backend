@@ -1,5 +1,7 @@
 package com.example.nationalpetition.service.comment;
 
+import com.example.nationalpetition.domain.board.Board;
+import com.example.nationalpetition.domain.board.repository.BoardRepository;
 import com.example.nationalpetition.domain.comment.*;
 import com.example.nationalpetition.dto.comment.request.CommentCreateDto;
 import com.example.nationalpetition.dto.comment.request.CommentUpdateDto;
@@ -29,27 +31,38 @@ public class CommentServiceTest {
     @Autowired
     private LikeCommentRepository likeCommentRepository;
 
+    @Autowired
+    private BoardRepository boardRepository;
+
     @AfterEach
     void cleanUp() {
         commentRepository.deleteAll();
         likeCommentRepository.deleteAll();
+        boardRepository.deleteAll();
     }
 
     @Test
     void 댓글을_저장한다() {
         // given
         String content = "감자는 뛰어납니다.";
-        Long boardId = 1L;
         Long memberId = 1L;
         int depth = 1;
+        String title = "안녕하세요.";
+        String petitionUrl = "www1.national-petition.co.kr";
+        String petitionsCounts = "1";
+        String category = "인권";
 
         CommentCreateDto dto = CommentCreateDto.builder()
                 .content(content)
                 .memberId(memberId)
                 .build();
 
+        Board board = new Board(memberId, title, title, content, content, petitionUrl, petitionsCounts, category);
+
+        boardRepository.save(board);
+
         // when
-        commentService.addComment(dto, boardId, memberId);
+        commentService.addComment(dto, board.getId(), memberId);
 
         // then
         List<Comment> comments = commentRepository.findAll();
@@ -59,7 +72,7 @@ public class CommentServiceTest {
         assertThat(comments.get(0).getParentId()).isEqualTo(null);
         assertThat(comments.get(0).getDepth()).isEqualTo(depth);
         assertThat(comments.get(0).getContent()).isEqualTo(content);
-        assertThat(comments.get(0).getBoardId()).isEqualTo(boardId);
+        assertThat(comments.get(0).getBoardId()).isEqualTo(board.getId());
         assertThat(comments.get(0).getMemberId()).isEqualTo(memberId);
     }
 
@@ -69,6 +82,16 @@ public class CommentServiceTest {
         String content = "동의합니다.";
         Long boardId = 1L;
         Long memberId = 1L;
+        String petitionUrl = "www1.national-petition.co.kr";
+        String petitionTitle = "초코가 너무 귀여워요...";
+        String title = "국민청원";
+        String petitionContent = "초코는 목걸이를 하고 있어요";
+        String category = "건강/인권";
+        String petitionCount = "10000000000";
+
+        Board board = new Board(memberId, petitionTitle, title, petitionContent, content, petitionUrl, petitionCount, category);
+
+        boardRepository.save(board);
 
         Comment parent = commentRepository.save(Comment.newRootComment(memberId, boardId, content));
 
@@ -89,6 +112,7 @@ public class CommentServiceTest {
         assertThat(comments.get(1).getMemberId()).isEqualTo(memberId);
         assertThat(comments.get(1).getContent()).isEqualTo(content);
         assertThat(comments.get(1).getBoardId()).isEqualTo(boardId);
+
     }
 
     @Test
@@ -156,12 +180,23 @@ public class CommentServiceTest {
     @Test
     void 댓글을_삭제한다() {
         // given
-        Comment comment = commentRepository.save(Comment.newRootComment(1L, 1L, "치킨이 더 맛있어요"));
         Long memberId = 1L;
-        Long commentId = comment.getId();
+        String petitionUrl = "www1.national-petition.co.kr";
+        String petitionTitle = "초코가 너무 귀여워요...";
+        String title = "국민청원";
+        String petitionContent = "초코는 목걸이를 하고 있어요";
+        String content = "초코바봉";
+        String category = "건강/인권";
+        String petitionCount = "10000000000";
+
+        Board board = new Board(memberId, petitionTitle, title, petitionContent, content, petitionUrl, petitionCount, category);
+
+        Comment comment = commentRepository.save(Comment.newRootComment(memberId, board.getId(), content));
+
+        boardRepository.save(board);
 
         // when
-        commentService.deleteComment(memberId, commentId);
+        commentService.deleteComment(memberId, comment.getId());
 
         // then
         List<Comment> deletedComment = commentRepository.findAll();

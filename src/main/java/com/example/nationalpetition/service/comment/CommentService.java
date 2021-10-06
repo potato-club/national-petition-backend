@@ -44,9 +44,9 @@ public class CommentService {
 
         int depth = parentComment.getDepth();
 
-        if (parentComment.getParentId() > finalDepth) {
-            throw new CreateCommentException(ErrorCode.CREATE_COMMENT_EXCEPTION);
-        }
+//        if (parentComment.getParentId() > finalDepth) {
+//            throw new CreateCommentException(ErrorCode.CREATE_COMMENT_EXCEPTION);
+//        }
 
         Board board = boardRepository.findById(boardId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_BOARD));
         board.incrementViewCount();
