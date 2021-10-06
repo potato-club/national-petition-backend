@@ -11,12 +11,11 @@ import com.example.nationalpetition.domain.member.repository.DeleteMemberReposit
 import com.example.nationalpetition.domain.member.repository.MemberRepository;
 import com.example.nationalpetition.dto.board.request.BoardLikeRequest;
 import com.example.nationalpetition.dto.board.response.BoardInfoResponseInMyPage;
-import com.example.nationalpetition.dto.member.MessageConst;
 import com.example.nationalpetition.dto.member.request.NickNameRequest;
 import com.example.nationalpetition.dto.member.response.MemberResponse;
+import com.example.nationalpetition.utils.message.MessageType;
 import com.example.nationalpetition.utils.error.ErrorCode;
 import com.example.nationalpetition.utils.error.exception.AlreadyExistException;
-import com.example.nationalpetition.utils.error.exception.DuplicateException;
 import com.example.nationalpetition.utils.error.exception.NotFoundException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -95,9 +94,9 @@ public class MemberServiceTest {
         final Member member = memberRepository.save(Member.of("이름", "email@email.com", "picture"));
         final NickNameRequest request = new NickNameRequest("닉네임");
         //when
-        final String message = memberService.addNickName(member.getId(), request);
+        final MessageType message = memberService.addNickName(member.getId(), request);
         //then
-        assertThat(message).isEqualTo(MessageConst.SUCCESS);
+        assertThat(message).isEqualTo(MessageType.NICKNAME_SUCCESS);
     }
 
     @Test
@@ -108,9 +107,9 @@ public class MemberServiceTest {
         final Member member = memberRepository.save(Member.of("아아아", "eee@ee.ee", "piiicture"));
         final NickNameRequest request = new NickNameRequest("닉네임");
         //when
-        final String message = memberService.addNickName(member.getId(), request);
+        final MessageType message = memberService.addNickName(member.getId(), request);
         //then
-        assertThat(message).isEqualTo(MessageConst.DUPLICATE);
+        assertThat(message).isEqualTo(MessageType.NICKNAME_DUPLICATE);
     }
 
     @Test
@@ -184,9 +183,9 @@ public class MemberServiceTest {
         //given
         final Long memberId = 회원가입하기();
         //when
-        final String message = memberService.deleteMember(memberId);
+        final MessageType message = memberService.deleteMember(memberId);
         //then
-        assertThat(message).isEqualTo(MessageConst.MESSAGE);
+        assertThat(message).isEqualTo(MessageType.DELETE_MEMBER);
         assertThat(deleteMemberRepository.findAll().size()).isEqualTo(1);
         assertThatThrownBy(() -> memberService.findById(memberId))
                 .isInstanceOf(NotFoundException.class)
