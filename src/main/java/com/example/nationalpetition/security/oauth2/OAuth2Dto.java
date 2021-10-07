@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class OAuth2Dto {
 
+    // TODO : 로컬 테스트용 나중에 삭제 예정
+
     private String register;
     private String idToken;
     private String refreshToken;
