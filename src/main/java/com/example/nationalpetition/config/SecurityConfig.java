@@ -1,11 +1,11 @@
 package com.example.nationalpetition.config;
 
 
+import com.example.nationalpetition.security.ExceptionHandlerFilter;
 import com.example.nationalpetition.security.jwt.JwtAuthFilter;
 import com.example.nationalpetition.security.jwt.TokenService;
 import com.example.nationalpetition.security.oauth2.CustomOAuth2Service;
 import com.example.nationalpetition.security.oauth2.OAuth2SuccessHandler;
-
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -42,7 +42,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
+                .and()
                 .formLogin().disable()
                 .authorizeRequests().anyRequest().permitAll()
 
@@ -56,6 +58,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
         http
-                .addFilterBefore(new JwtAuthFilter(tokenService), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtAuthFilter(tokenService), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new ExceptionHandlerFilter(), JwtAuthFilter.class);
     }
 }

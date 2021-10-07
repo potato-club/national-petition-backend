@@ -17,8 +17,9 @@ public enum ErrorCode {
     NOT_FOUND_EXCEPTION_COMMENT("N003", "해당 하는 댓글을 찾을 수 없습니다."),
 
     // UnAuthorized
-    JWT_TOKEN_EXCEPTION_INVALID("U001", "유효한 JWT 토큰이 없습니다"),
+    JWT_TOKEN_EXCEPTION_INVALID("U001", "잘못된 JWT 서명입니다."),
     JWT_TOKEN_EXCEPTION_EXPIRED("U002", "JWT 토큰이 만료되었습니다."),
+    JWT_TOKEN_EXCEPTION_NOTHING("U003", "JWT 토큰이 없습니다."),
 
     // Bad Request
     VALIDATION_EXCEPTION("B001", "유효하지 않은 값입니다."),
