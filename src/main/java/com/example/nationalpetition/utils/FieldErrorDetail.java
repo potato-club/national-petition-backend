@@ -14,19 +14,10 @@ import java.util.Locale;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class FieldErrorDetail {
 
-    private String objectName;
-    private String field;
-    private String code;
     private String message;
 
-
     public static FieldErrorDetail of(FieldError fieldError, MessageSource messageSource) {
-        return new FieldErrorDetail(
-                fieldError.getObjectName(),
-                fieldError.getField(),
-                fieldError.getCode(),
-                messageSource.getMessage(fieldError, Locale.KOREA)
-        );
+        return new FieldErrorDetail(messageSource.getMessage(fieldError, Locale.KOREA));
     }
 
 
