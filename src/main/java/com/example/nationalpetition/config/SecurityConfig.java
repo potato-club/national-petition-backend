@@ -4,6 +4,7 @@ package com.example.nationalpetition.config;
 import com.example.nationalpetition.security.jwt.JwtAuthFilter;
 import com.example.nationalpetition.security.jwt.TokenService;
 import com.example.nationalpetition.security.oauth2.CustomOAuth2Service;
+import com.example.nationalpetition.security.oauth2.OAuth2FailureHandler;
 import com.example.nationalpetition.security.oauth2.OAuth2SuccessHandler;
 
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -24,12 +25,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final CustomOAuth2Service customOAuth2UserService;
     private final TokenService tokenService;
     private final CorsConfigurationSource corsConfigurationSource;
+    private final OAuth2FailureHandler oAuth2FailureHandler;
 
-    public SecurityConfig(OAuth2SuccessHandler oAuth2SuccessHandler, CustomOAuth2Service customOAuth2UserService, TokenService tokenService, CorsConfigurationSource corsConfigurationSource) {
+    public SecurityConfig(OAuth2SuccessHandler oAuth2SuccessHandler, CustomOAuth2Service customOAuth2UserService, TokenService tokenService, CorsConfigurationSource corsConfigurationSource,
+                          OAuth2FailureHandler oAuth2FailureHandler) {
         this.oAuth2SuccessHandler = oAuth2SuccessHandler;
         this.customOAuth2UserService = customOAuth2UserService;
         this.tokenService = tokenService;
         this.corsConfigurationSource = corsConfigurationSource;
+        this.oAuth2FailureHandler = oAuth2FailureHandler;
     }
 
     @Override
@@ -49,6 +53,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                     .oauth2Login()
                     .successHandler(oAuth2SuccessHandler)
+                    .failureHandler(oAuth2FailureHandler)
                     .userInfoEndpoint().userService(customOAuth2UserService);
 
         http
