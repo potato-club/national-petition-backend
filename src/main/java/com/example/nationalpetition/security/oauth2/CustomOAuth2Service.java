@@ -38,7 +38,7 @@ public class CustomOAuth2Service implements OAuth2UserService {
 
     private void saveOrUpdate(OAuthAttributes authAttributes) {
         memberRepository.save(memberRepository.findByEmail(authAttributes.getEmail())
-                .map(u -> u.update(authAttributes.getName()))
+                .map(u -> u.update(authAttributes.getName(), authAttributes.getPicture()))
                 .orElse(authAttributes.toEntity()));
     }
 
