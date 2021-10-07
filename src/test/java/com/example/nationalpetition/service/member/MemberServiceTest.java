@@ -95,9 +95,9 @@ public class MemberServiceTest {
         final Member member = memberRepository.save(Member.of("이름", "email@email.com", "picture"));
         final NickNameRequest request = new NickNameRequest("닉네임");
         //when
-        final MessageType message = memberService.addNickName(member.getId(), request);
+        final String message = memberService.addNickName(member.getId(), request);
         //then
-        assertThat(message).isEqualTo(MessageType.NICKNAME_SUCCESS);
+        assertThat(message).isEqualTo(MessageType.NICKNAME_SUCCESS.getMessage());
     }
 
     @Test
@@ -108,9 +108,9 @@ public class MemberServiceTest {
         final Member member = memberRepository.save(Member.of("아아아", "eee@ee.ee", "piiicture"));
         final NickNameRequest request = new NickNameRequest("닉네임");
         //when
-        final MessageType message = memberService.addNickName(member.getId(), request);
+        final String message = memberService.addNickName(member.getId(), request);
         //then
-        assertThat(message).isEqualTo(MessageType.NICKNAME_DUPLICATE);
+        assertThat(message).isEqualTo(MessageType.NICKNAME_DUPLICATE.getMessage());
     }
 
     @Test
@@ -183,9 +183,9 @@ public class MemberServiceTest {
         //given
         final Long memberId = 회원가입하기();
         //when
-        final MessageType message = memberService.deleteMember(memberId);
+        final String message = memberService.deleteMember(memberId);
         //then
-        assertThat(message).isEqualTo(MessageType.DELETE_MEMBER);
+        assertThat(message).isEqualTo(MessageType.DELETE_MEMBER.getMessage());
         assertThat(deleteMemberRepository.findAll().size()).isEqualTo(1);
         assertThatThrownBy(() -> memberService.findById(memberId))
                 .isInstanceOf(NotFoundException.class)

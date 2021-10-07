@@ -48,13 +48,13 @@ public class MemberServiceImpl implements MemberService {
 
     @Transactional
     @Override
-    public MessageType addNickName(Long memberId, NickNameRequest request) {
+    public String addNickName(Long memberId, NickNameRequest request) {
         if (memberRepository.duplicateNickName(request.getNickName())) {
-            return MessageType.NICKNAME_DUPLICATE;
+            return MessageType.NICKNAME_DUPLICATE.getMessage();
         }
         final Member member = MemberServiceUtils.isAlreadyExistNickName(memberRepository.findById(memberId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_USER)));
         member.addNickName(request.getNickName());
-        return MessageType.NICKNAME_SUCCESS;
+        return MessageType.NICKNAME_SUCCESS.getMessage();
     }
 
     // TODO : 순조가 댓글개수 가져오는 기능 추가하면 commentRepository 에서 조회수 찾아오는거 수정하기
@@ -69,12 +69,12 @@ public class MemberServiceImpl implements MemberService {
 
     @Transactional
     @Override
-    public MessageType deleteMember(Long memberId) {
+    public String deleteMember(Long memberId) {
         final Member member = memberRepository.findById(memberId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_USER));
         final DeleteMember deleteMember = DeleteMember.of(member);
         deleteMemberRepository.save(deleteMember);
         memberRepository.delete(member);
-        return MessageType.DELETE_MEMBER;
+        return MessageType.DELETE_MEMBER.getMessage();
     }
 
 }
