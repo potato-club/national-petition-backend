@@ -30,7 +30,6 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final LikeCommentRepository likeCommentRepository;
     private final BoardRepository boardRepository;
-    private final int finalDepth = 3;
 
     @Transactional
     public Long addComment(CommentCreateDto dto, Long boardId, Long memberId) {
@@ -44,13 +43,9 @@ public class CommentService {
 
         int depth = parentComment.getDepth();
 
-//        if (parentComment.getParentId() > finalDepth) {
-//            throw new CreateCommentException(ErrorCode.CREATE_COMMENT_EXCEPTION);
-//        }
-
         Board board = boardRepository.findById(boardId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_BOARD));
         board.incrementViewCount();
-        return commentRepository.save(Comment.newChildComment(dto.getParentId(), memberId, boardId, depth + 1, dto.getContent())).getId();
+        return commentRepository.save(Comment.newChildComment(dto.getParentId(), memberId, board.getId(), depth + 1, dto.getContent())).getId();
     }
 
     @Transactional
@@ -66,10 +61,11 @@ public class CommentService {
     @Transactional
     public void deleteComment(Long memberId, Long commentId) {
         Comment comment = commentRepository.findByIdAndMemberIdAndIsDeletedIsFalse(commentId, memberId);
+        Board board = boardRepository.findById(comment.getBoardId()).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_BOARD));
+
         if (comment == null) {
             throw new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_COMMENT);
         }
-        Board board = boardRepository.findById(comment.getBoardId()).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_BOARD));
         board.decreaseViewCount();
         comment.delete();
     }

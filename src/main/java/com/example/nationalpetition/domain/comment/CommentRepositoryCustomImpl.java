@@ -15,10 +15,10 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom{
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Comment findByIdAndMemberIdAndIsDeletedIsFalse(Long id, Long memberId) {
+    public Comment findByIdAndMemberIdAndIsDeletedIsFalse(Long commentId, Long memberId) {
         return queryFactory.selectFrom(comment)
                 .where(
-                        comment.id.eq(id),
+                        comment.id.eq(commentId),
                         comment.memberId.eq(memberId),
                         comment.isDeleted.isFalse()
                 ).fetchOne();
