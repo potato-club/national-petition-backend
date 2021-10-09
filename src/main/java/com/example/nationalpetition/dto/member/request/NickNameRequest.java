@@ -12,7 +12,7 @@ import javax.validation.constraints.Size;
 public class NickNameRequest {
 
     @NotEmpty
-    @Size(min = 2, max = 20)
+    @Size(min = 1, max = 6)
     private String nickName;
 
     public NickNameRequest(String nickName) {
