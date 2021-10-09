@@ -2,17 +2,15 @@ package com.example.nationalpetition.controller.board;
 
 import com.example.nationalpetition.config.MemberId;
 import com.example.nationalpetition.controller.ApiResponse;
-import com.example.nationalpetition.dto.board.request.BoardLikeRequest;
-import com.example.nationalpetition.dto.board.request.CreateBoardRequest;
-import com.example.nationalpetition.dto.board.request.DeleteBoardLikeRequest;
-import com.example.nationalpetition.dto.board.request.UpdateBoardRequest;
+import com.example.nationalpetition.dto.board.request.*;
 import com.example.nationalpetition.dto.board.response.BoardInfoResponseWithLikeCount;
 import com.example.nationalpetition.service.board.BoardService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -46,8 +44,10 @@ public class BoardController {
 
 	@Operation(summary = "게시글 리스트 불러오는 API")
 	@GetMapping("/api/v1/getBoard/list")
-	public ApiResponse<List<BoardInfoResponseWithLikeCount>> retrieveBoard(String search, @PageableDefault(size = 10, sort = "id", direction = DESC) Pageable pageable) {
-		return ApiResponse.success(boardService.retrieveBoard(search, pageable));
+	public ApiResponse<List<BoardInfoResponseWithLikeCount>> retrieveBoard(@Valid BoardRetrieveRequest request) {
+		String sort = request.getSort() == null ? "id" :  request.getSort();
+		Pageable pageable = PageRequest.of(request.getPage(), request.getSize(), Sort.by(DESC, sort));
+		return ApiResponse.success(boardService.retrieveBoard(request.getSearch(), pageable));
 	}
 
 	@Operation(summary = "게시글 찬성 / 반대하는 API", security = {@SecurityRequirement(name = "BearerKey")})
