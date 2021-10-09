@@ -1,4 +1,4 @@
-package com.example.nationalpetition.config;
+package com.example.nationalpetition.config.webclient;
 
 import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;

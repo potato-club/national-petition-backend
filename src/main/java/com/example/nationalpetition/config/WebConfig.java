@@ -1,5 +1,6 @@
 package com.example.nationalpetition.config;
 
+import com.example.nationalpetition.config.auth.MemberIdArgumentResolver;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;

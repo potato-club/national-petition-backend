@@ -1,4 +1,4 @@
-package com.example.nationalpetition.config;
+package com.example.nationalpetition.config.querydsl;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.context.annotation.Bean;

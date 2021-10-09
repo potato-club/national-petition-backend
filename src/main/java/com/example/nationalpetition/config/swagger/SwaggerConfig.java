@@ -1,6 +1,6 @@
 package com.example.nationalpetition.config.swagger;
 
-import com.example.nationalpetition.config.MemberId;
+import com.example.nationalpetition.config.auth.MemberId;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;

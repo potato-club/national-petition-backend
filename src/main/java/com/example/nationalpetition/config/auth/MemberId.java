@@ -1,4 +1,4 @@
-package com.example.nationalpetition.config;
+package com.example.nationalpetition.config.auth;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

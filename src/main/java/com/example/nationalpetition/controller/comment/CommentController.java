@@ -1,6 +1,6 @@
 package com.example.nationalpetition.controller.comment;
 
-import com.example.nationalpetition.config.MemberId;
+import com.example.nationalpetition.config.auth.MemberId;
 import com.example.nationalpetition.controller.ApiResponse;
 import com.example.nationalpetition.dto.comment.request.CommentCreateDto;
 import com.example.nationalpetition.dto.comment.request.CommentUpdateDto;

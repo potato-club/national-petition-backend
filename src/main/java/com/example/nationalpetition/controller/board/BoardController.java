@@ -1,6 +1,6 @@
 package com.example.nationalpetition.controller.board;
 
-import com.example.nationalpetition.config.MemberId;
+import com.example.nationalpetition.config.auth.MemberId;
 import com.example.nationalpetition.controller.ApiResponse;
 import com.example.nationalpetition.dto.board.request.*;
 import com.example.nationalpetition.dto.board.response.BoardInfoResponseWithLikeCount;

@@ -1,4 +1,4 @@
-package com.example.nationalpetition.config;
+package com.example.nationalpetition.config.auth;
 
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
