@@ -11,6 +11,7 @@ public enum MessageType {
 
     CODE("code"),
     MESSAGE("message"),
+    ERROR("error"),
 
     TOKEN_NOT_REQUIRED("token 유효성 검사가 필요없는 url 입니다. uri: "),
     TOKEN_NOTHING("JWT 토큰이 없습니다, uri: "),

@@ -24,6 +24,10 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
+	private static final String register = "register";
+	private static final String idToken = "idToken";
+	private static final String refreshToken = "refreshToken";
+
 	private final OAuth2Properties oAuth2Properties;
 	private final TokenService tokenService;
 	private final MemberRepository memberRepository;
@@ -45,9 +49,9 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
 	private String createRedirectUri(boolean isRegister, Token token) {
 		return UriComponentsBuilder.fromUriString(oAuth2Properties.getRedirectUri())
-				.queryParam("register", isRegister)
-				.queryParam("idToken", token.getToken())
-				.queryParam("refreshToken", token.getRefreshToken())
+				.queryParam(register, isRegister)
+				.queryParam(idToken, token.getToken())
+				.queryParam(refreshToken, token.getRefreshToken())
 				.build()
 				.toUriString();
 	}
