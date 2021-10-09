@@ -83,6 +83,18 @@ include::{snippets}/board/list/request-parameters.adoc[]
 Response
 include::{snippets}/board/list/http-response.adoc[]
 
+[[resources_board_list_view]]
+=== get Boards 조회순으로 조회
+
+Request HTTP Example
+include::{snippets}/board/list2/http-request.adoc[]
+
+Path-Parameters
+include::{snippets}/board/list2/request-parameters.adoc[]
+
+Response
+include::{snippets}/board/list2/http-response.adoc[]
+
 == 인기 랭킹 TOP5 조회
 
 Request

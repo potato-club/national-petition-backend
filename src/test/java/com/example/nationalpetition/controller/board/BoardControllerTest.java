@@ -287,6 +287,51 @@ public class BoardControllerTest {
     }
 
     @Test
+    void 게시글리스트를_불러온다2() throws Exception {
+        // given
+        Board board1 = new Board(1L, "petitionTitle", "title1", "petitionContent", "content", "url", "10000", "사회문제");
+        board1.incrementViewCount();
+        Board board2 = new Board(1L, "petitionTitle", "title2", "petitionContent", "content", "url", "10000", "사회문제");
+        boardRepository.saveAll(Arrays.asList(board1, board2));
+
+        // when & then
+        final ResultActions resultActions = mockMvc.perform(
+                        RestDocumentationRequestBuilders.get("/api/v1/getBoard/list?search=&page=0&size=10&sort=viewCounts,desc")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andDo(document("board/list2",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestParameters(
+                                parameterWithName("search").description("타이틀 기준 검색어 [required] required 아니게 바꿀까??"),
+                                parameterWithName("page").description("page [required]"),
+                                parameterWithName("size").description("size [optional] default = 10"),
+                                parameterWithName("sort").description("정렬할 필드")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").description("code"),
+                                fieldWithPath("message").description("message"),
+                                fieldWithPath("data[].boardId").description("boardId"),
+                                fieldWithPath("data[].memberId").description("작성한 유저"),
+                                fieldWithPath("data[].petitionTitle").description("크롤링 해서 가져온 제목"),
+                                fieldWithPath("data[].title").description("나의 작성한 제목"),
+                                fieldWithPath("data[].petitionContent").description("크롤링해서 가져온 글"),
+                                fieldWithPath("data[].content").description("내가 작성한 글"),
+                                fieldWithPath("data[].petitionUrl").description("url"),
+                                fieldWithPath("data[].petitionsCount").description("청원 수"),
+                                fieldWithPath("data[].category").description("청원 카테고리"),
+                                fieldWithPath("data[].viewCounts").description("조회수"),
+                                fieldWithPath("data[].boardCommentCounts").description("댓글 개수"),
+                                fieldWithPath("data[].boardLikeCounts").description("좋아요 개수"),
+                                fieldWithPath("data[].boardUnLikeCounts").description("싫어요 개수"),
+                                fieldWithPath("data[].createdDate").description("생성날짜")
+                        )
+                ));
+        resultActions.andExpect(status().isOk());
+    }
+
+    @Test
     void 게시글_찬성_반대() throws Exception {
         // given
         Board board1 = new Board(1L, "petitionTitle", "title1", "petitionContent", "content", "url", "10000", "사회문제");

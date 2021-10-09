@@ -27,6 +27,10 @@ Content-Type: application/json
 GET {{local}}/api/v1/getBoard/list?search=&page=0
 Content-Type: application/json
 
+### 게시글 리스트 불러오기 조회순
+GET {{local}}/api/v1/getBoard/list?search=&page=0&sort=viewCounts,desc
+Content-Type: application/json
+
 ### 게시글 찬성/반대
 POST {{local}}/api/v1/board/like
 Content-Type: application/json

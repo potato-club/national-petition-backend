@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import javax.transaction.Transactional;
 import java.util.Arrays;
@@ -249,6 +250,28 @@ public class BoardServiceTest {
 
         // then
         assertThat(responseList).isEmpty();
+    }
+
+    @DisplayName("게시글 불러올 때 조회순으로 불러오기")
+    @Test
+    void 게시글_리스트_불러오기4() {
+        // given
+        Board board1 = BoardCreator.create(1L, "title1", "content1");
+        board1.incrementViewCount();
+        board1.incrementViewCount();
+        Board board2 = BoardCreator.create(1L, "title2", "content2");
+        Board board3 = BoardCreator.create(1L, "title3", "content3");
+        board3.incrementViewCount();
+        boardRepository.saveAll(Arrays.asList(board1, board2, board3));
+
+        // when
+        final Pageable pageable = PageRequest.of(0, 3, Sort.by(DESC, "viewCounts"));
+        final List<BoardInfoResponseWithLikeCount> responseList = boardService.retrieveBoard("", pageable);
+
+        // then
+        assertThat(responseList).hasSize(3);
+        assertThat(responseList.get(0).getBoardId()).isEqualTo(board1.getId());
+        assertThat(responseList.get(1).getBoardId()).isEqualTo(board3.getId());
     }
 
     @DisplayName("게시글 찬성/반대를 한다. 이미 게시글에 찬성이나 반대를 했으면 boardState 의 값으로 업데이트 쳐주고 찬성/반대를 한적이 없으면 새로 생성해준다.")
