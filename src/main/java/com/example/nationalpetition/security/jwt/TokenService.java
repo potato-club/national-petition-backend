@@ -2,11 +2,11 @@ package com.example.nationalpetition.security.jwt;
 
 import com.example.nationalpetition.utils.error.exception.JwtTokenException;
 import com.example.nationalpetition.utils.error.ErrorCode;
+import com.example.nationalpetition.utils.message.MessageType;
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
 import javax.annotation.PostConstruct;
 import java.util.Base64;
 import java.util.Date;
@@ -55,7 +55,7 @@ public class TokenService {
 					.getBody()
 					.getSubject());
 		} catch (MalformedJwtException  | UnsupportedJwtException | IllegalArgumentException e) {
-			log.info("잘못된 JWT 서명입니다.", e);
+			log.info(MessageType.TOKEN_INVALID.getMessage() + e);
 			throw new JwtTokenException(ErrorCode.JWT_TOKEN_EXCEPTION_INVALID);
 		} catch (ExpiredJwtException e) {
 			throw new JwtTokenException(ErrorCode.JWT_TOKEN_EXCEPTION_EXPIRED);
