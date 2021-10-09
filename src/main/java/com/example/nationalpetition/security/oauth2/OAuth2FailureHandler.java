@@ -26,7 +26,7 @@ public class OAuth2FailureHandler extends SimpleUrlAuthenticationFailureHandler 
     private String createRedirectUri() {
         // TODO : BAC-42 머지하면 메세지들 변수화하기 (충돌 방지로 일단 이렇게했어요)
         return UriComponentsBuilder.fromUriString(oAuth2Properties.getRedirectUri())
-                .queryParam("message", "error")
+                .queryParam(MessageType.MESSAGE.getMessage(), MessageType.ERROR.getMessage())
                 .build()
                 .toUriString();
     }
