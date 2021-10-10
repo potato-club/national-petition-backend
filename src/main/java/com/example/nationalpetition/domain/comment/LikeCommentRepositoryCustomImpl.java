@@ -11,11 +11,21 @@ public class LikeCommentRepositoryCustomImpl implements LikeCommentRepositoryCus
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public LikeComment findByIdAndLikeCommentStatus(Long id, LikeCommentStatus status) {
+    public LikeComment findByIdAndMemberIdAndLikeCommentStatus(Long id, Long memberId, LikeCommentStatus status) {
         return queryFactory.selectFrom(likeComment)
                 .where(
                         likeComment.commentId.eq(id),
+                        likeComment.memberId.eq(memberId),
                         likeComment.likeCommentStatus.eq(status)
+                ).fetchOne();
+    }
+
+    @Override
+    public LikeComment findByIdAndMemberId(Long id, Long memberId) {
+        return queryFactory.selectFrom(likeComment)
+                .where(
+                        likeComment.commentId.eq(id),
+                        likeComment.memberId.eq(memberId)
                 ).fetchOne();
     }
 

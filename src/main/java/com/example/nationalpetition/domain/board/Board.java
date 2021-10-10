@@ -70,7 +70,11 @@ public class Board extends BaseTimeEntity {
     }
 
     public void incrementViewCount() {
-        this.viewCounts++;
+        this.viewCounts ++;
+    }
+
+    public void decreaseViewCount() {
+        this.viewCounts --;
     }
 
 }
