@@ -20,4 +20,13 @@ public class LikeCommentRepositoryCustomImpl implements LikeCommentRepositoryCus
                 ).fetchOne();
     }
 
+    @Override
+    public LikeComment findByIdAndMemberId(Long id, Long memberId) {
+        return queryFactory.selectFrom(likeComment)
+                .where(
+                        likeComment.commentId.eq(id),
+                        likeComment.memberId.eq(memberId)
+                ).fetchOne();
+    }
+
 }

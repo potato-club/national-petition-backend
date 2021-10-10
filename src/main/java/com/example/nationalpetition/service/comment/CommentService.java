@@ -9,7 +9,6 @@ import com.example.nationalpetition.dto.comment.request.CommentUpdateDto;
 import com.example.nationalpetition.dto.comment.request.LikeCommentRequestDto;
 import com.example.nationalpetition.dto.comment.response.CommentPageResponseDto;
 import com.example.nationalpetition.utils.error.ErrorCode;
-import com.example.nationalpetition.utils.error.exception.CreateCommentException;
 import com.example.nationalpetition.utils.error.exception.NotFoundException;
 import com.example.nationalpetition.dto.comment.response.CommentRetrieveResponseDto;
 
@@ -82,11 +81,11 @@ public class CommentService {
         validateExistedComment(requestDto);
 
         LikeComment likeComment = likeCommentRepository
-                .findByIdAndMemberIdAndLikeCommentStatus(requestDto.getCommentId(),
-                        memberId, requestDto.getLikeCommentStatus());
+                .findByIdAndMemberId(requestDto.getCommentId(), memberId);
 
         if (likeComment != null) {
-            likeComment.update(likeComment.getLikeCommentStatus());
+            likeComment.update(requestDto.getLikeCommentStatus());
+            return likeComment;
         }
 
         return likeCommentRepository.save(LikeComment.of(requestDto.getCommentId(),

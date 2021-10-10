@@ -74,6 +74,7 @@ public class CommentServiceTest {
         assertThat(comments.get(0).getContent()).isEqualTo(content);
         assertThat(comments.get(0).getBoardId()).isEqualTo(board.getId());
         assertThat(comments.get(0).getMemberId()).isEqualTo(memberId);
+
     }
 
     @Test
@@ -256,30 +257,36 @@ public class CommentServiceTest {
 
     }
 
+
     @Test
-    void 댓글_좋아요를_누른상태에서_싫어요를_누른다() {
+    void 좋아요_상태에서_싫어요() {
         // given
         Long memberId = 1L;
-        Long boardId = 1L;
-        String content = "저는 감자보다 고구마가 더 좋은데요? ㅡ,.ㅡ";
-        LikeCommentStatus likeStatus = LikeCommentStatus.LIKE;
-        LikeCommentStatus unLikeStatus = LikeCommentStatus.UNLIKE;
+        Long boardId = 2L;
+        String content = "댓글입니다.";
+        Comment comment = Comment.newRootComment(memberId, boardId, content);
 
-        Comment comment = commentRepository.save(Comment.newRootComment(memberId, boardId, content));
+        commentRepository.save(comment);
 
-        LikeComment likeComment = likeCommentRepository.save(LikeComment.of(comment.getId(), likeStatus, memberId));
-
-        LikeCommentRequestDto requestDto = LikeCommentRequestDto.builder()
+        LikeCommentRequestDto likeRequestDto = LikeCommentRequestDto.builder()
                 .commentId(comment.getId())
-                .status(unLikeStatus)
+                .status(LikeCommentStatus.LIKE)
                 .build();
 
+        LikeCommentRequestDto unLikeRequestDto = LikeCommentRequestDto.builder()
+                .commentId(comment.getId())
+                .status(LikeCommentStatus.UNLIKE)
+                .build();
+
+        commentService.addStatus(memberId, likeRequestDto);
+
         // when
-        commentService.addStatus(likeComment.getMemberId(), requestDto);
-        System.out.println(likeComment.getLikeCommentStatus());
+        commentService.addStatus(memberId, unLikeRequestDto);
 
         // then
-        // assertThat(requestDto.getLikeCommentStatus()).isEqualTo(likeComment.getLikeCommentStatus());
+        List<LikeComment> comments = likeCommentRepository.findAll();
+        assertThat(comments).hasSize(1);
+        assertThat(LikeCommentStatus.UNLIKE).isEqualTo(comments.get(0).getLikeCommentStatus());
 
     }
 

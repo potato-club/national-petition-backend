@@ -25,8 +25,8 @@ public class CommentController {
 
     @Operation(summary = "댓글 등록하는 API", security = {@SecurityRequirement(name = "BearerKey")})
     @PostMapping("/api/v1/comment/{boardId}")
-    public ApiResponse<Long> addComment(@RequestBody CommentCreateDto dto,
-                                        @PathVariable Long boardId,
+    public ApiResponse<Long> addComment(@RequestBody @Valid CommentCreateDto dto,
+                                        @PathVariable @Valid Long boardId,
                                         @MemberId Long memberId) {
         return ApiResponse.success(commentService.addComment(dto, boardId, memberId));
     }
