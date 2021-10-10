@@ -16,7 +16,6 @@ public enum ErrorCode {
 
     JWT_TOKEN_EXCEPTION_INVALID("400", "유효한 JWT 토큰이 없습니다"),
     JWT_TOKEN_EXCEPTION_EXPIRED("400", "JWT 토큰이 만료되었습니다."),
-
     VALIDATION_EXCEPTION("400", "유효하지 않은 값입니다."),
 
     CONFLICT_EXCEPTION("C001", "이미 존재하는 값입니다."),
