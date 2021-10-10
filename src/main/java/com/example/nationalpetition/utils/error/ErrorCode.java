@@ -21,9 +21,8 @@ public enum ErrorCode {
 
     CONFLICT_EXCEPTION("C001", "이미 존재하는 값입니다."),
     DUPLICATE_EXCEPTION_NICKNAME("C002","닉네임이 중복됩니다."),
-    ALREADY_EXIST_EXCEPTION_ADD_NICKNAME("C003","이미 닉네임을 등록하셨습니다."),
+    ALREADY_EXIST_EXCEPTION_ADD_NICKNAME("C003","이미 닉네임을 등록하셨습니다.");
 
-    CREATE_COMMENT_EXCEPTION("403", "더 이상 댓글을 달 수 없습니다.");
 
     private String code;
     private String message;
