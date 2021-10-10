@@ -16,7 +16,6 @@ public class CreateBoardRequest {
 
     private String content;
 
-    @PetitionUrl
     private String petitionUrl;
 
     public CreateBoardRequest(String title, String content, String petitionUrl) {
