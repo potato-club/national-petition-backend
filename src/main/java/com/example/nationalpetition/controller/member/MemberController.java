@@ -13,7 +13,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
@@ -55,8 +57,8 @@ public class MemberController {
 	@Operation(summary = "마이페이지 - 내가 작성한 글 리스트 조회 API", security = {@SecurityRequirement(name = "BearerKey")})
 	@GetMapping("/api/v1/mypage/boardList")
 	public ApiResponse<List<BoardInfoResponseInMyPage>> getMyBoardList(@MemberId Long memberId,
-																	   @PageableDefault(sort = "id", direction = DESC) Pageable pageable) {
-		return ApiResponse.success(memberService.getMyBoardList(memberId, pageable));
+																	   @RequestParam int page, @RequestParam int size) {
+		return ApiResponse.success(memberService.getMyBoardList(memberId, PageRequest.of(page, size, Sort.by(DESC, "id"))));
 	}
 
 	@Operation(summary = "회원을 탈퇴하는 API", security = {@SecurityRequirement(name = "BearerKey")})
