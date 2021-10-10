@@ -119,39 +119,39 @@ public class BoardControllerTest {
         resultActions.andExpect(status().isOk());
     }
 
-    @DisplayName("청원 크롤링 서버에서 가져와서 나의 제목과 컨텐츠와 함께 저장한다 하지만 petitionUrl이 틀릴경우 예외가 발생한다")
-    @Test
-    void 청원_게시글_생성하는데_petitionUrl_이_틀릴경우_예외발생() throws Exception {
-        // given
-        CreateBoardRequest request = CreateBoardRequest.testInstance("title", "content", "www.president.go.kr/petitions/1");
-
-        // when & then
-        final ResultActions resultActions = mockMvc.perform(
-                        post("/api/v1/board")
-                                .header("Authorization", "Bearer ".concat(token.getToken()))
-                                .content(objectMapper.writeValueAsString(request))
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andDo(document("board/createException",
-                        getDocumentRequest(),
-                        getDocumentResponse(),
-                        requestHeaders(
-                                headerWithName("Authorization").description("토큰")
-                        ),
-                        requestFields(
-                                fieldWithPath("title").description("나의 청원 제목"),
-                                fieldWithPath("content").description("나의 청원 글"),
-                                fieldWithPath("petitionUrl").description("청원 url")
-                        ),
-                        responseFields(
-                                fieldWithPath("code").description("code"),
-                                fieldWithPath("message").description("메세지"),
-                                fieldWithPath("data").description("")
-                        )
-                ));
-        resultActions.andExpect(status().is4xxClientError());
-    }
+//    @DisplayName("청원 크롤링 서버에서 가져와서 나의 제목과 컨텐츠와 함께 저장한다 하지만 petitionUrl이 틀릴경우 예외가 발생한다")
+//    @Test
+//    void 청원_게시글_생성하는데_petitionUrl_이_틀릴경우_예외발생() throws Exception {
+//        // given
+//        CreateBoardRequest request = CreateBoardRequest.testInstance("title", "content", "www.president.go.kr/petitions/1");
+//
+//        // when & then
+//        final ResultActions resultActions = mockMvc.perform(
+//                        post("/api/v1/board")
+//                                .header("Authorization", "Bearer ".concat(token.getToken()))
+//                                .content(objectMapper.writeValueAsString(request))
+//                                .contentType(MediaType.APPLICATION_JSON)
+//                                .accept(MediaType.APPLICATION_JSON))
+//                .andDo(print())
+//                .andDo(document("board/createException",
+//                        getDocumentRequest(),
+//                        getDocumentResponse(),
+//                        requestHeaders(
+//                                headerWithName("Authorization").description("토큰")
+//                        ),
+//                        requestFields(
+//                                fieldWithPath("title").description("나의 청원 제목"),
+//                                fieldWithPath("content").description("나의 청원 글"),
+//                                fieldWithPath("petitionUrl").description("청원 url")
+//                        ),
+//                        responseFields(
+//                                fieldWithPath("code").description("code"),
+//                                fieldWithPath("message").description("메세지"),
+//                                fieldWithPath("data").description("")
+//                        )
+//                ));
+//        resultActions.andExpect(status().is4xxClientError());
+//    }
 
     @DisplayName("내가_작성한_게시글을_수정한다")
     @Test
