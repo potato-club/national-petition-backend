@@ -103,6 +103,12 @@ dependencies {
 
     implementation 'org.springdoc:springdoc-openapi-ui:1.5.10'
 
+    // flyway
+    implementation 'org.flywaydb:flyway-core:6.4.2'
+
+    // db
+    implementation group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.4.1'
+
 }
 
 dependencyManagement {
