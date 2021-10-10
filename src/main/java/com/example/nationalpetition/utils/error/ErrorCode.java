@@ -23,7 +23,6 @@ public enum ErrorCode {
     DUPLICATE_EXCEPTION_NICKNAME("C002","닉네임이 중복됩니다."),
     ALREADY_EXIST_EXCEPTION_ADD_NICKNAME("C003","이미 닉네임을 등록하셨습니다.");
 
-
     private String code;
     private String message;
 
