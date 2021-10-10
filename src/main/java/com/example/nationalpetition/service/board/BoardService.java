@@ -38,9 +38,8 @@ public class BoardService {
     }
 
     private Long extractionPetitionId(String petitionUrl) {
-        String baseUrl = "www1.president.go.kr/petitions/";
-        String replace = petitionUrl.replace(baseUrl, "");
-        return Long.valueOf(replace);
+        String[] split = petitionUrl.split("/");
+        return Long.valueOf(split[split.length - 1]);
     }
 
     @Transactional
