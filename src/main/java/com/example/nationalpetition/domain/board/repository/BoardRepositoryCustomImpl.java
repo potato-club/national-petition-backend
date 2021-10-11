@@ -26,4 +26,12 @@ public class BoardRepositoryCustomImpl implements BoardRepositoryCustom {
         );
     }
 
+    @Override
+    public long findBoardCounts() {
+        return queryFactory.selectFrom(board)
+                .where(
+                        board.isDeleted.eq(Boolean.FALSE)
+                ).fetchCount();
+    }
+
 }

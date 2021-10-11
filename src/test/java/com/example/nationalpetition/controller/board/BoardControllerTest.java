@@ -267,20 +267,21 @@ public class BoardControllerTest {
                         responseFields(
                                 fieldWithPath("code").description("code"),
                                 fieldWithPath("message").description("message"),
-                                fieldWithPath("data[].boardId").description("boardId"),
-                                fieldWithPath("data[].memberId").description("작성한 유저"),
-                                fieldWithPath("data[].petitionTitle").description("크롤링 해서 가져온 제목"),
-                                fieldWithPath("data[].title").description("나의 작성한 제목"),
-                                fieldWithPath("data[].petitionContent").description("크롤링해서 가져온 글"),
-                                fieldWithPath("data[].content").description("내가 작성한 글"),
-                                fieldWithPath("data[].petitionUrl").description("url"),
-                                fieldWithPath("data[].petitionsCount").description("청원 수"),
-                                fieldWithPath("data[].category").description("청원 카테고리"),
-                                fieldWithPath("data[].viewCounts").description("조회수"),
-                                fieldWithPath("data[].boardCommentCounts").description("댓글 개수"),
-                                fieldWithPath("data[].boardLikeCounts").description("좋아요 개수"),
-                                fieldWithPath("data[].boardUnLikeCounts").description("싫어요 개수"),
-                                fieldWithPath("data[].createdDate").description("생성날짜")
+                                fieldWithPath("data.boardList[].boardId").description("boardId"),
+                                fieldWithPath("data.boardList[].memberId").description("작성한 유저"),
+                                fieldWithPath("data.boardList[].petitionTitle").description("크롤링 해서 가져온 제목"),
+                                fieldWithPath("data.boardList[].title").description("나의 작성한 제목"),
+                                fieldWithPath("data.boardList[].petitionContent").description("크롤링해서 가져온 글"),
+                                fieldWithPath("data.boardList[].content").description("내가 작성한 글"),
+                                fieldWithPath("data.boardList[].petitionUrl").description("url"),
+                                fieldWithPath("data.boardList[].petitionsCount").description("청원 수"),
+                                fieldWithPath("data.boardList[].category").description("청원 카테고리"),
+                                fieldWithPath("data.boardList[].viewCounts").description("조회수"),
+                                fieldWithPath("data.boardList[].boardCommentCounts").description("댓글 개수"),
+                                fieldWithPath("data.boardList[].boardLikeCounts").description("좋아요 개수"),
+                                fieldWithPath("data.boardList[].boardUnLikeCounts").description("싫어요 개수"),
+                                fieldWithPath("data.boardList[].createdDate").description("생성날짜"),
+                                fieldWithPath("data.boardCounts").description("게시글 총 개수")
                         )
                 ));
         resultActions.andExpect(status().isOk());
@@ -312,20 +313,21 @@ public class BoardControllerTest {
                         responseFields(
                                 fieldWithPath("code").description("code"),
                                 fieldWithPath("message").description("message"),
-                                fieldWithPath("data[].boardId").description("boardId"),
-                                fieldWithPath("data[].memberId").description("작성한 유저"),
-                                fieldWithPath("data[].petitionTitle").description("크롤링 해서 가져온 제목"),
-                                fieldWithPath("data[].title").description("나의 작성한 제목"),
-                                fieldWithPath("data[].petitionContent").description("크롤링해서 가져온 글"),
-                                fieldWithPath("data[].content").description("내가 작성한 글"),
-                                fieldWithPath("data[].petitionUrl").description("url"),
-                                fieldWithPath("data[].petitionsCount").description("청원 수"),
-                                fieldWithPath("data[].category").description("청원 카테고리"),
-                                fieldWithPath("data[].viewCounts").description("조회수"),
-                                fieldWithPath("data[].boardCommentCounts").description("댓글 개수"),
-                                fieldWithPath("data[].boardLikeCounts").description("좋아요 개수"),
-                                fieldWithPath("data[].boardUnLikeCounts").description("싫어요 개수"),
-                                fieldWithPath("data[].createdDate").description("생성날짜")
+                                fieldWithPath("data.boardList[].boardId").description("boardId"),
+                                fieldWithPath("data.boardList[].memberId").description("작성한 유저"),
+                                fieldWithPath("data.boardList[].petitionTitle").description("크롤링 해서 가져온 제목"),
+                                fieldWithPath("data.boardList[].title").description("나의 작성한 제목"),
+                                fieldWithPath("data.boardList[].petitionContent").description("크롤링해서 가져온 글"),
+                                fieldWithPath("data.boardList[].content").description("내가 작성한 글"),
+                                fieldWithPath("data.boardList[].petitionUrl").description("url"),
+                                fieldWithPath("data.boardList[].petitionsCount").description("청원 수"),
+                                fieldWithPath("data.boardList[].category").description("청원 카테고리"),
+                                fieldWithPath("data.boardList[].viewCounts").description("조회수"),
+                                fieldWithPath("data.boardList[].boardCommentCounts").description("댓글 개수"),
+                                fieldWithPath("data.boardList[].boardLikeCounts").description("좋아요 개수"),
+                                fieldWithPath("data.boardList[].boardUnLikeCounts").description("싫어요 개수"),
+                                fieldWithPath("data.boardList[].createdDate").description("생성날짜"),
+                                fieldWithPath("data.boardCounts").description("게시글 총 개수")
                         )
                 ));
         resultActions.andExpect(status().isOk());
@@ -370,8 +372,6 @@ public class BoardControllerTest {
     @Test
     void 게시글_찬성_반대_삭제() throws Exception {
         // given
-        Token token = tokenService.generateToken(1L);
-
         Board board1 = new Board(1L, "petitionTitle", "title1", "petitionContent", "content", "url", "10000", "사회문제");
         boardRepository.save(board1);
         BoardLike boardLike = BoardLikeCreator.create(board1.getId(), 1L, BoardState.LIKE);
@@ -400,6 +400,39 @@ public class BoardControllerTest {
                                 fieldWithPath("code").description("code"),
                                 fieldWithPath("message").description("message"),
                                 fieldWithPath("data").description("ok")
+                        )
+                ));
+        resultActions.andExpect(status().isOk());
+    }
+
+    @Test
+    void 게시글_찬성_반대_상태_보여주기() throws Exception {
+        // given
+        Board board1 = new Board(1L, "petitionTitle", "title1", "petitionContent", "content", "url", "10000", "사회문제");
+        boardRepository.save(board1);
+        BoardLike boardLike = BoardLikeCreator.create(board1.getId(), 1L, BoardState.LIKE);
+        boardLikeRepository.save(boardLike);
+
+        // when & then
+        final ResultActions resultActions = mockMvc.perform(
+                        RestDocumentationRequestBuilders.get("/api/v1/board/status/{boardId}", board1.getId())
+                                .header("Authorization", "Bearer ".concat(token.getToken()))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andDo(document("board/like/state",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestHeaders(
+                                headerWithName("Authorization").description("토큰")
+                        ),
+                        pathParameters(
+                                parameterWithName("boardId").description("게시글 아이디")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").description("code"),
+                                fieldWithPath("message").description("message"),
+                                fieldWithPath("data").description("찬성했는지 안했는지 상태 만약 없으면 null")
                         )
                 ));
         resultActions.andExpect(status().isOk());

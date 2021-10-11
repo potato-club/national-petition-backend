@@ -8,4 +8,6 @@ public interface BoardRepositoryCustom {
 
     Optional<Board> findByIdAndMemberId(Long boardId, Long memberId);
 
+    long findBoardCounts();
+
 }

@@ -149,9 +149,6 @@ include::{snippets}/board/like/http-response.adoc[]
 Request Header
 include::{snippets}/board/unlike/request-headers.adoc[]
 
-Request Header
-include::{snippets}/board/unlike/request-headers.adoc[]
-
 Request HTTP Example
 include::{snippets}/board/unlike/http-request.adoc[]
 
@@ -160,4 +157,18 @@ include::{snippets}/board/unlike/request-fields.adoc[]
 
 Response
 include::{snippets}/board/unlike/http-response.adoc[]
+
+=== 게시글 찬성 / 반대 상태 보여주기
+
+Request Header
+include::{snippets}/board/like/state/request-headers.adoc[]
+
+Request HTTP Example
+include::{snippets}/board/like/state/http-request.adoc[]
+
+Path-Parameters
+include::{snippets}/board/like/state/path-parameters.adoc[]
+
+Response
+include::{snippets}/board/like/state/http-response.adoc[]
 
