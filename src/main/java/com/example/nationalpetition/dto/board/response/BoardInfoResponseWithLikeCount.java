@@ -22,7 +22,7 @@ public class BoardInfoResponseWithLikeCount {
     private String petitionsCount;
     private String category;
     private int viewCounts;
-    private int boardCommentCounts;
+    private Long boardCommentCounts;
     private long boardLikeCounts;
     private long boardUnLikeCounts;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
@@ -31,7 +31,7 @@ public class BoardInfoResponseWithLikeCount {
     @Builder
     public BoardInfoResponseWithLikeCount(Long boardId, Long memberId, String petitionTitle, String title, String petitionContent,
                                           String content, String petitionUrl, String petitionsCount, String category, int viewCounts,
-                                          int boardCommentCounts, long boardLikeCounts, long boardUnLikeCounts, LocalDateTime createdDate) {
+                                          Long boardCommentCounts, long boardLikeCounts, long boardUnLikeCounts, LocalDateTime createdDate) {
         this.boardId = boardId;
         this.memberId = memberId;
         this.petitionTitle = petitionTitle;
