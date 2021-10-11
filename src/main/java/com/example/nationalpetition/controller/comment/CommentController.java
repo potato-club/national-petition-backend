@@ -28,7 +28,7 @@ public class CommentController {
     @Auth
     @PostMapping("/api/v1/comment/{boardId}")
     public ApiResponse<Long> addComment(@RequestBody @Valid CommentCreateDto dto,
-                                        @PathVariable @Valid Long boardId,
+                                        @PathVariable Long boardId,
                                         @MemberId Long memberId) {
         return ApiResponse.success(commentService.addComment(dto, boardId, memberId));
     }
@@ -43,11 +43,12 @@ public class CommentController {
     @Operation(summary = "댓글 삭제하는 API", security = {@SecurityRequirement(name = "BearerKey")})
     @Auth
     @DeleteMapping("/api/v1/comment/{commentId}")
-    public ApiResponse<String> deleteComment(@MemberId Long memberId, @PathVariable @Valid Long commentId) {
+    public ApiResponse<String> deleteComment(@MemberId Long memberId, @PathVariable Long commentId) {
         commentService.deleteComment(memberId, commentId);
         return ApiResponse.OK;
     }
 
+    // TODO 삭제
     @Operation(summary = "댓글 조회하는 API")
     @GetMapping("/api/v1/comment/{boardId}")
     public ApiResponse<List<CommentRetrieveResponseDto>> retrieveComments(@PathVariable Long boardId) {
@@ -70,10 +71,11 @@ public class CommentController {
         return ApiResponse.OK;
     }
 
+    // TODO boardId 필터링 추가해야함
     @Operation(summary = "댓글 페이지네이션 API")
     @GetMapping("/api/v1/comment/page")
-    public ApiResponse<CommentPageResponseDto> commentPage(@RequestParam @Valid int page,
-                                                           @RequestParam @Valid int size) {
+    public ApiResponse<CommentPageResponseDto> commentPage(@RequestParam int page,
+                                                           @RequestParam int size) {
         return ApiResponse.success(commentService.pageRequest(page, size));
     }
 

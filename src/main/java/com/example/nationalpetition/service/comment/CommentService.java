@@ -8,6 +8,7 @@ import com.example.nationalpetition.dto.comment.CommentDto;
 import com.example.nationalpetition.dto.comment.request.CommentUpdateDto;
 import com.example.nationalpetition.dto.comment.request.LikeCommentRequestDto;
 import com.example.nationalpetition.dto.comment.response.CommentPageResponseDto;
+import com.example.nationalpetition.service.board.BoardServiceUtils;
 import com.example.nationalpetition.utils.error.ErrorCode;
 import com.example.nationalpetition.utils.error.exception.NotFoundException;
 import com.example.nationalpetition.dto.comment.response.CommentRetrieveResponseDto;
@@ -32,10 +33,7 @@ public class CommentService {
 
     @Transactional
     public Long addComment(CommentCreateDto dto, Long boardId, Long memberId) {
-
-        Board board = boardRepository.findById(boardId)
-                .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_BOARD));
-
+        Board board = BoardServiceUtils.findBoardById(boardRepository, boardId);
         board.incrementCommentCounts();
 
         if (dto.getParentId() == null) {
@@ -52,23 +50,18 @@ public class CommentService {
 
     @Transactional
     public Comment updateComment(Long memberId, CommentUpdateDto updateDto) {
-        Comment comment = commentRepository.findByIdAndMemberIdAndIsDeletedIsFalse(updateDto.getCommentId(), memberId);
-        if (comment == null) {
-            throw new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_COMMENT);
-        }
+        Comment comment = CommentServiceUtils.findCommentByCommentIdAndMemberId(commentRepository, updateDto.getCommentId(), memberId);
         comment.update(updateDto.getContent());
         return comment;
     }
 
     @Transactional
     public void deleteComment(Long memberId, Long commentId) {
-        Comment comment = commentRepository.findByIdAndMemberIdAndIsDeletedIsFalse(commentId, memberId);
-        Board board = boardRepository.findById(comment.getBoardId()).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_BOARD));
+        Comment comment = CommentServiceUtils.findCommentByCommentIdAndMemberId(commentRepository, commentId, memberId);
+        Board board = BoardServiceUtils.findBoardById(boardRepository, comment.getBoardId());
 
-        if (comment == null) {
-            throw new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_COMMENT);
-        }
         board.decreaseCommentCounts();
+
         comment.delete();
     }
 
