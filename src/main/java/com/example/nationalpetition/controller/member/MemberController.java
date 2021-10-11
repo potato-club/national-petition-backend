@@ -1,5 +1,6 @@
 package com.example.nationalpetition.controller.member;
 
+import com.example.nationalpetition.config.auth.Auth;
 import com.example.nationalpetition.config.auth.MemberId;
 import com.example.nationalpetition.controller.ApiResponse;
 import com.example.nationalpetition.dto.board.response.BoardInfoResponseInMyPage;
@@ -7,7 +8,6 @@ import com.example.nationalpetition.dto.member.request.NickNameRequest;
 import com.example.nationalpetition.dto.member.response.MemberResponse;
 import com.example.nationalpetition.security.oauth2.OAuth2Dto;
 import com.example.nationalpetition.service.member.MemberService;
-import com.example.nationalpetition.utils.message.MessageType;
 import com.example.nationalpetition.utils.ValidationUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -41,12 +41,14 @@ public class MemberController {
 	}
 
 	@Operation(summary = "나의 회원 정보를 불러오는 API", security = {@SecurityRequirement(name = "BearerKey")})
+	@Auth
 	@GetMapping("/api/v1/mypage/info")
 	private ApiResponse<MemberResponse> getMyInfo(@MemberId Long memberId) {
 		return ApiResponse.success(memberService.findById(memberId));
 	}
 
 	@Operation(summary = "닉네임을 등록하는 API", security = {@SecurityRequirement(name = "BearerKey")})
+	@Auth
 	@PostMapping("/api/v1/mypage/nickName")
 	public ApiResponse<String> addNickName(@MemberId Long memberId,
 												   @RequestBody @Valid NickNameRequest request, BindingResult bindingResult) throws BindException {
@@ -55,6 +57,7 @@ public class MemberController {
 	}
 
 	@Operation(summary = "마이페이지 - 내가 작성한 글 리스트 조회 API", security = {@SecurityRequirement(name = "BearerKey")})
+	@Auth
 	@GetMapping("/api/v1/mypage/boardList")
 	public ApiResponse<List<BoardInfoResponseInMyPage>> getMyBoardList(@MemberId Long memberId,
 																	   @RequestParam int page, @RequestParam int size) {
@@ -62,6 +65,7 @@ public class MemberController {
 	}
 
 	@Operation(summary = "회원을 탈퇴하는 API", security = {@SecurityRequirement(name = "BearerKey")})
+	@Auth
 	@DeleteMapping("/api/v1/mypage/delete")
 	public ApiResponse<String> deleteMember(@MemberId Long memberId) {
 		return ApiResponse.success(memberService.deleteMember(memberId));
