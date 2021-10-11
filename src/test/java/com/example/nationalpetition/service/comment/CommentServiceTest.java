@@ -52,21 +52,23 @@ public class CommentServiceTest {
         String petitionsCounts = "1";
         String category = "인권";
 
+        Board board = new Board(memberId, title, title, content, content, petitionUrl, petitionsCounts, category);
+
+        boardRepository.save(board);
+
         CommentCreateDto dto = CommentCreateDto.builder()
                 .content(content)
                 .memberId(memberId)
                 .build();
 
-        Board board = new Board(memberId, title, title, content, content, petitionUrl, petitionsCounts, category);
-
-        boardRepository.save(board);
-
         // when
         commentService.addComment(dto, board.getId(), memberId);
 
         // then
-        System.out.println(board.getViewCounts());
         List<Comment> comments = commentRepository.findAll();
+        List<Board> boards = boardRepository.findAll();
+        assertThat(boards).hasSize(1);
+        assertThat(boards.get(0).getBoardCommentCounts()).isEqualTo(1);
 
         assertThat(comments).hasSize(1);
         assertThat(comments.get(0).getParentId()).isEqualTo(null);
@@ -74,7 +76,6 @@ public class CommentServiceTest {
         assertThat(comments.get(0).getContent()).isEqualTo(content);
         assertThat(comments.get(0).getBoardId()).isEqualTo(board.getId());
         assertThat(comments.get(0).getMemberId()).isEqualTo(memberId);
-
     }
 
     @Test
@@ -190,17 +191,18 @@ public class CommentServiceTest {
         String petitionCount = "10000000000";
 
         Board board = new Board(memberId, petitionTitle, title, petitionContent, content, petitionUrl, petitionCount, category);
-
         boardRepository.save(board);
 
         Comment comment = commentRepository.save(Comment.newRootComment(memberId, board.getId(), content));
-
 
         // when
         commentService.deleteComment(memberId, comment.getId());
 
         // then
         List<Comment> deletedComment = commentRepository.findAll();
+        List<Board> boards = boardRepository.findAll();
+        assertThat(boards).hasSize(1);
+        assertThat(boards.get(0).getBoardCommentCounts()).isEqualTo(-1);
         assertThat(deletedComment).hasSize(1);
         assertThat(deletedComment.get(0).isDeleted()).isEqualTo(true);
         assertThat(deletedComment.get(0).getMemberId()).isEqualTo(memberId);

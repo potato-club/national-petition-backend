@@ -33,6 +33,11 @@ public class CommentService {
     @Transactional
     public Long addComment(CommentCreateDto dto, Long boardId, Long memberId) {
 
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_BOARD));
+
+        board.incrementCommentCounts();
+
         if (dto.getParentId() == null) {
             return commentRepository.save(Comment.newRootComment(memberId, boardId, dto.getContent())).getId();
         }
@@ -42,9 +47,7 @@ public class CommentService {
 
         int depth = parentComment.getDepth();
 
-        Board board = boardRepository.findById(boardId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_BOARD));
-        board.incrementViewCount();
-        return commentRepository.save(Comment.newChildComment(dto.getParentId(), memberId, board.getId(), depth + 1, dto.getContent())).getId();
+        return commentRepository.save(Comment.newChildComment(dto.getParentId(), memberId, boardId, depth + 1, dto.getContent())).getId();
     }
 
     @Transactional
@@ -65,7 +68,7 @@ public class CommentService {
         if (comment == null) {
             throw new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_COMMENT);
         }
-        board.decreaseViewCount();
+        board.decreaseCommentCounts();
         comment.delete();
     }
 
