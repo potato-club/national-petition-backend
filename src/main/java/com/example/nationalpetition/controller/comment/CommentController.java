@@ -1,5 +1,6 @@
 package com.example.nationalpetition.controller.comment;
 
+import com.example.nationalpetition.config.auth.Auth;
 import com.example.nationalpetition.config.auth.MemberId;
 import com.example.nationalpetition.controller.ApiResponse;
 import com.example.nationalpetition.dto.comment.request.CommentCreateDto;
@@ -24,6 +25,7 @@ public class CommentController {
     private final CommentService commentService;
 
     @Operation(summary = "댓글 등록하는 API", security = {@SecurityRequirement(name = "BearerKey")})
+    @Auth
     @PostMapping("/api/v1/comment/{boardId}")
     public ApiResponse<Long> addComment(@RequestBody @Valid CommentCreateDto dto,
                                         @PathVariable @Valid Long boardId,
@@ -32,12 +34,14 @@ public class CommentController {
     }
 
     @Operation(summary = "댓글 수정하는 API", security = {@SecurityRequirement(name = "BearerKey")})
+    @Auth
     @PutMapping("/api/v1/comment")
     public ApiResponse<String> updateComment(@MemberId Long memberId, @RequestBody @Valid CommentUpdateDto dto) {
         return ApiResponse.success(commentService.updateComment(memberId, dto).getContent());
     }
 
     @Operation(summary = "댓글 삭제하는 API", security = {@SecurityRequirement(name = "BearerKey")})
+    @Auth
     @DeleteMapping("/api/v1/comment/{commentId}")
     public ApiResponse<String> deleteComment(@MemberId Long memberId, @PathVariable @Valid Long commentId) {
         commentService.deleteComment(memberId, commentId);
@@ -51,6 +55,7 @@ public class CommentController {
     }
 
     @Operation(summary = "댓글에 좋아요/싫어요 등록하는 API", security = {@SecurityRequirement(name = "BearerKey")})
+    @Auth
     @PostMapping("/api/v1/comment/like")
     public ApiResponse<String> likeComment(@MemberId Long memberId, @RequestBody LikeCommentRequestDto likeCommentRequestDto) {
         commentService.addStatus(memberId, likeCommentRequestDto);
@@ -58,6 +63,7 @@ public class CommentController {
     }
 
     @Operation(summary = "댓글에 좋아요/싫어요 제거하는 API", security = {@SecurityRequirement(name = "BearerKey")})
+    @Auth
     @DeleteMapping("/api/v1/comment/unlike")
     public ApiResponse<String> deleteStatus(@MemberId Long memberId, @RequestBody @Valid LikeCommentRequestDto likeCommentRequestDto) {
         commentService.deleteStatus(memberId, likeCommentRequestDto);
@@ -70,6 +76,5 @@ public class CommentController {
                                                            @RequestParam @Valid int size) {
         return ApiResponse.success(commentService.pageRequest(page, size));
     }
-
 
 }

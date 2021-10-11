@@ -7,6 +7,10 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+import javax.validation.constraints.NotNull;
+
+import static com.example.nationalpetition.config.auth.AuthConstants.MEMBER_ID;
+
 @Component
 public class MemberIdArgumentResolver implements HandlerMethodArgumentResolver {
 
@@ -16,8 +20,8 @@ public class MemberIdArgumentResolver implements HandlerMethodArgumentResolver {
 	}
 
 	@Override
-	public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
-		return webRequest.getAttribute("MEMBER_ID", 0);
+	public Object resolveArgument(@NotNull MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
+		return webRequest.getAttribute(MEMBER_ID, 0);
 	}
 
 }
