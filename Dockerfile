@@ -6,4 +6,4 @@ WORKDIR app
 
 RUN ./gradlew clean bootJar
 
-ENTRYPOINT ["java", "-jar", "build/libs/national-petition-backend.jar"]
+ENTRYPOINT ["java", "-jar", "-Duser.timezone=Asia/Seoul", "build/libs/national-petition-backend.jar"]
