@@ -34,7 +34,7 @@ public class CommentRetrieveResponseDto {
 
 
     public static CommentRetrieveResponseDto of(Comment comment) {
-        if (comment.isDeleted() == true) {
+        if (comment.isDeleted()) {
             return CommentRetrieveResponseDto.builder()
                     .commentId(comment.getId())
                     .boardId(comment.getBoardId())

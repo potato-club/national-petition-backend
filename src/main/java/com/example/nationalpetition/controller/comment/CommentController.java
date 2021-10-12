@@ -48,12 +48,6 @@ public class CommentController {
         return ApiResponse.OK;
     }
 
-//    @Operation(summary = "댓글 조회하는 API")
-//    @GetMapping("/api/v1/comment/{boardId}")
-//    public ApiResponse<List<CommentRetrieveResponseDto>> retrieveComments(@PathVariable Long boardId) {
-//        return ApiResponse.success(commentService.retrieveComments(boardId));
-//    }
-
     @Operation(summary = "댓글에 좋아요/싫어요 등록하는 API", security = {@SecurityRequirement(name = "BearerKey")})
     @Auth
     @PostMapping("/api/v1/comment/like")

@@ -65,13 +65,6 @@ public class CommentService {
         comment.delete();
     }
 
-//    @Transactional(readOnly = true)
-//    public List<CommentRetrieveResponseDto> retrieveComments(Long boardId) {
-//        List<Comment> comments = commentRepository.findByBoardIdAndIsDeletedIsFalse(boardId);
-//
-//        return comments.stream().map(CommentRetrieveResponseDto::of).collect(Collectors.toList());
-//    }
-
     @Transactional
     public LikeComment addStatus(Long memberId, LikeCommentRequestDto requestDto) {
 
