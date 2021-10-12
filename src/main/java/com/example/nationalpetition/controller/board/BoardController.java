@@ -7,7 +7,6 @@ import com.example.nationalpetition.domain.board.BoardState;
 import com.example.nationalpetition.dto.board.request.*;
 import com.example.nationalpetition.dto.board.response.BoardInfoResponseWithLikeCount;
 import com.example.nationalpetition.dto.board.response.BoardListResponse;
-import com.example.nationalpetition.security.jwt.TokenService;
 import com.example.nationalpetition.service.board.BoardService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -18,7 +17,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 import static org.springframework.data.domain.Sort.Direction.DESC;
 
@@ -26,7 +24,6 @@ import static org.springframework.data.domain.Sort.Direction.DESC;
 @RequiredArgsConstructor
 public class BoardController {
 
-	private final TokenService tokenService;
 	private final BoardService boardService;
 
 	@Operation(summary = "게시글 등록하는 API", security = {@SecurityRequirement(name = "BearerKey")})
@@ -73,6 +70,7 @@ public class BoardController {
 		return ApiResponse.OK;
 	}
 
+	@Operation(summary = "게시글 찬성 / 반대 상태 보여주기", security = {@SecurityRequirement(name = "BearerKey")})
 	@Auth
 	@GetMapping("/api/v1/board/status/{boardId}")
 	public ApiResponse<BoardState> getBoardStatus(@PathVariable Long boardId, @MemberId Long memberId) {
