@@ -1,11 +1,16 @@
 package com.example.nationalpetition.dto.comment.response;
 
 import com.example.nationalpetition.dto.comment.CommentDto;
+import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import java.util.List;
 
+@Getter
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CommentPageResponseDto {
 
     private int totalPages;

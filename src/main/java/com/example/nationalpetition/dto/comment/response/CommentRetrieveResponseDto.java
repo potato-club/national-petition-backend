@@ -34,6 +34,17 @@ public class CommentRetrieveResponseDto {
 
 
     public static CommentRetrieveResponseDto of(Comment comment) {
+        if (comment.isDeleted() == true) {
+            return CommentRetrieveResponseDto.builder()
+                    .commentId(comment.getId())
+                    .boardId(comment.getBoardId())
+                    .memberId(comment.getMemberId())
+                    .parentId(comment.getParentId())
+                    .content("삭제된 댓글입니다.")
+                    .createdTime(comment.getCreatedDate())
+                    .build();
+
+        }
         return CommentRetrieveResponseDto.builder()
                 .commentId(comment.getId())
                 .boardId(comment.getBoardId())

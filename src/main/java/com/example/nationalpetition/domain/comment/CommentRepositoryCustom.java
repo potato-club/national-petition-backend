@@ -9,8 +9,11 @@ import java.util.List;
 public interface CommentRepositoryCustom {
 
     Comment findByIdAndMemberIdAndIsDeletedIsFalse(Long commentId, Long MemberId);
+
     List<Comment> findByBoardIdAndIsDeletedIsFalse(Long boardId);
+
     Long findCommentCountByBoardIdAndIsDeletedIsFalse(Long boardId);
-    Page<Comment> findAllByIsDeletedIsFalse(Pageable pageable);
+
+    Page<Comment> findAllRootCommentByBoardId(Pageable pageable, Long boardId);
 
 }

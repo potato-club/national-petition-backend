@@ -111,9 +111,9 @@ public class CommentService {
                 .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_COMMENT));
     }
 
-    @Transactional
-    public CommentPageResponseDto pageRequest(int page, int size) {
-        Page<Comment> commentList = commentRepository.findAllByIsDeletedIsFalse(PageRequest.of(page, size));
+    @Transactional(readOnly = true)
+    public CommentPageResponseDto pageRequest(int page, int size, Long boardId) {
+        Page<Comment> commentList = commentRepository.findAllRootCommentByBoardId(PageRequest.of(page, size), boardId);
         return CommentPageResponseDto.builder()
                 .contents(commentList.stream()
                         .map(CommentDto::of)
