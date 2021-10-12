@@ -213,33 +213,6 @@ public class CommentServiceTest {
     }
 
     @Test
-    void 댓글을_불러온다() {
-        // given
-        Long memberId = 1L;
-        Long boardId = 1L;
-        String content = "첫 번째 게시물 입니다.";
-
-        commentRepository.save(Comment.newRootComment(memberId, boardId, content));
-
-        CommentRetrieveResponseDto responseDto = CommentRetrieveResponseDto.builder()
-                .commentId(1L)
-                .boardId(boardId)
-                .content(content)
-                .memberId(memberId)
-                .build();
-
-        // when
-        commentService.retrieveComments(boardId);
-
-        // then
-        List<Comment> dto = commentRepository.findAll().stream().collect(Collectors.toList());
-        assertThat(dto).hasSize(1);
-        assertThat(responseDto.getMemberId()).isEqualTo(memberId);
-        assertThat(responseDto.getContent()).isEqualTo(content);
-
-    }
-
-    @Test
     void 댓글_좋아요를_누른다() {
         // given
         Long memberId = 1L;

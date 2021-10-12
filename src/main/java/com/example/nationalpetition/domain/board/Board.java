@@ -2,6 +2,7 @@ package com.example.nationalpetition.domain.board;
 
 import com.example.nationalpetition.domain.BaseTimeEntity;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
@@ -37,18 +38,19 @@ public class Board extends BaseTimeEntity {
 
     private String category;
 
-    private String petitionCreatedAt;
-
-    private String petitionFinishedAt;
-
+    // TODO: 2021-09-13 청원 등록일, 청원 만료일
+    @ColumnDefault("0")
+    @Column(nullable = false)
     private int viewCounts;
 
-    private long boardCommentCounts;
+    @ColumnDefault("0")
+    @Column(nullable = false)
+    private int rootComments;
 
     private Boolean isDeleted;
 
     @Builder
-    public Board(Long memberId, String petitionTitle, String title, String petitionContent, String content, String petitionUrl, String petitionsCount, String category, String petitionCreatedAt, String petitionFinishedAt) {
+    public Board(Long memberId, String petitionTitle, String title, String petitionContent, String content, String petitionUrl, String petitionsCount, String category) {
         this.memberId = memberId;
         this.petitionTitle = petitionTitle;
         this.title = title;
@@ -59,9 +61,7 @@ public class Board extends BaseTimeEntity {
         this.category = category;
         this.isDeleted = false;
         this.viewCounts = 0;
-        this.boardCommentCounts = 0;
-        this.petitionCreatedAt = petitionCreatedAt;
-        this.petitionFinishedAt = petitionFinishedAt;
+        this.rootComments = 0;
     }
 
     public void updateBoard(String title, String content) {
@@ -70,15 +70,11 @@ public class Board extends BaseTimeEntity {
     }
 
     public void incrementViewCount() {
-        this.viewCounts += 1;
+        this.viewCounts ++;
     }
 
-    public void incrementCommentCounts() {
-        this.boardCommentCounts += 1;
-    }
-
-    public void decreaseCommentCounts() {
-        this.boardCommentCounts -= 1;
+    public void countRootComments() {
+        this.rootComments ++;
     }
 
 }
