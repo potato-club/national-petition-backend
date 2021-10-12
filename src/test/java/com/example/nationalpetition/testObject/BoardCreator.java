@@ -14,6 +14,9 @@ public class BoardCreator {
                 .petitionUrl("url")
                 .title(title)
                 .petitionsCount("10000")
+                .category("기타")
+                .petitionCreatedAt("2021-06-21")
+                .petitionFinishedAt("2021-06-22")
                 .build();
     }
 

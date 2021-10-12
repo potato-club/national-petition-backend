@@ -51,9 +51,10 @@ public class CommentServiceTest {
         String petitionUrl = "www1.national-petition.co.kr";
         String petitionsCounts = "1";
         String category = "인권";
+        String petitionCreatedAt = "2021-06-06";
+        String petitionFinishedAt = "2021-06-06";
 
-        Board board = new Board(memberId, title, title, content, content, petitionUrl, petitionsCounts, category);
-
+        Board board = new Board(memberId, title, title, content, content, petitionUrl, petitionsCounts, category, petitionCreatedAt, petitionFinishedAt);
         boardRepository.save(board);
 
         CommentCreateDto dto = CommentCreateDto.builder()
@@ -89,8 +90,10 @@ public class CommentServiceTest {
         String petitionContent = "초코는 목걸이를 하고 있어요";
         String category = "건강/인권";
         String petitionCount = "10000000000";
+        String petitionCreatedAt = "2021-06-06";
+        String petitionFinishedAt = "2021-06-06";
 
-        Board board = new Board(memberId, petitionTitle, title, petitionContent, content, petitionUrl, petitionCount, category);
+        Board board = new Board(memberId, petitionTitle, title, petitionContent, content, petitionUrl, petitionCount, category, petitionCreatedAt, petitionFinishedAt);
 
         boardRepository.save(board);
 
@@ -189,9 +192,10 @@ public class CommentServiceTest {
         String content = "초코바봉";
         String category = "건강/인권";
         String petitionCount = "10000000000";
+        String petitionCreatedAt = "2021-06-06";
+        String petitionFinishedAt = "2021-06-06";
 
-        Board board = new Board(memberId, petitionTitle, title, petitionContent, content, petitionUrl, petitionCount, category);
-        boardRepository.save(board);
+        Board board = new Board(memberId, petitionTitle, title, petitionContent, content, petitionUrl, petitionCount, category, petitionCreatedAt, petitionFinishedAt);boardRepository.save(board);
 
         Comment comment = commentRepository.save(Comment.newRootComment(memberId, board.getId(), content));
 

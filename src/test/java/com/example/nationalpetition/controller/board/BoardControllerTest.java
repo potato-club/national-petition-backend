@@ -11,6 +11,7 @@ import com.example.nationalpetition.dto.board.request.DeleteBoardLikeRequest;
 import com.example.nationalpetition.dto.board.request.UpdateBoardRequest;
 import com.example.nationalpetition.security.jwt.Token;
 import com.example.nationalpetition.security.jwt.TokenService;
+import com.example.nationalpetition.testObject.BoardCreator;
 import com.example.nationalpetition.testObject.BoardLikeCreator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
@@ -109,6 +110,8 @@ public class BoardControllerTest {
                                 fieldWithPath("data.petitionUrl").description("url"),
                                 fieldWithPath("data.petitionsCount").description("청원 수"),
                                 fieldWithPath("data.category").description("청원 카테고리"),
+                                fieldWithPath("data.petitionCreatedAt").description("청원 시작일"),
+                                fieldWithPath("data.petitionFinishedAt").description("청원 만료일"),
                                 fieldWithPath("data.viewCounts").description("조회수"),
                                 fieldWithPath("data.boardCommentCounts").description("댓글 개수"),
                                 fieldWithPath("data.boardLikeCounts").description("좋아요 개수"),
@@ -157,7 +160,7 @@ public class BoardControllerTest {
     @Test
     void 청원_게시글_수정한다() throws Exception {
         // given
-        Board board = new Board(1L, "petitionTitle", "title", "petitionContent", "content", "url", "10000", "사회문제");
+        Board board = BoardCreator.create(1L, "title1", "content1");
         boardRepository.save(board);
         UpdateBoardRequest request = UpdateBoardRequest.testInstance(board.getId(), "updateTitle", "updateContent");
 
@@ -192,6 +195,8 @@ public class BoardControllerTest {
                                 fieldWithPath("data.petitionUrl").description("url"),
                                 fieldWithPath("data.petitionsCount").description("청원 수"),
                                 fieldWithPath("data.category").description("청원 카테고리"),
+                                fieldWithPath("data.petitionCreatedAt").description("청원 시작일"),
+                                fieldWithPath("data.petitionFinishedAt").description("청원 만료일"),
                                 fieldWithPath("data.viewCounts").description("조회수"),
                                 fieldWithPath("data.boardCommentCounts").description("댓글 개수"),
                                 fieldWithPath("data.boardLikeCounts").description("좋아요 개수"),
@@ -206,7 +211,7 @@ public class BoardControllerTest {
     @Test
     void 게시글을_불러온다() throws Exception {
         // given
-        Board board = new Board(1L, "petitionTitle", "title", "petitionContent", "content", "url", "10000", "사회문제");
+        Board board = BoardCreator.create(1L, "title1", "content1");
         boardRepository.save(board);
 
         // when & then
@@ -233,6 +238,8 @@ public class BoardControllerTest {
                                 fieldWithPath("data.petitionUrl").description("url"),
                                 fieldWithPath("data.petitionsCount").description("청원 수"),
                                 fieldWithPath("data.category").description("청원 카테고리"),
+                                fieldWithPath("data.petitionCreatedAt").description("청원 시작일"),
+                                fieldWithPath("data.petitionFinishedAt").description("청원 만료일"),
                                 fieldWithPath("data.viewCounts").description("조회수"),
                                 fieldWithPath("data.boardCommentCounts").description("댓글 개수"),
                                 fieldWithPath("data.boardLikeCounts").description("좋아요 개수"),
@@ -246,8 +253,8 @@ public class BoardControllerTest {
     @Test
     void 게시글리스트를_불러온다() throws Exception {
         // given
-        Board board1 = new Board(1L, "petitionTitle", "title1", "petitionContent", "content", "url", "10000", "사회문제");
-        Board board2 = new Board(1L, "petitionTitle", "title2", "petitionContent", "content", "url", "10000", "사회문제");
+        Board board1 = BoardCreator.create(1L, "title1", "content1");
+        Board board2 = BoardCreator.create(1L, "title2", "content2");
         boardRepository.saveAll(Arrays.asList(board1, board2));
 
         // when & then
@@ -276,6 +283,8 @@ public class BoardControllerTest {
                                 fieldWithPath("data.boardList[].petitionUrl").description("url"),
                                 fieldWithPath("data.boardList[].petitionsCount").description("청원 수"),
                                 fieldWithPath("data.boardList[].category").description("청원 카테고리"),
+                                fieldWithPath("data.boardList[].petitionCreatedAt").description("청원 시작일"),
+                                fieldWithPath("data.boardList[].petitionFinishedAt").description("청원 만료일"),
                                 fieldWithPath("data.boardList[].viewCounts").description("조회수"),
                                 fieldWithPath("data.boardList[].boardCommentCounts").description("댓글 개수"),
                                 fieldWithPath("data.boardList[].boardLikeCounts").description("좋아요 개수"),
@@ -290,9 +299,9 @@ public class BoardControllerTest {
     @Test
     void 게시글리스트를_불러온다2() throws Exception {
         // given
-        Board board1 = new Board(1L, "petitionTitle", "title1", "petitionContent", "content", "url", "10000", "사회문제");
+        Board board1 = BoardCreator.create(1L, "title1", "content1");
         board1.incrementViewCount();
-        Board board2 = new Board(1L, "petitionTitle", "title2", "petitionContent", "content", "url", "10000", "사회문제");
+        Board board2 = BoardCreator.create(1L, "title2", "content2");
         boardRepository.saveAll(Arrays.asList(board1, board2));
 
         // when & then
@@ -322,6 +331,8 @@ public class BoardControllerTest {
                                 fieldWithPath("data.boardList[].petitionUrl").description("url"),
                                 fieldWithPath("data.boardList[].petitionsCount").description("청원 수"),
                                 fieldWithPath("data.boardList[].category").description("청원 카테고리"),
+                                fieldWithPath("data.boardList[].petitionCreatedAt").description("청원 시작일"),
+                                fieldWithPath("data.boardList[].petitionFinishedAt").description("청원 만료일"),
                                 fieldWithPath("data.boardList[].viewCounts").description("조회수"),
                                 fieldWithPath("data.boardList[].boardCommentCounts").description("댓글 개수"),
                                 fieldWithPath("data.boardList[].boardLikeCounts").description("좋아요 개수"),
@@ -336,8 +347,8 @@ public class BoardControllerTest {
     @Test
     void 게시글_찬성_반대() throws Exception {
         // given
-        Board board1 = new Board(1L, "petitionTitle", "title1", "petitionContent", "content", "url", "10000", "사회문제");
-        Board board2 = new Board(1L, "petitionTitle", "title2", "petitionContent", "content", "url", "10000", "사회문제");
+        Board board1 = BoardCreator.create(1L, "title1", "content1");
+        Board board2 = BoardCreator.create(1L, "title2", "content2");
         boardRepository.saveAll(Arrays.asList(board1, board2));
 
         BoardLikeRequest request = BoardLikeRequest.testInstance(board1.getId(), BoardState.LIKE);
@@ -372,7 +383,7 @@ public class BoardControllerTest {
     @Test
     void 게시글_찬성_반대_삭제() throws Exception {
         // given
-        Board board1 = new Board(1L, "petitionTitle", "title1", "petitionContent", "content", "url", "10000", "사회문제");
+        Board board1 = BoardCreator.create(1L, "title1", "content1");
         boardRepository.save(board1);
         BoardLike boardLike = BoardLikeCreator.create(board1.getId(), 1L, BoardState.LIKE);
         boardLikeRepository.save(boardLike);
@@ -408,7 +419,7 @@ public class BoardControllerTest {
     @Test
     void 게시글_찬성_반대_상태_보여주기() throws Exception {
         // given
-        Board board1 = new Board(1L, "petitionTitle", "title1", "petitionContent", "content", "url", "10000", "사회문제");
+        Board board1 = BoardCreator.create(1L, "title1", "content1");
         boardRepository.save(board1);
         BoardLike boardLike = BoardLikeCreator.create(board1.getId(), 1L, BoardState.LIKE);
         boardLikeRepository.save(boardLike);

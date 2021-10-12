@@ -5,9 +5,9 @@ import com.example.nationalpetition.domain.board.repository.BoardRepository;
 import com.example.nationalpetition.domain.member.entity.Member;
 import com.example.nationalpetition.domain.member.repository.MemberRepository;
 import com.example.nationalpetition.dto.member.request.NickNameRequest;
+import com.example.nationalpetition.testObject.BoardCreator;
 import com.example.nationalpetition.utils.error.ErrorCode;
 import com.example.nationalpetition.utils.error.exception.AlreadyExistException;
-import com.example.nationalpetition.utils.error.exception.DuplicateException;
 import com.example.nationalpetition.utils.error.exception.NotFoundException;
 import com.example.nationalpetition.security.jwt.Token;
 import com.example.nationalpetition.security.jwt.TokenService;
@@ -212,8 +212,8 @@ class MemberControllerTest {
 	    //given
 		final Long memberId = MemberServiceUtils.saveMember(memberRepository);
 		final Token token = tokenService.generateToken(memberId);
-		Board board1 = new Board(memberId, "petitionTitle", "title1", "petitionContent", "content", "url", "10000", "사회문제");
-		Board board2 = new Board(memberId, "petitionTitle", "title1", "petitionContent", "content", "url", "10000", "사회문제");
+		Board board1 = BoardCreator.create(memberId, "title1", "content1");
+		Board board2 = BoardCreator.create(memberId, "title2", "content2");
 		boardRepository.saveAll(Arrays.asList(board1, board2));
 
 		//when
