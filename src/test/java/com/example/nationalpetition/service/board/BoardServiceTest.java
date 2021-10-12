@@ -9,6 +9,7 @@ import com.example.nationalpetition.dto.board.request.BoardLikeRequest;
 import com.example.nationalpetition.dto.board.request.CreateBoardRequest;
 import com.example.nationalpetition.dto.board.request.UpdateBoardRequest;
 import com.example.nationalpetition.dto.board.response.BoardInfoResponseWithLikeCount;
+import com.example.nationalpetition.dto.board.response.BoardListResponse;
 import com.example.nationalpetition.testObject.BoardCreator;
 import com.example.nationalpetition.testObject.BoardLikeCreator;
 import com.example.nationalpetition.utils.error.ErrorCode;
@@ -205,19 +206,21 @@ public class BoardServiceTest {
 
     @DisplayName("title 기준으로 검색하고 기본 10개씩 첫페이지는 0으로 가져온다.")
     @Test
+    @Transactional
     void 게시글_리스트_불러오기() {
         // given
         insert10();
 
         // when
         final Pageable pageable = PageRequest.of(0, 10, DESC, "id");
-        final List<BoardInfoResponseWithLikeCount> responseList = boardService.retrieveBoard("", pageable);
+        BoardListResponse responseList = boardService.retrieveBoard("", pageable);
 
         // then
         final List<Board> boardList = boardRepository.findAll();
         assertThat(boardList).hasSize(10);
-        assertThat(responseList).hasSize(10);
-        assertThat(responseList.get(0).getTitle()).isEqualTo("title10");
+        assertThat(responseList.getBoardList()).hasSize(10);
+        assertThat(responseList.getBoardList().get(0).getTitle()).isEqualTo("title10");
+        assertThat(responseList.getBoardCounts()).isEqualTo(10);
     }
 
     @DisplayName("title 기준으로 검색하고 기본 10개씩 첫페이지는 0으로 가져온다. - 타이틀검색어가 있을 시")
@@ -228,14 +231,14 @@ public class BoardServiceTest {
 
         // when
         final Pageable pageable = PageRequest.of(0, 10, DESC, "id");
-        final List<BoardInfoResponseWithLikeCount> responseList = boardService.retrieveBoard("1", pageable);
+        BoardListResponse responseList = boardService.retrieveBoard("1", pageable);
 
         // then
         final List<Board> boardList = boardRepository.findAll();
         assertThat(boardList).hasSize(10);
-        assertThat(responseList).hasSize(2);
-        assertThat(responseList.get(0).getTitle()).isEqualTo("title10");
-        assertThat(responseList.get(1).getTitle()).isEqualTo("title1");
+        assertThat(responseList.getBoardList()).hasSize(2);
+        assertThat(responseList.getBoardList().get(0).getTitle()).isEqualTo("title10");
+        assertThat(responseList.getBoardList().get(1).getTitle()).isEqualTo("title1");
     }
 
     @DisplayName("title 기준으로 검색하고 기본 10개씩 첫페이지는 0으로 가져온다. 10개만 있을 시 페이지1은 빈배열 반환")
@@ -246,10 +249,10 @@ public class BoardServiceTest {
 
         // when
         final Pageable pageable = PageRequest.of(1, 10, DESC, "id");
-        final List<BoardInfoResponseWithLikeCount> responseList = boardService.retrieveBoard("1", pageable);
+        BoardListResponse responseList = boardService.retrieveBoard("1", pageable);
 
         // then
-        assertThat(responseList).isEmpty();
+        assertThat(responseList.getBoardList()).isEmpty();
     }
 
     @DisplayName("게시글 불러올 때 조회순으로 불러오기")
@@ -266,12 +269,12 @@ public class BoardServiceTest {
 
         // when
         final Pageable pageable = PageRequest.of(0, 3, Sort.by(DESC, "viewCounts"));
-        final List<BoardInfoResponseWithLikeCount> responseList = boardService.retrieveBoard("", pageable);
+        BoardListResponse responseList = boardService.retrieveBoard("", pageable);
 
         // then
-        assertThat(responseList).hasSize(3);
-        assertThat(responseList.get(0).getBoardId()).isEqualTo(board1.getId());
-        assertThat(responseList.get(1).getBoardId()).isEqualTo(board3.getId());
+        assertThat(responseList.getBoardList()).hasSize(3);
+        assertThat(responseList.getBoardList().get(0).getBoardId()).isEqualTo(board1.getId());
+        assertThat(responseList.getBoardList().get(1).getBoardId()).isEqualTo(board3.getId());
     }
 
     @DisplayName("게시글 찬성/반대를 한다. 이미 게시글에 찬성이나 반대를 했으면 boardState 의 값으로 업데이트 쳐주고 찬성/반대를 한적이 없으면 새로 생성해준다.")

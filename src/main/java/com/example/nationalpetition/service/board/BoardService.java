@@ -2,6 +2,7 @@ package com.example.nationalpetition.service.board;
 
 import com.example.nationalpetition.domain.board.Board;
 import com.example.nationalpetition.domain.board.BoardLike;
+import com.example.nationalpetition.domain.board.BoardState;
 import com.example.nationalpetition.domain.board.repository.BoardLikeRepository;
 import com.example.nationalpetition.domain.board.repository.BoardRepository;
 import com.example.nationalpetition.dto.board.request.BoardLikeRequest;
@@ -9,6 +10,7 @@ import com.example.nationalpetition.dto.board.request.CreateBoardRequest;
 import com.example.nationalpetition.dto.board.request.UpdateBoardRequest;
 import com.example.nationalpetition.dto.board.response.BoardInfoResponseWithLikeCount;
 import com.example.nationalpetition.dto.board.response.BoardLikeAndUnLikeCounts;
+import com.example.nationalpetition.dto.board.response.BoardListResponse;
 import com.example.nationalpetition.external.petition.PetitionClient;
 import com.example.nationalpetition.external.petition.dto.response.PetitionResponse;
 import com.example.nationalpetition.utils.error.ErrorCode;
@@ -63,11 +65,13 @@ public class BoardService {
     }
 
     @Transactional(readOnly = true)
-    public List<BoardInfoResponseWithLikeCount> retrieveBoard(String search, Pageable pageable) {
-        return boardRepository.findByTitleContaining(search, pageable)
+    public BoardListResponse retrieveBoard(String search, Pageable pageable) {
+        List<BoardInfoResponseWithLikeCount> boardList = boardRepository.findByTitleContaining(search, pageable)
                 .stream().map(board -> BoardInfoResponseWithLikeCount.of(board, boardLikeRepository.countLikeByBoardId(board.getId())
                         .orElse(BoardLikeAndUnLikeCounts.of(0, 0))))
                 .collect(Collectors.toList());
+        long boardCounts = boardRepository.findBoardCounts();
+        return BoardListResponse.of(boardList, boardCounts);
     }
 
     @Transactional
@@ -90,4 +94,12 @@ public class BoardService {
         boardLikeRepository.delete(boardLike);
     }
 
+    @Transactional
+    public BoardState getBoardStatus(Long boardId, Long memberId) {
+        BoardLike boardLike = boardLikeRepository.findByBoardIdAndMemberId(boardId, memberId);
+        if (boardLike == null) {
+            return null;
+        }
+        return boardLike.getBoardState();
+    }
 }

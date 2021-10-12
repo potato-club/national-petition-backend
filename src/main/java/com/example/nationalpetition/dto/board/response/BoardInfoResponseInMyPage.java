@@ -6,8 +6,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
 
 @Getter
 @NoArgsConstructor
@@ -44,7 +42,7 @@ public class BoardInfoResponseInMyPage {
     }
 
     public static BoardInfoResponseInMyPage of(Board board, BoardLikeAndUnLikeCounts boardLikeAndUnLikeCounts, long boardCommentCounts) {
-        return new BoardInfoResponseInMyPage().builder()
+        return BoardInfoResponseInMyPage.builder()
                 .boardId(board.getId())
                 .memberId(board.getMemberId())
                 .petitionTitle(board.getPetitionTitle())

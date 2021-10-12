@@ -41,6 +41,10 @@ Authorization: Bearer {{TOKEN}}
   "boardState": "LIKE"
 }
 
+### 게시글 찬성/반대 상태 보여주기
+GET {{local}}/api/v1/board/status/1
+Authorization: Bearer {{TOKEN}}
+
 ###
 GET {{local}}/test-token
 
