@@ -108,12 +108,12 @@ public class CommentServiceTest {
         // then
         List<Comment> comments = commentRepository.findAll();
         assertThat(comments).hasSize(2);
-
         assertThat(comments.get(1).getDepth()).isEqualTo(2);
         assertThat(comments.get(1).getParentId()).isEqualTo(parent.getId());
         assertThat(comments.get(1).getMemberId()).isEqualTo(memberId);
         assertThat(comments.get(1).getContent()).isEqualTo(content);
         assertThat(comments.get(1).getBoardId()).isEqualTo(board.getId());
+        assertThat(comments.get(0).getChildCommentsCount()).isEqualTo(1);
 
     }
 
@@ -142,7 +142,6 @@ public class CommentServiceTest {
         String updatedContent = "감자는 설탕과 먹어요";
         Long memberId = 2L;
         Long boardId = 1L;
-
 
         commentRepository.save(Comment.newRootComment(memberId, boardId, originalContent));
         CommentUpdateDto dto = CommentUpdateDto.builder()
