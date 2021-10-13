@@ -3,8 +3,7 @@ package com.example.nationalpetition.controller.board;
 import com.example.nationalpetition.domain.board.Board;
 import com.example.nationalpetition.domain.board.repository.BoardLikeRepository;
 import com.example.nationalpetition.domain.board.repository.BoardRepository;
-import com.example.nationalpetition.security.jwt.TokenService;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.example.nationalpetition.testObject.BoardCreator;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,12 +36,6 @@ public class BoardControllerExceptionTest {
     private MockMvc mockMvc;
 
     @Autowired
-    private ObjectMapper objectMapper;
-
-    @Autowired
-    private TokenService tokenService;
-
-    @Autowired
     private BoardRepository boardRepository;
 
     @Autowired
@@ -57,8 +50,8 @@ public class BoardControllerExceptionTest {
     @Test
     void 게시글리스트를_불러온다_예외() throws Exception {
         // given
-        Board board1 = new Board(1L, "petitionTitle", "title1", "petitionContent", "content", "url", "10000", "사회문제");
-        Board board2 = new Board(1L, "petitionTitle", "title2", "petitionContent", "content", "url", "10000", "사회문제");
+        Board board1 = BoardCreator.create(1L, "title1", "content1");
+        Board board2 = BoardCreator.create(1L, "title2", "content2");
         boardRepository.saveAll(Arrays.asList(board1, board2));
 
         // when & then
@@ -84,8 +77,8 @@ public class BoardControllerExceptionTest {
     @Test
     void 게시글리스트를_불러온다_예외2() throws Exception {
         // given
-        Board board1 = new Board(1L, "petitionTitle", "title1", "petitionContent", "content", "url", "10000", "사회문제");
-        Board board2 = new Board(1L, "petitionTitle", "title2", "petitionContent", "content", "url", "10000", "사회문제");
+        Board board1 = BoardCreator.create(1L, "title1", "content1");
+        Board board2 = BoardCreator.create(1L, "title2", "content2");
         boardRepository.saveAll(Arrays.asList(board1, board2));
 
         // when & then

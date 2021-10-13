@@ -37,7 +37,10 @@ public class Board extends BaseTimeEntity {
 
     private String category;
 
-    // TODO: 2021-09-13 청원 등록일, 청원 만료일
+    private String petitionCreatedAt;
+
+    private String petitionFinishedAt;
+
     private int viewCounts;
 
     private long boardCommentCounts;
@@ -45,7 +48,7 @@ public class Board extends BaseTimeEntity {
     private Boolean isDeleted;
 
     @Builder
-    public Board(Long memberId, String petitionTitle, String title, String petitionContent, String content, String petitionUrl, String petitionsCount, String category) {
+    public Board(Long memberId, String petitionTitle, String title, String petitionContent, String content, String petitionUrl, String petitionsCount, String category, String petitionCreatedAt, String petitionFinishedAt) {
         this.memberId = memberId;
         this.petitionTitle = petitionTitle;
         this.title = title;
@@ -57,6 +60,8 @@ public class Board extends BaseTimeEntity {
         this.isDeleted = false;
         this.viewCounts = 0;
         this.boardCommentCounts = 0;
+        this.petitionCreatedAt = petitionCreatedAt;
+        this.petitionFinishedAt = petitionFinishedAt;
     }
 
     public void updateBoard(String title, String content) {

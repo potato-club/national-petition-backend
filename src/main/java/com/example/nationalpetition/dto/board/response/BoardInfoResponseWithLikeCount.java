@@ -21,6 +21,8 @@ public class BoardInfoResponseWithLikeCount {
     private String petitionUrl;
     private String petitionsCount;
     private String category;
+    private String petitionCreatedAt;
+    private String petitionFinishedAt;
     private int viewCounts;
     private Long boardCommentCounts;
     private long boardLikeCounts;
@@ -30,8 +32,8 @@ public class BoardInfoResponseWithLikeCount {
 
     @Builder
     public BoardInfoResponseWithLikeCount(Long boardId, Long memberId, String petitionTitle, String title, String petitionContent,
-                                          String content, String petitionUrl, String petitionsCount, String category, int viewCounts,
-                                          Long boardCommentCounts, long boardLikeCounts, long boardUnLikeCounts, LocalDateTime createdDate) {
+                                          String content, String petitionUrl, String petitionsCount, String category, String petitionCreatedAt,
+                                          String petitionFinishedAt, int viewCounts, Long boardCommentCounts, long boardLikeCounts, long boardUnLikeCounts, LocalDateTime createdDate) {
         this.boardId = boardId;
         this.memberId = memberId;
         this.petitionTitle = petitionTitle;
@@ -41,6 +43,8 @@ public class BoardInfoResponseWithLikeCount {
         this.petitionUrl = petitionUrl;
         this.petitionsCount = petitionsCount;
         this.category = category;
+        this.petitionCreatedAt = petitionCreatedAt;
+        this.petitionFinishedAt = petitionFinishedAt;
         this.viewCounts = viewCounts;
         this.boardCommentCounts = boardCommentCounts;
         this.boardLikeCounts = boardLikeCounts;
@@ -59,6 +63,8 @@ public class BoardInfoResponseWithLikeCount {
                 .petitionUrl(board.getPetitionUrl())
                 .petitionsCount(board.getPetitionsCount())
                 .category(board.getCategory())
+                .petitionCreatedAt(board.getPetitionCreatedAt())
+                .petitionFinishedAt(board.getPetitionFinishedAt())
                 .viewCounts(board.getViewCounts())
                 .boardCommentCounts(board.getBoardCommentCounts())
                 .boardLikeCounts(boardLikeAndUnLikeCounts.getBoardLikeCounts())

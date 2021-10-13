@@ -101,7 +101,7 @@ public class BoardServiceTest {
     @Transactional
     void 게시글_수정() {
         // given
-        Board board = new Board(1L, "petitionTitle", "title", "petitionContent", "content", "url", "10000", "사회문제");
+        Board board = BoardCreator.create(1L, "title1", "content1");
         boardRepository.save(board);
 
         UpdateBoardRequest request = UpdateBoardRequest.testInstance(board.getId(), "updateTitle", "updateContent");
@@ -133,7 +133,7 @@ public class BoardServiceTest {
     @Test
     void 특정_게시글_불러오기() {
         // given
-        Board board = new Board(1L, "petitionTitle", "title", "petitionContent", "content", "url", "10000", "사회문제");
+        Board board = BoardCreator.create(1L, "title1", "content1");
         boardRepository.save(board);
 
         // when
@@ -151,7 +151,7 @@ public class BoardServiceTest {
     @Test
     void 특정_게시글_불러오기2() {
         // given
-        Board board = new Board(1L, "petitionTitle", "title", "petitionContent", "content", "url", "10000", "사회문제");
+        Board board = BoardCreator.create(1L, "title1", "content1");
         boardRepository.save(board);
         BoardLike boardLike = BoardLikeCreator.create(board.getId(), board.getMemberId(), BoardState.LIKE);
         boardLikeRepository.save(boardLike);
@@ -334,7 +334,7 @@ public class BoardServiceTest {
     private static class MockPetitionApiCaller implements PetitionClient {
         @Override
         public PetitionResponse getPetitionInfo(Long id) {
-            return PetitionResponse.of("감자좀 살려주세요", "감자가 위험해요", "10000", "청원중");
+            return PetitionResponse.of("감자좀 살려주세요", "감자가 위험해요", "10000", "청원중", "인권", "2021-06-22", "2021-06-23");
         }
     }
 
