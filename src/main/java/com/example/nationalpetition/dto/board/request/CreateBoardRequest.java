@@ -1,12 +1,9 @@
 package com.example.nationalpetition.dto.board.request;
 
-import com.example.nationalpetition.config.validator.PetitionUrl;
 import com.example.nationalpetition.domain.board.Board;
 import com.example.nationalpetition.external.petition.dto.response.PetitionResponse;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import javax.validation.constraints.NotNull;
 
 @Getter
 @NoArgsConstructor

@@ -24,7 +24,7 @@ public class BoardInfoResponseWithLikeCount {
     private String petitionCreatedAt;
     private String petitionFinishedAt;
     private int viewCounts;
-    private Long boardCommentCounts;
+    private int boardCommentCounts;
     private long boardLikeCounts;
     private long boardUnLikeCounts;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
@@ -33,7 +33,7 @@ public class BoardInfoResponseWithLikeCount {
     @Builder
     public BoardInfoResponseWithLikeCount(Long boardId, Long memberId, String petitionTitle, String title, String petitionContent,
                                           String content, String petitionUrl, String petitionsCount, String category, String petitionCreatedAt,
-                                          String petitionFinishedAt, int viewCounts, Long boardCommentCounts, long boardLikeCounts, long boardUnLikeCounts, LocalDateTime createdDate) {
+                                          String petitionFinishedAt, int viewCounts, int boardCommentCounts, long boardLikeCounts, long boardUnLikeCounts, LocalDateTime createdDate) {
         this.boardId = boardId;
         this.memberId = memberId;
         this.petitionTitle = petitionTitle;
@@ -66,7 +66,7 @@ public class BoardInfoResponseWithLikeCount {
                 .petitionCreatedAt(board.getPetitionCreatedAt())
                 .petitionFinishedAt(board.getPetitionFinishedAt())
                 .viewCounts(board.getViewCounts())
-                .boardCommentCounts(board.getBoardCommentCounts())
+                .boardCommentCounts(board.getRootCommentsCount())
                 .boardLikeCounts(boardLikeAndUnLikeCounts.getBoardLikeCounts())
                 .boardUnLikeCounts(boardLikeAndUnLikeCounts.getBoardUnLikeCounts())
                 .createdDate(board.getCreatedDate())

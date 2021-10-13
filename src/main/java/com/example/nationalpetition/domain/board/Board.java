@@ -2,7 +2,6 @@ package com.example.nationalpetition.domain.board;
 
 import com.example.nationalpetition.domain.BaseTimeEntity;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
@@ -38,19 +37,21 @@ public class Board extends BaseTimeEntity {
 
     private String category;
 
-    // TODO: 2021-09-13 청원 등록일, 청원 만료일
-    @ColumnDefault("0")
+    private String petitionCreatedAt;
+
+    private String petitionFinishedAt;
+
     @Column(nullable = false)
     private int viewCounts;
 
-    @ColumnDefault("0")
     @Column(nullable = false)
     private int rootCommentsCount;
 
     private Boolean isDeleted;
 
     @Builder
-    public Board(Long memberId, String petitionTitle, String title, String petitionContent, String content, String petitionUrl, String petitionsCount, String category) {
+    public Board(Long memberId, String petitionTitle, String title, String petitionContent, String content, String petitionUrl,
+                 String petitionsCount, String category, String petitionCreatedAt, String petitionFinishedAt) {
         this.memberId = memberId;
         this.petitionTitle = petitionTitle;
         this.title = title;
@@ -59,6 +60,8 @@ public class Board extends BaseTimeEntity {
         this.petitionUrl = petitionUrl;
         this.petitionsCount = petitionsCount;
         this.category = category;
+        this.petitionCreatedAt = petitionCreatedAt;
+        this.petitionFinishedAt = petitionFinishedAt;
         this.isDeleted = false;
         this.viewCounts = 0;
         this.rootCommentsCount = 0;

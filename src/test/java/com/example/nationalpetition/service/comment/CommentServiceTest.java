@@ -6,7 +6,6 @@ import com.example.nationalpetition.domain.comment.*;
 import com.example.nationalpetition.dto.comment.request.CommentCreateDto;
 import com.example.nationalpetition.dto.comment.request.CommentUpdateDto;
 import com.example.nationalpetition.dto.comment.request.LikeCommentRequestDto;
-import com.example.nationalpetition.dto.comment.response.CommentRetrieveResponseDto;
 import com.example.nationalpetition.utils.error.exception.NotFoundException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -14,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -69,7 +67,7 @@ public class CommentServiceTest {
         List<Comment> comments = commentRepository.findAll();
         List<Board> boards = boardRepository.findAll();
         assertThat(boards).hasSize(1);
-        assertThat(boards.get(0).getBoardCommentCounts()).isEqualTo(1);
+        assertThat(boards.get(0).getRootCommentsCount()).isEqualTo(1);
 
         assertThat(comments).hasSize(1);
         assertThat(comments.get(0).getParentId()).isEqualTo(null);
@@ -206,7 +204,7 @@ public class CommentServiceTest {
         List<Comment> deletedComment = commentRepository.findAll();
         List<Board> boards = boardRepository.findAll();
         assertThat(boards).hasSize(1);
-        assertThat(boards.get(0).getBoardCommentCounts()).isEqualTo(-1);
+        assertThat(boards.get(0).getRootCommentsCount()).isEqualTo(0);
         assertThat(deletedComment).hasSize(1);
         assertThat(deletedComment.get(0).isDeleted()).isEqualTo(true);
         assertThat(deletedComment.get(0).getMemberId()).isEqualTo(memberId);
