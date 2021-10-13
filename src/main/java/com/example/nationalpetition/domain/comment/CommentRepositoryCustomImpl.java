@@ -1,8 +1,10 @@
 package com.example.nationalpetition.domain.comment;
 
+import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -10,7 +12,7 @@ import java.util.List;
 import static com.example.nationalpetition.domain.comment.QComment.comment;
 
 @RequiredArgsConstructor
-public class CommentRepositoryCustomImpl implements CommentRepositoryCustom{
+public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
 
@@ -42,10 +44,16 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom{
     }
 
     @Override
-    public Page<Comment> findAllByIsDeletedIsFalse(Pageable pageable) {
-        return (Page<Comment>) queryFactory
+    public Page<Comment> findAllRootCommentByBoardId(Pageable pageable, Long boardId) {
+        QueryResults<Comment> result = queryFactory
                 .selectFrom(comment)
-                .where(comment.isDeleted.isFalse())
-                .fetch();
+                .where(comment.parentId.isNull(),
+                        comment.boardId.eq(boardId))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetchResults();
+        return new PageImpl<>(result.getResults(), pageable, result.getTotal());
+
     }
+
 }

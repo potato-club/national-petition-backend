@@ -41,14 +41,17 @@ public class Board extends BaseTimeEntity {
 
     private String petitionFinishedAt;
 
+    @Column(nullable = false)
     private int viewCounts;
 
-    private long boardCommentCounts;
+    @Column(nullable = false)
+    private int rootCommentsCount;
 
     private Boolean isDeleted;
 
     @Builder
-    public Board(Long memberId, String petitionTitle, String title, String petitionContent, String content, String petitionUrl, String petitionsCount, String category, String petitionCreatedAt, String petitionFinishedAt) {
+    public Board(Long memberId, String petitionTitle, String title, String petitionContent, String content, String petitionUrl,
+                 String petitionsCount, String category, String petitionCreatedAt, String petitionFinishedAt) {
         this.memberId = memberId;
         this.petitionTitle = petitionTitle;
         this.title = title;
@@ -57,11 +60,11 @@ public class Board extends BaseTimeEntity {
         this.petitionUrl = petitionUrl;
         this.petitionsCount = petitionsCount;
         this.category = category;
-        this.isDeleted = false;
-        this.viewCounts = 0;
-        this.boardCommentCounts = 0;
         this.petitionCreatedAt = petitionCreatedAt;
         this.petitionFinishedAt = petitionFinishedAt;
+        this.isDeleted = false;
+        this.viewCounts = 0;
+        this.rootCommentsCount = 0;
     }
 
     public void updateBoard(String title, String content) {
@@ -70,15 +73,11 @@ public class Board extends BaseTimeEntity {
     }
 
     public void incrementViewCount() {
-        this.viewCounts += 1;
+        this.viewCounts ++;
     }
 
-    public void incrementCommentCounts() {
-        this.boardCommentCounts += 1;
-    }
-
-    public void decreaseCommentCounts() {
-        this.boardCommentCounts -= 1;
+    public void countRootComments() {
+        this.rootCommentsCount ++;
     }
 
 }

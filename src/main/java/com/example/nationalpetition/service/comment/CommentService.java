@@ -8,10 +8,8 @@ import com.example.nationalpetition.dto.comment.CommentDto;
 import com.example.nationalpetition.dto.comment.request.CommentUpdateDto;
 import com.example.nationalpetition.dto.comment.request.LikeCommentRequestDto;
 import com.example.nationalpetition.dto.comment.response.CommentPageResponseDto;
-import com.example.nationalpetition.service.board.BoardServiceUtils;
 import com.example.nationalpetition.utils.error.ErrorCode;
 import com.example.nationalpetition.utils.error.exception.NotFoundException;
-import com.example.nationalpetition.dto.comment.response.CommentRetrieveResponseDto;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -19,7 +17,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 
@@ -33,10 +30,10 @@ public class CommentService {
 
     @Transactional
     public Long addComment(CommentCreateDto dto, Long boardId, Long memberId) {
-        Board board = BoardServiceUtils.findBoardById(boardRepository, boardId);
-        board.incrementCommentCounts();
+        Board board = boardRepository.findById(boardId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_BOARD));
 
         if (dto.getParentId() == null) {
+            board.countRootComments();
             return commentRepository.save(Comment.newRootComment(memberId, boardId, dto.getContent())).getId();
         }
 
@@ -45,30 +42,27 @@ public class CommentService {
 
         int depth = parentComment.getDepth();
 
-        return commentRepository.save(Comment.newChildComment(dto.getParentId(), memberId, boardId, depth + 1, dto.getContent())).getId();
+        parentComment.countChildComments();
+
+        return commentRepository.save(Comment.newChildComment(dto.getParentId(), memberId, board.getId(), depth + 1, dto.getContent())).getId();
     }
 
     @Transactional
     public Comment updateComment(Long memberId, CommentUpdateDto updateDto) {
-        Comment comment = CommentServiceUtils.findCommentByCommentIdAndMemberId(commentRepository, updateDto.getCommentId(), memberId);
+        Comment comment = commentRepository.findByIdAndMemberIdAndIsDeletedIsFalse(updateDto.getCommentId(), memberId);
+        if (comment == null) {
+            throw new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_COMMENT);
+        }
         comment.update(updateDto.getContent());
         return comment;
     }
 
     @Transactional
     public void deleteComment(Long memberId, Long commentId) {
-        Comment comment = CommentServiceUtils.findCommentByCommentIdAndMemberId(commentRepository, commentId, memberId);
-        Board board = BoardServiceUtils.findBoardById(boardRepository, comment.getBoardId());
-
-        board.decreaseCommentCounts();
+        Comment comment = commentRepository.findByIdAndMemberIdAndIsDeletedIsFalse(commentId, memberId);
+        boardRepository.findById(comment.getBoardId()).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_BOARD));
 
         comment.delete();
-    }
-
-    @Transactional(readOnly = true)
-    public List<CommentRetrieveResponseDto> retrieveComments(Long boardId) {
-        List<Comment> comments = commentRepository.findByBoardIdAndIsDeletedIsFalse(boardId);
-        return comments.stream().map(CommentRetrieveResponseDto::of).collect(Collectors.toList());
     }
 
     @Transactional
@@ -111,9 +105,9 @@ public class CommentService {
                 .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_COMMENT));
     }
 
-    @Transactional
-    public CommentPageResponseDto pageRequest(int page, int size) {
-        Page<Comment> commentList = commentRepository.findAllByIsDeletedIsFalse(PageRequest.of(page, size));
+    @Transactional(readOnly = true)
+    public CommentPageResponseDto pageRequest(int page, int size, Long boardId) {
+        Page<Comment> commentList = commentRepository.findAllRootCommentByBoardId(PageRequest.of(page, size), boardId);
         return CommentPageResponseDto.builder()
                 .contents(commentList.stream()
                         .map(CommentDto::of)
