@@ -15,6 +15,7 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.util.UriComponentsBuilder;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -35,7 +36,8 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
 		final OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
-		final Member member = memberRepository.findByEmail((String) oAuth2User.getAttributes().get("email")).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_USER));
+		final Member member = memberRepository.findByEmail((String) oAuth2User.getAttributes().get("email"))
+				.orElseThrow(() -> new NotFoundException(String.format("해당하는 이메일 (%s)을 가진 유저는 존재하지 않습니다", oAuth2User.getAttributes().get("email")), ErrorCode.NOT_FOUND_EXCEPTION_USER));
 		final Token token = tokenService.generateToken(member.getId());
 
 		if (!StringUtils.hasText(member.getNickName())) {

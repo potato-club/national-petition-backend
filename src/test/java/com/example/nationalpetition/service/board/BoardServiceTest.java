@@ -125,8 +125,7 @@ public class BoardServiceTest {
         // when & then
         assertThatThrownBy(
                 () -> boardService.updateBoard(request, 1L)
-        ).isInstanceOf(NotFoundException.class)
-                .hasMessage(ErrorCode.NOT_FOUND_EXCEPTION_BOARD.getMessage());
+        ).isInstanceOf(NotFoundException.class);
     }
 
     @DisplayName("게시글 아이디로 게시글을 불러온다")

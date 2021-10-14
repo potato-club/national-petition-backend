@@ -13,7 +13,7 @@ public class BoardServiceUtils {
 
     public static Board findBoardById(BoardRepository boardRepository, Long boardId) {
         return boardRepository.findById(boardId)
-                .orElseThrow(() -> new NotFoundException((ErrorCode.NOT_FOUND_EXCEPTION_BOARD)));
+                .orElseThrow(() -> new NotFoundException(String.format("해당하는 게시글 (%s)은 존재하지 않습니다", boardId), ErrorCode.NOT_FOUND_EXCEPTION_BOARD));
     }
 
 }

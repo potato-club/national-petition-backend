@@ -1,23 +1,16 @@
 package com.example.nationalpetition.service.member;
 
 import com.example.nationalpetition.domain.member.entity.Member;
-import com.example.nationalpetition.domain.member.repository.MemberRepository;
 import com.example.nationalpetition.utils.error.ErrorCode;
-import com.example.nationalpetition.utils.error.exception.AlreadyExistException;
-import com.example.nationalpetition.utils.error.exception.DuplicateException;
+import com.example.nationalpetition.utils.error.exception.ConflictException;
 
 public class MemberServiceUtils {
 
-    public static void duplicateNickName(MemberRepository memberRepository, String nickName) {
-        if (memberRepository.duplicateNickName(nickName)) {
-            throw new DuplicateException(ErrorCode.DUPLICATE_EXCEPTION_NICKNAME);
-        }
-    }
-
-    public static Member isAlreadyExistNickName(Member member) {
-        if (member.getNickName() != null) {
-            throw new AlreadyExistException(ErrorCode.ALREADY_EXIST_EXCEPTION_ADD_NICKNAME);
-        }
-        return member;
-    }
+	public static Member isAlreadyExistNickName(Member member) {
+		if (member.getNickName() != null) {
+			throw new ConflictException(String.format("이미 닉네임(%s) 등록을 한 계정(%s)입니다.",
+					member.getNickName(), member.getId()), ErrorCode.ALREADY_EXIST_EXCEPTION_ADD_NICKNAME);
+		}
+		return member;
+	}
 }

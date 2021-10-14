@@ -6,7 +6,6 @@ import com.example.nationalpetition.domain.board.repository.BoardLikeRepository;
 import com.example.nationalpetition.domain.board.repository.BoardRepository;
 import com.example.nationalpetition.domain.comment.Comment;
 import com.example.nationalpetition.domain.comment.CommentRepository;
-import com.example.nationalpetition.domain.member.entity.DeleteMember;
 import com.example.nationalpetition.domain.member.entity.Member;
 import com.example.nationalpetition.domain.member.repository.DeleteMemberRepository;
 import com.example.nationalpetition.domain.member.repository.MemberRepository;
@@ -14,9 +13,9 @@ import com.example.nationalpetition.dto.board.request.BoardLikeRequest;
 import com.example.nationalpetition.dto.board.response.BoardInfoResponseInMyPage;
 import com.example.nationalpetition.dto.member.request.NickNameRequest;
 import com.example.nationalpetition.dto.member.response.MemberResponse;
+import com.example.nationalpetition.utils.error.exception.ConflictException;
 import com.example.nationalpetition.utils.message.MessageType;
 import com.example.nationalpetition.utils.error.ErrorCode;
-import com.example.nationalpetition.utils.error.exception.AlreadyExistException;
 import com.example.nationalpetition.utils.error.exception.NotFoundException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -84,8 +83,7 @@ public class MemberServiceTest {
         Long memberId = 123123L;
         //when && then
         assertThatThrownBy( () ->memberService.findById(memberId))
-                .isInstanceOf(NotFoundException.class)
-                .hasMessage(ErrorCode.NOT_FOUND_EXCEPTION_USER.getMessage());
+                .isInstanceOf(NotFoundException.class);
     }
 
     @Test
@@ -121,8 +119,7 @@ public class MemberServiceTest {
         final NickNameRequest request = new NickNameRequest("닉네임222");
         //when && then
         assertThatThrownBy(() -> memberService.addNickName(memberId, request))
-                .isInstanceOf(AlreadyExistException.class)
-                .hasMessage(ErrorCode.ALREADY_EXIST_EXCEPTION_ADD_NICKNAME.getMessage());
+                .isInstanceOf(ConflictException.class);
     }
 
 
@@ -188,8 +185,7 @@ public class MemberServiceTest {
         assertThat(message).isEqualTo(MessageType.DELETE_MEMBER.getMessage());
         assertThat(deleteMemberRepository.findAll().size()).isEqualTo(1);
         assertThatThrownBy(() -> memberService.findById(memberId))
-                .isInstanceOf(NotFoundException.class)
-                .hasMessage(ErrorCode.NOT_FOUND_EXCEPTION_USER.getMessage());
+                .isInstanceOf(NotFoundException.class);
     }
 
 
@@ -213,8 +209,7 @@ public class MemberServiceTest {
         final Long memberId = 회원가입하기();
         //when && then
         assertThatThrownBy(() -> memberService.findById(memberId + 1L))
-                .isInstanceOf(NotFoundException.class)
-                .hasMessage(ErrorCode.NOT_FOUND_EXCEPTION_USER.getMessage());
+                .isInstanceOf(NotFoundException.class);
 
     }
 
@@ -240,11 +235,8 @@ public class MemberServiceTest {
         final String email = "fail@naver.com";
         //when && then
         assertThatThrownBy(() -> memberService.findByEmail(email))
-                .isInstanceOf(NotFoundException.class)
-                .hasMessage(ErrorCode.NOT_FOUND_EXCEPTION_USER.getMessage());
+                .isInstanceOf(NotFoundException.class);
     }
-
-
 
     protected Long 게시글생성하기(Long memberId, int count) {
         for (int i = 0; i < count-1; i++) {
@@ -297,7 +289,7 @@ public class MemberServiceTest {
     }
 
     protected void 게시글조회수증가시키기(Long boardId, int count) {
-        final Board board = boardRepository.findById(boardId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_BOARD));
+        final Board board = boardRepository.findById(boardId).orElseThrow(() -> new NotFoundException(String.format("해당하는 게시글 (%s)이 존재하지 않습니다", boardId), ErrorCode.NOT_FOUND_EXCEPTION_BOARD));
         for (int i = 0; i < count; i++) {
             board.incrementViewCount();
         }

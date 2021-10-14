@@ -1,8 +1,7 @@
 package com.example.nationalpetition.config.auth;
 
 import com.example.nationalpetition.security.jwt.TokenService;
-import com.example.nationalpetition.utils.error.ErrorCode;
-import com.example.nationalpetition.utils.error.exception.JwtTokenException;
+import com.example.nationalpetition.utils.error.exception.UnAuthorizedException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
@@ -40,7 +39,7 @@ public class AuthInterceptor implements HandlerInterceptor {
 			request.setAttribute(MEMBER_ID, tokenService.getMemberIdFromToken(token));
 			return true;
 		}
-		throw new JwtTokenException(ErrorCode.JWT_TOKEN_EXCEPTION_NOTHING);
+		throw new UnAuthorizedException(String.format("잘못된 Authorization Header (%s)입니다.", header));
 	}
 
 	private String removeBearer(String header) {

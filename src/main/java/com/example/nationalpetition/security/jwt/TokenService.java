@@ -1,6 +1,6 @@
 package com.example.nationalpetition.security.jwt;
 
-import com.example.nationalpetition.utils.error.exception.JwtTokenException;
+import com.example.nationalpetition.utils.error.exception.UnAuthorizedException;
 import com.example.nationalpetition.utils.error.ErrorCode;
 import com.example.nationalpetition.utils.message.MessageType;
 import io.jsonwebtoken.*;
@@ -56,9 +56,9 @@ public class TokenService {
 					.getSubject());
 		} catch (MalformedJwtException  | UnsupportedJwtException | IllegalArgumentException e) {
 			log.info(MessageType.TOKEN_INVALID.getMessage() + e);
-			throw new JwtTokenException(ErrorCode.JWT_TOKEN_EXCEPTION_INVALID);
+			throw new UnAuthorizedException(String.format("잘못된 토큰 (%s) 입니다.", token));
 		} catch (ExpiredJwtException e) {
-			throw new JwtTokenException(ErrorCode.JWT_TOKEN_EXCEPTION_EXPIRED);
+			throw new UnAuthorizedException(String.format("만료된 토큰 (%s) 입니다", token), ErrorCode.JWT_TOKEN_EXCEPTION_EXPIRED);
 		}
 	}
 

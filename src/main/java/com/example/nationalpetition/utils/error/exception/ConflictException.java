@@ -4,8 +4,8 @@ import com.example.nationalpetition.utils.error.ErrorCode;
 
 public class ConflictException extends BusinessException {
 
-    public ConflictException(ErrorCode errorCode) {
-        super(errorCode);
-    }
+	public ConflictException(String message, ErrorCode errorCode) {
+		super(message, errorCode);
+	}
 
 }

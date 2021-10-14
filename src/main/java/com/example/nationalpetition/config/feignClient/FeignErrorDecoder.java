@@ -13,9 +13,9 @@ public class FeignErrorDecoder implements ErrorDecoder {
 	@Override
 	public Exception decode(String methodKey, Response response) {
 		if (400 <= response.status() && response.status() < 500) {
-			return new ValidationException(ErrorCode.VALIDATION_EXCEPTION);
+			return new ValidationException(String.format("외부 API 호출 중 클라이언트 에러가 발생하였습니다. (%s)", response.body()), ErrorCode.VALIDATION_EXCEPTION);
 		}
-		return new BadGatewayException(ErrorCode.BAD_GATEWAY_EXCEPTION);
+		return new BadGatewayException(String.format("외부 API 호출 중 서버 에러가 발생하였습니다. (%s)", response.body()), ErrorCode.BAD_GATEWAY_EXCEPTION);
 	}
 
 }

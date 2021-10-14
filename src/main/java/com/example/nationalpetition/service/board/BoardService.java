@@ -47,7 +47,8 @@ public class BoardService {
     @Transactional
     public BoardInfoResponseWithLikeCount updateBoard(UpdateBoardRequest request, Long memberId) {
         Board board = boardRepository.findByIdAndMemberId(request.getBoardId(), memberId)
-                .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_BOARD));
+                .orElseThrow(() -> new NotFoundException(String.format("해당하는 멤버 (%s)에게 해당하는 게시글 (%s)은 존재하지 않습니다",
+                        memberId, request.getBoardId()), ErrorCode.NOT_FOUND_EXCEPTION_BOARD));
         board.updateBoard(request.getTitle(), request.getContent());
         BoardLikeAndUnLikeCounts boardLikeAndUnLikeCounts = boardLikeRepository.countLikeByBoardId(board.getId())
                 .orElse(BoardLikeAndUnLikeCounts.of(0, 0));
@@ -57,7 +58,7 @@ public class BoardService {
     @Transactional
     public BoardInfoResponseWithLikeCount getBoard(Long boardId) {
         final Board board = boardRepository.findByIdAndIsDeletedFalse(boardId)
-                .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_BOARD));
+                .orElseThrow(() -> new NotFoundException(String.format("해당하는 게시글 (%s)은 존재하지 않습니다", boardId), ErrorCode.NOT_FOUND_EXCEPTION_BOARD));
         BoardLikeAndUnLikeCounts boardLikeAndUnLikeCounts = boardLikeRepository.countLikeByBoardId(board.getId())
                 .orElse(BoardLikeAndUnLikeCounts.of(0, 0));
         board.incrementViewCount();
@@ -77,7 +78,7 @@ public class BoardService {
     @Transactional
     public void boardLikeOrUnLike(BoardLikeRequest request, Long memberId) {
         boardRepository.findByIdAndIsDeletedFalse(request.getBoardId())
-                .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_BOARD));
+                .orElseThrow(() -> new NotFoundException(String.format("해당하는 게시글 (%s)은 존재하지 않습니다", request.getBoardId()), ErrorCode.NOT_FOUND_EXCEPTION_BOARD));
         BoardLike boardLike = boardLikeRepository.findByBoardIdAndMemberId(request.getBoardId(), memberId);
         if (boardLike == null) {
             boardLikeRepository.save(request.toEntity(memberId));
@@ -89,7 +90,7 @@ public class BoardService {
     @Transactional
     public void deleteBoardLikeOrUnLike(Long boardId, Long memberId) {
         boardRepository.findByIdAndIsDeletedFalse(boardId)
-                .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_BOARD));
+                .orElseThrow(() -> new NotFoundException(String.format("해당하는 게시글 (%s)은 존재하지 않습니다", boardId), ErrorCode.NOT_FOUND_EXCEPTION_BOARD));
         BoardLike boardLike = boardLikeRepository.findByBoardIdAndMemberId(boardId, memberId);
         boardLikeRepository.delete(boardLike);
     }

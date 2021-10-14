@@ -11,6 +11,7 @@ import com.example.nationalpetition.dto.board.response.BoardInfoResponseInMyPage
 import com.example.nationalpetition.dto.board.response.BoardLikeAndUnLikeCounts;
 import com.example.nationalpetition.dto.member.request.NickNameRequest;
 import com.example.nationalpetition.dto.member.response.MemberResponse;
+import com.example.nationalpetition.utils.error.exception.ConflictException;
 import com.example.nationalpetition.utils.message.MessageType;
 import com.example.nationalpetition.utils.error.exception.NotFoundException;
 import com.example.nationalpetition.utils.error.ErrorCode;
@@ -38,12 +39,14 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public MemberResponse findById(Long memberId) {
-        return MemberResponse.of(memberRepository.findById(memberId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_USER)));
+        return MemberResponse.of(memberRepository.findById(memberId).
+                orElseThrow(() -> new NotFoundException(String.format("해당하는 멤버 (%s)는 존재하지 않습니다", memberId), ErrorCode.NOT_FOUND_EXCEPTION_USER)));
     }
 
     @Override
     public Member findByEmail(String email) {
-        return memberRepository.findByEmail(email).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_USER));
+        return memberRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException(String.format("해당하는 이메일을 가진 (%s) 멤버는 존재하지 않습니다", email), ErrorCode.NOT_FOUND_EXCEPTION_USER));
     }
 
     @Transactional
@@ -52,7 +55,8 @@ public class MemberServiceImpl implements MemberService {
         if (memberRepository.duplicateNickName(request.getNickName())) {
             return MessageType.NICKNAME_DUPLICATE.getMessage();
         }
-        final Member member = MemberServiceUtils.isAlreadyExistNickName(memberRepository.findById(memberId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_USER)));
+        final Member member = MemberServiceUtils.isAlreadyExistNickName(memberRepository.findById(memberId)
+                .orElseThrow(() -> new ConflictException(String.format("이미 존재하는 닉네임 (%s) 입니다", request.getNickName()), ErrorCode.CONFLICT_EXCEPTION)));
         member.addNickName(request.getNickName());
         return MessageType.NICKNAME_SUCCESS.getMessage();
     }
@@ -70,7 +74,8 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     @Override
     public String deleteMember(Long memberId) {
-        final Member member = memberRepository.findById(memberId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_USER));
+        final Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new NotFoundException(String.format("해당하는 멤버 (%s)는 존재하지 않습니다", memberId), ErrorCode.NOT_FOUND_EXCEPTION_USER));
         final DeleteMember deleteMember = DeleteMember.of(member);
         deleteMemberRepository.save(deleteMember);
         memberRepository.delete(member);

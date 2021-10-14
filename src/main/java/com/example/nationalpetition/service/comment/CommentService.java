@@ -8,6 +8,7 @@ import com.example.nationalpetition.dto.comment.CommentDto;
 import com.example.nationalpetition.dto.comment.request.CommentUpdateDto;
 import com.example.nationalpetition.dto.comment.request.LikeCommentRequestDto;
 import com.example.nationalpetition.dto.comment.response.CommentPageResponseDto;
+import com.example.nationalpetition.service.board.BoardServiceUtils;
 import com.example.nationalpetition.utils.error.ErrorCode;
 import com.example.nationalpetition.utils.error.exception.NotFoundException;
 
@@ -30,15 +31,13 @@ public class CommentService {
 
     @Transactional
     public Long addComment(CommentCreateDto dto, Long boardId, Long memberId) {
-        Board board = boardRepository.findById(boardId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_BOARD));
+        Board board = BoardServiceUtils.findBoardById(boardRepository, boardId);
 
         if (dto.getParentId() == null) {
             board.countRootComments();
             return commentRepository.save(Comment.newRootComment(memberId, boardId, dto.getContent())).getId();
         }
-
-        Comment parentComment = commentRepository.findById(dto.getParentId())
-                .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_COMMENT));
+        Comment parentComment = CommentServiceUtils.findCommentById(commentRepository, dto.getParentId());
 
         int depth = parentComment.getDepth();
 
@@ -51,7 +50,7 @@ public class CommentService {
     public Comment updateComment(Long memberId, CommentUpdateDto updateDto) {
         Comment comment = commentRepository.findByIdAndMemberIdAndIsDeletedIsFalse(updateDto.getCommentId(), memberId);
         if (comment == null) {
-            throw new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_COMMENT);
+            throw new NotFoundException(String.format("멤버(%s)에게 해당하는 댓글(%s)은 존재하지 않습니다", memberId, updateDto.getCommentId()), ErrorCode.NOT_FOUND_EXCEPTION_COMMENT);
         }
         comment.update(updateDto.getContent());
         return comment;
@@ -59,14 +58,14 @@ public class CommentService {
 
     @Transactional
     public void deleteComment(Long memberId, Long commentId) {
-        Comment comment = commentRepository.findByIdAndMemberIdAndIsDeletedIsFalse(commentId, memberId);
-        boardRepository.findById(comment.getBoardId()).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_BOARD));
+        Comment comment = CommentServiceUtils.findCommentByCommentIdAndMemberId(commentRepository, commentId, memberId);
+        BoardServiceUtils.findBoardById(boardRepository, comment.getBoardId());
 
         comment.delete();
     }
 
     @Transactional
-    public LikeComment addStatus(Long memberId, LikeCommentRequestDto requestDto) {
+    public void addStatus(Long memberId, LikeCommentRequestDto requestDto) {
 
         validateExistedComment(requestDto);
 
@@ -75,10 +74,10 @@ public class CommentService {
 
         if (likeComment != null) {
             likeComment.update(requestDto.getLikeCommentStatus());
-            return likeComment;
+            return;
         }
 
-        return likeCommentRepository.save(LikeComment.of(requestDto.getCommentId(),
+        likeCommentRepository.save(LikeComment.of(requestDto.getCommentId(),
                 requestDto.getLikeCommentStatus(), memberId));
     }
 
@@ -91,7 +90,7 @@ public class CommentService {
                         requestDto.getLikeCommentStatus());
 
         if (likeComment == null) {
-            throw new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_COMMENT);
+            throw new NotFoundException(String.format("멤버 (%s)는 댓글(%s)에 좋아요를 누르지 않았습니다.",memberId, requestDto.getCommentId()), ErrorCode.NOT_FOUND_EXCEPTION_COMMENT);
         }
 
         if (likeComment.getLikeCommentStatus() == requestDto.getLikeCommentStatus()) {
@@ -102,7 +101,7 @@ public class CommentService {
 
     private void validateExistedComment(LikeCommentRequestDto requestDto) {
         commentRepository.findById(requestDto.getCommentId())
-                .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_EXCEPTION_COMMENT));
+                .orElseThrow(() -> new NotFoundException(String.format("해당하는 댓글 (%s)은 존재하지 않습니다", requestDto.getCommentId()), ErrorCode.NOT_FOUND_EXCEPTION_COMMENT));
     }
 
     @Transactional(readOnly = true)

@@ -7,7 +7,7 @@ import com.example.nationalpetition.domain.member.repository.MemberRepository;
 import com.example.nationalpetition.dto.member.request.NickNameRequest;
 import com.example.nationalpetition.testObject.BoardCreator;
 import com.example.nationalpetition.utils.error.ErrorCode;
-import com.example.nationalpetition.utils.error.exception.AlreadyExistException;
+import com.example.nationalpetition.utils.error.exception.ConflictException;
 import com.example.nationalpetition.utils.error.exception.NotFoundException;
 import com.example.nationalpetition.security.jwt.Token;
 import com.example.nationalpetition.security.jwt.TokenService;
@@ -181,8 +181,7 @@ class MemberControllerTest {
 				.andDo(print())
 				.andDo(document("member/addNickName/AlreadyExist",
 						preprocessResponse(prettyPrint())))
-				.andExpect(result -> assertTrue(result.getResolvedException().getClass().isAssignableFrom(AlreadyExistException.class)))
-				.andExpect(result -> assertThat(result.getResolvedException().getMessage()).isEqualTo(ErrorCode.ALREADY_EXIST_EXCEPTION_ADD_NICKNAME.getMessage()));
+				.andExpect(result -> assertTrue(result.getResolvedException().getClass().isAssignableFrom(ConflictException.class)));
 		//then
 		resultActions.andExpect(status().isConflict());
 	}

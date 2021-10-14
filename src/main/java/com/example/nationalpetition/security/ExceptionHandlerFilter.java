@@ -1,6 +1,6 @@
 package com.example.nationalpetition.security;
 
-import com.example.nationalpetition.utils.error.exception.JwtTokenException;
+import com.example.nationalpetition.utils.error.exception.UnAuthorizedException;
 import com.example.nationalpetition.utils.message.MessageType;
 import com.nimbusds.jose.shaded.json.JSONObject;
 import lombok.extern.slf4j.Slf4j;
@@ -22,19 +22,19 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
             filterChain.doFilter(request, response);
-        } catch (JwtTokenException e) {
+        } catch (UnAuthorizedException e) {
             log.error(e.getMessage());
             setErrorResponse(response, e);
         }
     }
 
-    private void setErrorResponse(HttpServletResponse response, JwtTokenException e) throws IOException {
+    private void setErrorResponse(HttpServletResponse response, UnAuthorizedException e) throws IOException {
         response.setContentType(UTF8);
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
         JSONObject responseJson = new JSONObject();
-        responseJson.put(MessageType.CODE.getMessage(), e.getCode());
-        responseJson.put(MessageType.MESSAGE.getMessage(), e.getMessage());
+        responseJson.put(MessageType.CODE.getMessage(), e.getErrorCode().getCode());
+        responseJson.put(MessageType.MESSAGE.getMessage(), e.getErrorCode().getMessage());
 
         response.getWriter().print(responseJson);
     }
