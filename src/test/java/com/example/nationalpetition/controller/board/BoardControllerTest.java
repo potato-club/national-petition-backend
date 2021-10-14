@@ -122,7 +122,8 @@ public class BoardControllerTest {
                                 fieldWithPath("data.boardCommentCounts").description("댓글 개수"),
                                 fieldWithPath("data.boardLikeCounts").description("좋아요 개수"),
                                 fieldWithPath("data.boardUnLikeCounts").description("싫어요 개수"),
-                                fieldWithPath("data.createdDate").description("생성날짜")
+                                fieldWithPath("data.createdDate").description("생성날짜"),
+                                fieldWithPath("data.memberResponse").description("작성자 정보")
                         )
                 ));
         resultActions.andExpect(status().isOk());
@@ -207,7 +208,8 @@ public class BoardControllerTest {
                                 fieldWithPath("data.boardCommentCounts").description("댓글 개수"),
                                 fieldWithPath("data.boardLikeCounts").description("좋아요 개수"),
                                 fieldWithPath("data.boardUnLikeCounts").description("싫어요 개수"),
-                                fieldWithPath("data.createdDate").description("생성날짜")
+                                fieldWithPath("data.createdDate").description("생성날짜"),
+                                fieldWithPath("data.memberResponse").description("작성자 정보")
                         )
                 ));
         resultActions.andExpect(status().isOk());
@@ -302,6 +304,7 @@ public class BoardControllerTest {
                                 fieldWithPath("data.boardList[].boardLikeCounts").description("좋아요 개수"),
                                 fieldWithPath("data.boardList[].boardUnLikeCounts").description("싫어요 개수"),
                                 fieldWithPath("data.boardList[].createdDate").description("생성날짜"),
+                                fieldWithPath("data.boardList[].memberResponse").description("작성자 정보"),
                                 fieldWithPath("data.boardCounts").description("게시글 총 개수")
                         )
                 ));
@@ -350,6 +353,7 @@ public class BoardControllerTest {
                                 fieldWithPath("data.boardList[].boardLikeCounts").description("좋아요 개수"),
                                 fieldWithPath("data.boardList[].boardUnLikeCounts").description("싫어요 개수"),
                                 fieldWithPath("data.boardList[].createdDate").description("생성날짜"),
+                                fieldWithPath("data.boardList[].memberResponse").description("작성자 정보"),
                                 fieldWithPath("data.boardCounts").description("게시글 총 개수")
                         )
                 ));

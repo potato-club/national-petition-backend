@@ -10,7 +10,6 @@ import com.example.nationalpetition.domain.member.repository.MemberRepository;
 import com.example.nationalpetition.dto.board.request.BoardLikeRequest;
 import com.example.nationalpetition.dto.board.request.CreateBoardRequest;
 import com.example.nationalpetition.dto.board.request.UpdateBoardRequest;
-import com.example.nationalpetition.dto.board.response.BoardDetailResponse;
 import com.example.nationalpetition.dto.board.response.BoardInfoResponseWithLikeCount;
 import com.example.nationalpetition.dto.board.response.BoardListResponse;
 import com.example.nationalpetition.testObject.BoardCreator;
@@ -145,7 +144,7 @@ public class BoardServiceTest {
         boardRepository.save(board);
 
         // when
-        BoardDetailResponse response = boardService.getBoard(board.getId());
+        BoardInfoResponseWithLikeCount response = boardService.getBoard(board.getId());
 
         // then
         final List<Board> boardList = boardRepository.findAll();
@@ -167,7 +166,7 @@ public class BoardServiceTest {
         boardLikeRepository.save(boardLike);
 
         // when
-        BoardDetailResponse response = boardService.getBoard(board.getId());
+        BoardInfoResponseWithLikeCount response = boardService.getBoard(board.getId());
 
         // then
         final List<Board> boardList = boardRepository.findAll();
@@ -191,7 +190,7 @@ public class BoardServiceTest {
         insertBoardLike4(board.getId());
 
         // when
-        BoardDetailResponse response = boardService.getBoard(board.getId());
+        BoardInfoResponseWithLikeCount response = boardService.getBoard(board.getId());
 
         // then
         assertThat(response.getBoardLikeCounts()).isEqualTo(4);
@@ -211,7 +210,7 @@ public class BoardServiceTest {
         boardLikeRepository.saveAll(Arrays.asList(boardLike1, boardLike2, boardLike3));
 
         // when
-        BoardDetailResponse response = boardService.getBoard(board.getId());
+        BoardInfoResponseWithLikeCount response = boardService.getBoard(board.getId());
 
         // then
         assertThat(response.getBoardLikeCounts()).isEqualTo(2);
