@@ -76,7 +76,7 @@ public class BoardService {
                 .stream().map(board -> BoardInfoResponseWithLikeCount.of(board, boardLikeRepository.countLikeByBoardId(board.getId())
                         .orElse(BoardLikeAndUnLikeCounts.of(0, 0))))
                 .collect(Collectors.toList());
-        long boardCounts = boardList.size();
+        long boardCounts = boardRepository.findBoardCounts(search);
         return BoardListResponse.of(boardList, boardCounts);
     }
 

@@ -27,10 +27,11 @@ public class BoardRepositoryCustomImpl implements BoardRepositoryCustom {
     }
 
     @Override
-    public long findBoardCounts() {
+    public long findBoardCounts(String search) {
         return queryFactory.selectFrom(board)
                 .where(
-                        board.isDeleted.eq(Boolean.FALSE)
+                        board.title.contains(search)
+                                .or(board.petitionTitle.contains(search))
                 ).fetchCount();
     }
 
