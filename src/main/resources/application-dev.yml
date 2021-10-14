@@ -10,9 +10,10 @@ spring:
   flyway:
     baseline-on-migrate: false
     baseline-version: 0
+    enabled: false
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
     properties:
       hibernate:
         show_sql: true
