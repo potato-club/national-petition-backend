@@ -32,12 +32,12 @@ public class Comment extends BaseTimeEntity {
     private int depth;
 
     @Column
-    private Long childCommentsCount;
+    private long childCommentsCount;
 
     private boolean isDeleted;
 
     @Builder
-    private Comment(Long memberId, Long boardId, Long parentId, String content, int depth, boolean isDeleted, Long childCommentsCount) {
+    private Comment(Long memberId, Long boardId, Long parentId, String content, int depth, boolean isDeleted, long childCommentsCount) {
         this.memberId = memberId;
         this.boardId = boardId;
         this.parentId = parentId;
@@ -55,7 +55,7 @@ public class Comment extends BaseTimeEntity {
                 .content(content)
                 .depth(1)
                 .isDeleted(false)
-                .childCommentsCount(0L)
+                .childCommentsCount(0)
                 .build();
     }
 
@@ -67,7 +67,7 @@ public class Comment extends BaseTimeEntity {
                 .content(content)
                 .depth(depth)
                 .isDeleted(false)
-                .childCommentsCount(0L)
+                .childCommentsCount(0)
                 .build();
     }
 
