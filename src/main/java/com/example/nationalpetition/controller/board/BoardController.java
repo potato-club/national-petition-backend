@@ -64,9 +64,9 @@ public class BoardController {
 
 	@Operation(summary = "게시글 찬성 / 반대 한것을 삭제하는 API", security = {@SecurityRequirement(name = "BearerKey")})
 	@Auth
-	@DeleteMapping("/api/v1/board/like")
-	public ApiResponse<String> deleteBoardLikeOrUnLike(@RequestBody @Valid DeleteBoardLikeRequest request, @MemberId Long memberId) {
-		boardService.deleteBoardLikeOrUnLike(request.getBoardId(), memberId);
+	@DeleteMapping("/api/v1/board/like/{boardId}")
+	public ApiResponse<String> deleteBoardLikeOrUnLike(@PathVariable Long boardId, @MemberId Long memberId) {
+		boardService.deleteBoardLikeOrUnLike(boardId, memberId);
 		return ApiResponse.OK;
 	}
 

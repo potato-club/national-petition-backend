@@ -152,8 +152,8 @@ include::{snippets}/board/unlike/request-headers.adoc[]
 Request HTTP Example
 include::{snippets}/board/unlike/http-request.adoc[]
 
-Request Fields
-include::{snippets}/board/unlike/request-fields.adoc[]
+Path-Parameters
+include::{snippets}/board/unlike/path-parameters.adoc[]
 
 Response
 include::{snippets}/board/unlike/http-response.adoc[]

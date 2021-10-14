@@ -388,13 +388,10 @@ public class BoardControllerTest {
         BoardLike boardLike = BoardLikeCreator.create(board1.getId(), 1L, BoardState.LIKE);
         boardLikeRepository.save(boardLike);
 
-        DeleteBoardLikeRequest request = new DeleteBoardLikeRequest(board1.getId());
-
         // when & then
         final ResultActions resultActions = mockMvc.perform(
-                        RestDocumentationRequestBuilders.delete("/api/v1/board/like")
+                        RestDocumentationRequestBuilders.delete("/api/v1/board/like/{boardId}", board1.getId())
                                 .header("Authorization", "Bearer ".concat(token.getToken()))
-                                .content(objectMapper.writeValueAsString(request))
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -404,8 +401,8 @@ public class BoardControllerTest {
                         requestHeaders(
                                 headerWithName("Authorization").description("토큰")
                         ),
-                        requestFields(
-                                fieldWithPath("boardId").description("게시글 아이디")
+                        pathParameters(
+                                parameterWithName("boardId").description("게시글 아이디")
                         ),
                         responseFields(
                                 fieldWithPath("code").description("code"),

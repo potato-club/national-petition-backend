@@ -41,6 +41,12 @@ Authorization: Bearer {{TOKEN}}
   "boardState": "LIKE"
 }
 
+### 게시글 찬성/반대
+DELETE {{local}}/api/v1/board/like/123
+Content-Type: application/json
+Authorization: Bearer {{TOKEN}}
+
+
 ### 게시글 찬성/반대 상태 보여주기
 GET {{local}}/api/v1/board/status/1
 Authorization: Bearer {{TOKEN}}
