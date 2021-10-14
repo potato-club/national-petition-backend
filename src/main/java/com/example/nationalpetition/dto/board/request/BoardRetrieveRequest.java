@@ -17,7 +17,7 @@ public class BoardRetrieveRequest {
     @Min(1)
     private int size;
     private String sort;
-    @NotNull
+    @Min(1)
     private int page;
 
 }

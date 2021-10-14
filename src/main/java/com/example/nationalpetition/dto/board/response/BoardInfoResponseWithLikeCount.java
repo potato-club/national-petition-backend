@@ -1,6 +1,8 @@
 package com.example.nationalpetition.dto.board.response;
 
 import com.example.nationalpetition.domain.board.Board;
+import com.example.nationalpetition.domain.member.entity.Member;
+import com.example.nationalpetition.dto.member.response.MemberResponse;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,11 +31,12 @@ public class BoardInfoResponseWithLikeCount {
     private long boardUnLikeCounts;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdDate;
+    private MemberResponse memberResponse;
 
     @Builder
     public BoardInfoResponseWithLikeCount(Long boardId, Long memberId, String petitionTitle, String title, String petitionContent,
                                           String content, String petitionUrl, String petitionsCount, String category, String petitionCreatedAt,
-                                          String petitionFinishedAt, int viewCounts, int boardCommentCounts, long boardLikeCounts, long boardUnLikeCounts, LocalDateTime createdDate) {
+                                          String petitionFinishedAt, int viewCounts, int boardCommentCounts, long boardLikeCounts, long boardUnLikeCounts, LocalDateTime createdDate, MemberResponse memberResponse) {
         this.boardId = boardId;
         this.memberId = memberId;
         this.petitionTitle = petitionTitle;
@@ -50,6 +53,7 @@ public class BoardInfoResponseWithLikeCount {
         this.boardLikeCounts = boardLikeCounts;
         this.boardUnLikeCounts = boardUnLikeCounts;
         this.createdDate = createdDate;
+        this.memberResponse = memberResponse;
     }
 
     public static BoardInfoResponseWithLikeCount of(Board board, BoardLikeAndUnLikeCounts boardLikeAndUnLikeCounts) {
@@ -70,6 +74,28 @@ public class BoardInfoResponseWithLikeCount {
                 .boardLikeCounts(boardLikeAndUnLikeCounts.getBoardLikeCounts())
                 .boardUnLikeCounts(boardLikeAndUnLikeCounts.getBoardUnLikeCounts())
                 .createdDate(board.getCreatedDate())
+                .build();
+    }
+
+    public static BoardInfoResponseWithLikeCount of(Board board, BoardLikeAndUnLikeCounts boardLikeAndUnLikeCounts, Member member) {
+        return BoardInfoResponseWithLikeCount.builder()
+                .boardId(board.getId())
+                .memberId(board.getMemberId())
+                .petitionTitle(board.getPetitionTitle())
+                .title(board.getTitle())
+                .petitionContent(board.getPetitionContent())
+                .content(board.getContent())
+                .petitionUrl(board.getPetitionUrl())
+                .petitionsCount(board.getPetitionsCount())
+                .category(board.getCategory())
+                .petitionCreatedAt(board.getPetitionCreatedAt())
+                .petitionFinishedAt(board.getPetitionFinishedAt())
+                .viewCounts(board.getViewCounts())
+                .boardCommentCounts(board.getRootCommentsCount())
+                .boardLikeCounts(boardLikeAndUnLikeCounts.getBoardLikeCounts())
+                .boardUnLikeCounts(boardLikeAndUnLikeCounts.getBoardUnLikeCounts())
+                .createdDate(board.getCreatedDate())
+                .memberResponse(MemberResponse.of(member))
                 .build();
     }
 

@@ -5,14 +5,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface BoardRepository extends JpaRepository<Board, Long>, BoardRepositoryCustom {
 
     Optional<Board> findByIdAndIsDeletedFalse(Long boardId);
 
-    Page<Board> findByTitleContaining(String search, Pageable pageable);
+    Page<Board> findByPetitionTitleContainingOrTitleContaining(String search, String search1, Pageable pageable);
 
     Page<Board> findByMemberIdAndIsDeletedIsFalse(Long memberId, Pageable pageable);
 
