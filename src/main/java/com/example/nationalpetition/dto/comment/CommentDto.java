@@ -1,6 +1,7 @@
 package com.example.nationalpetition.dto.comment;
 
 import com.example.nationalpetition.domain.comment.Comment;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -9,31 +10,49 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 public class CommentDto {
-    private Long id;
+
+    private static final String DELETED_MESSAGE = "삭제된 메시지 입니다";
+
+    private Long commentId;
 
     private Long memberId;
-
-    private Long parentId;
 
     private String content;
 
     private int depth;
 
-    private boolean isDeleted;
+    private LocalDateTime createdAt;
 
-    private LocalDateTime localDateTime;
-
-    private CommentDto(Comment comment) {
-        this.memberId = comment.getMemberId();
-        this.parentId = comment.getParentId();
-        this.content = comment.getContent();
-        this.depth = comment.getDepth();
-        this.isDeleted = comment.isDeleted();
-        this.localDateTime = comment.getCreatedDate();
+    @Builder
+    private CommentDto(Long commentId, Long memberId, String content, int depth, LocalDateTime createdAt) {
+        this.commentId = commentId;
+        this.memberId = memberId;
+        this.content = content;
+        this.depth = depth;
+        this.createdAt = createdAt;
     }
 
     public static CommentDto of(Comment comment) {
-        return new CommentDto(comment);
+        if (comment.isDeleted()) {
+            return deletedComment(comment);
+        }
+        return CommentDto.builder()
+                .commentId(comment.getId())
+                .memberId(comment.getMemberId())
+                .content(comment.getContent())
+                .depth(comment.getDepth())
+                .createdAt(comment.getCreatedDate())
+                .build();
+    }
+
+    private static CommentDto deletedComment(Comment comment) {
+        return CommentDto.builder()
+                .commentId(comment.getId())
+                .memberId(null)
+                .content(DELETED_MESSAGE)
+                .depth(comment.getDepth())
+                .createdAt(comment.getCreatedDate())
+                .build();
     }
 
 }

@@ -66,9 +66,7 @@ public class CommentController {
 
     @Operation(summary = "댓글 페이지네이션 API")
     @GetMapping("/api/v1/comment/page/{boardId}")
-    public ApiResponse<CommentPageResponseDto> commentPage(@RequestParam @Valid int page,
-                                                           @RequestParam @Valid int size,
-                                                           @PathVariable Long boardId) {
+    public ApiResponse<CommentPageResponseDto> getPaginationComments(@RequestParam int page, @RequestParam int size, @PathVariable Long boardId) {
         return ApiResponse.success(commentService.pageRequest(page, size, boardId));
     }
 

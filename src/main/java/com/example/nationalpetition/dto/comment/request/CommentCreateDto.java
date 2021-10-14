@@ -16,7 +16,7 @@ public class CommentCreateDto {
     private Long parentId;
 
     @Builder
-    public CommentCreateDto(String content, Long memberId, Long parentId) {
+    public CommentCreateDto(String content, Long parentId) {
         this.content = content;
         this.parentId = parentId;
     }

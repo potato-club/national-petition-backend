@@ -259,7 +259,7 @@ public class BoardControllerTest {
 
         // when & then
         final ResultActions resultActions = mockMvc.perform(
-                RestDocumentationRequestBuilders.get("/api/v1/getBoard/list?search=&page=0&size=10")
+                RestDocumentationRequestBuilders.get("/api/v1/getBoard/list?search=&page=1&size=10")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -306,7 +306,7 @@ public class BoardControllerTest {
 
         // when & then
         final ResultActions resultActions = mockMvc.perform(
-                        RestDocumentationRequestBuilders.get("/api/v1/getBoard/list?search=&page=0&size=10&sort=viewCounts")
+                        RestDocumentationRequestBuilders.get("/api/v1/getBoard/list?search=&page=1&size=10&sort=viewCounts")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())

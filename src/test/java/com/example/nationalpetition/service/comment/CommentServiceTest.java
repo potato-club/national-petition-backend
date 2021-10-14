@@ -57,7 +57,6 @@ public class CommentServiceTest {
 
         CommentCreateDto dto = CommentCreateDto.builder()
                 .content(content)
-                .memberId(memberId)
                 .build();
 
         // when
