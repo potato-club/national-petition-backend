@@ -5,12 +5,16 @@ import com.example.nationalpetition.domain.board.BoardLike;
 import com.example.nationalpetition.domain.board.BoardState;
 import com.example.nationalpetition.domain.board.repository.BoardLikeRepository;
 import com.example.nationalpetition.domain.board.repository.BoardRepository;
+import com.example.nationalpetition.domain.member.entity.Member;
+import com.example.nationalpetition.domain.member.repository.MemberRepository;
 import com.example.nationalpetition.dto.board.request.BoardLikeRequest;
 import com.example.nationalpetition.dto.board.request.CreateBoardRequest;
 import com.example.nationalpetition.dto.board.request.UpdateBoardRequest;
+import com.example.nationalpetition.dto.board.response.BoardDetailResponse;
 import com.example.nationalpetition.dto.board.response.BoardInfoResponseWithLikeCount;
 import com.example.nationalpetition.dto.board.response.BoardLikeAndUnLikeCounts;
 import com.example.nationalpetition.dto.board.response.BoardListResponse;
+import com.example.nationalpetition.dto.member.response.MemberResponse;
 import com.example.nationalpetition.external.petition.PetitionClient;
 import com.example.nationalpetition.external.petition.dto.response.PetitionResponse;
 import com.example.nationalpetition.utils.error.ErrorCode;
@@ -30,6 +34,7 @@ public class BoardService {
     private final BoardRepository boardRepository;
     private final BoardLikeRepository boardLikeRepository;
     private final PetitionClient petitionClient;
+    private final MemberRepository memberRepository;
 
     @Transactional
     public BoardInfoResponseWithLikeCount createBoard(CreateBoardRequest request, Long memberId) {
@@ -56,22 +61,24 @@ public class BoardService {
     }
 
     @Transactional
-    public BoardInfoResponseWithLikeCount getBoard(Long boardId) {
+    public BoardDetailResponse getBoard(Long boardId) {
         final Board board = boardRepository.findByIdAndIsDeletedFalse(boardId)
                 .orElseThrow(() -> new NotFoundException(String.format("해당하는 게시글 (%s)은 존재하지 않습니다", boardId), ErrorCode.NOT_FOUND_EXCEPTION_BOARD));
         BoardLikeAndUnLikeCounts boardLikeAndUnLikeCounts = boardLikeRepository.countLikeByBoardId(board.getId())
                 .orElse(BoardLikeAndUnLikeCounts.of(0, 0));
+        Member member = memberRepository.findById(board.getMemberId())
+                .orElseThrow(() -> new NotFoundException(String.format("(%s)를 작성한 작성자 (%s)은 존재하지 않습니다", boardId, board.getMemberId()), ErrorCode.NOT_FOUND_EXCEPTION_BOARD));
         board.incrementViewCount();
-        return BoardInfoResponseWithLikeCount.of(board, boardLikeAndUnLikeCounts);
+        return BoardDetailResponse.of(board, boardLikeAndUnLikeCounts, member);
     }
 
     @Transactional(readOnly = true)
     public BoardListResponse retrieveBoard(String search, Pageable pageable) {
-        List<BoardInfoResponseWithLikeCount> boardList = boardRepository.findByTitleContaining(search, pageable)
+        List<BoardInfoResponseWithLikeCount> boardList = boardRepository.findByPetitionTitleContainingOrTitleContaining(search, search, pageable)
                 .stream().map(board -> BoardInfoResponseWithLikeCount.of(board, boardLikeRepository.countLikeByBoardId(board.getId())
                         .orElse(BoardLikeAndUnLikeCounts.of(0, 0))))
                 .collect(Collectors.toList());
-        long boardCounts = boardRepository.findBoardCounts();
+        long boardCounts = boardList.size();
         return BoardListResponse.of(boardList, boardCounts);
     }
 

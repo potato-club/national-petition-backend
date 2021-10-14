@@ -5,6 +5,7 @@ import com.example.nationalpetition.config.auth.MemberId;
 import com.example.nationalpetition.controller.ApiResponse;
 import com.example.nationalpetition.domain.board.BoardState;
 import com.example.nationalpetition.dto.board.request.*;
+import com.example.nationalpetition.dto.board.response.BoardDetailResponse;
 import com.example.nationalpetition.dto.board.response.BoardInfoResponseWithLikeCount;
 import com.example.nationalpetition.dto.board.response.BoardListResponse;
 import com.example.nationalpetition.service.board.BoardService;
@@ -42,7 +43,7 @@ public class BoardController {
 
 	@Operation(summary = "특정 게시글 불러오는 API")
 	@GetMapping("/api/v1/getBoard/{boardId}")
-	public ApiResponse<BoardInfoResponseWithLikeCount> getBoard(@PathVariable Long boardId) {
+	public ApiResponse<BoardDetailResponse> getBoard(@PathVariable Long boardId) {
 		return ApiResponse.success(boardService.getBoard(boardId));
 	}
 

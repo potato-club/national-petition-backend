@@ -5,14 +5,17 @@ import com.example.nationalpetition.domain.board.BoardLike;
 import com.example.nationalpetition.domain.board.BoardState;
 import com.example.nationalpetition.domain.board.repository.BoardLikeRepository;
 import com.example.nationalpetition.domain.board.repository.BoardRepository;
+import com.example.nationalpetition.domain.member.entity.Member;
+import com.example.nationalpetition.domain.member.repository.MemberRepository;
 import com.example.nationalpetition.dto.board.request.BoardLikeRequest;
 import com.example.nationalpetition.dto.board.request.CreateBoardRequest;
 import com.example.nationalpetition.dto.board.request.UpdateBoardRequest;
+import com.example.nationalpetition.dto.board.response.BoardDetailResponse;
 import com.example.nationalpetition.dto.board.response.BoardInfoResponseWithLikeCount;
 import com.example.nationalpetition.dto.board.response.BoardListResponse;
 import com.example.nationalpetition.testObject.BoardCreator;
 import com.example.nationalpetition.testObject.BoardLikeCreator;
-import com.example.nationalpetition.utils.error.ErrorCode;
+import com.example.nationalpetition.testObject.MemberCreator;
 import com.example.nationalpetition.utils.error.exception.NotFoundException;
 import com.example.nationalpetition.external.petition.PetitionClient;
 import com.example.nationalpetition.external.petition.dto.response.PetitionResponse;
@@ -46,15 +49,19 @@ public class BoardServiceTest {
     @Autowired
     private BoardLikeRepository boardLikeRepository;
 
+    @Autowired
+    private MemberRepository memberRepository;
+
     @BeforeEach
     void setup() {
-        boardService = new BoardService(boardRepository, boardLikeRepository, new MockPetitionApiCaller());
+        boardService = new BoardService(boardRepository, boardLikeRepository, new MockPetitionApiCaller(), memberRepository);
     }
 
     @AfterEach
     void clean() {
         boardRepository.deleteAll();
         boardLikeRepository.deleteAll();
+        memberRepository.deleteAll();
     }
 
     // 테스트를 위한 코드
@@ -132,11 +139,13 @@ public class BoardServiceTest {
     @Test
     void 특정_게시글_불러오기() {
         // given
-        Board board = BoardCreator.create(1L, "title1", "content1");
+        Member member = MemberCreator.create();
+        memberRepository.save(member);
+        Board board = BoardCreator.create(member.getId(), "title1", "content1");
         boardRepository.save(board);
 
         // when
-        BoardInfoResponseWithLikeCount response = boardService.getBoard(board.getId());
+        BoardDetailResponse response = boardService.getBoard(board.getId());
 
         // then
         final List<Board> boardList = boardRepository.findAll();
@@ -150,13 +159,15 @@ public class BoardServiceTest {
     @Test
     void 특정_게시글_불러오기2() {
         // given
+        Member member = MemberCreator.create();
+        memberRepository.save(member);
         Board board = BoardCreator.create(1L, "title1", "content1");
         boardRepository.save(board);
         BoardLike boardLike = BoardLikeCreator.create(board.getId(), board.getMemberId(), BoardState.LIKE);
         boardLikeRepository.save(boardLike);
 
         // when
-        BoardInfoResponseWithLikeCount response = boardService.getBoard(board.getId());
+        BoardDetailResponse response = boardService.getBoard(board.getId());
 
         // then
         final List<Board> boardList = boardRepository.findAll();
@@ -173,12 +184,14 @@ public class BoardServiceTest {
     @Test
     void 특정_게시글_불러오기3() {
         // given
-        Board board = BoardCreator.create(1L, "title", "content");
+        Member member = MemberCreator.create();
+        memberRepository.save(member);
+        Board board = BoardCreator.create(member.getId(), "title", "content");
         boardRepository.save(board);
         insertBoardLike4(board.getId());
 
         // when
-        BoardInfoResponseWithLikeCount response = boardService.getBoard(board.getId());
+        BoardDetailResponse response = boardService.getBoard(board.getId());
 
         // then
         assertThat(response.getBoardLikeCounts()).isEqualTo(4);
@@ -188,7 +201,9 @@ public class BoardServiceTest {
     @Test
     void 특정_게시글_불러오기4() {
         // given
-        Board board = BoardCreator.create(1L, "title", "content");
+        Member member = MemberCreator.create();
+        memberRepository.save(member);
+        Board board = BoardCreator.create(member.getId(), "title", "content");
         boardRepository.save(board);
         BoardLike boardLike1 = BoardLikeCreator.create(board.getId(), 1L, BoardState.LIKE);
         BoardLike boardLike2 = BoardLikeCreator.create(board.getId(), 2L, BoardState.LIKE);
@@ -196,7 +211,7 @@ public class BoardServiceTest {
         boardLikeRepository.saveAll(Arrays.asList(boardLike1, boardLike2, boardLike3));
 
         // when
-        BoardInfoResponseWithLikeCount response = boardService.getBoard(board.getId());
+        BoardDetailResponse response = boardService.getBoard(board.getId());
 
         // then
         assertThat(response.getBoardLikeCounts()).isEqualTo(2);

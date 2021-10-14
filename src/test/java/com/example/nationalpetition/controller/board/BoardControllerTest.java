@@ -5,14 +5,16 @@ import com.example.nationalpetition.domain.board.BoardLike;
 import com.example.nationalpetition.domain.board.BoardState;
 import com.example.nationalpetition.domain.board.repository.BoardLikeRepository;
 import com.example.nationalpetition.domain.board.repository.BoardRepository;
+import com.example.nationalpetition.domain.member.entity.Member;
+import com.example.nationalpetition.domain.member.repository.MemberRepository;
 import com.example.nationalpetition.dto.board.request.BoardLikeRequest;
 import com.example.nationalpetition.dto.board.request.CreateBoardRequest;
-import com.example.nationalpetition.dto.board.request.DeleteBoardLikeRequest;
 import com.example.nationalpetition.dto.board.request.UpdateBoardRequest;
 import com.example.nationalpetition.security.jwt.Token;
 import com.example.nationalpetition.security.jwt.TokenService;
 import com.example.nationalpetition.testObject.BoardCreator;
 import com.example.nationalpetition.testObject.BoardLikeCreator;
+import com.example.nationalpetition.testObject.MemberCreator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -60,6 +62,9 @@ public class BoardControllerTest {
     @Autowired
     private BoardLikeRepository boardLikeRepository;
 
+    @Autowired
+    private MemberRepository memberRepository;
+
     private Token token;
 
     @BeforeEach
@@ -71,6 +76,7 @@ public class BoardControllerTest {
     void clean() {
         boardRepository.deleteAll();
         boardLikeRepository.deleteAll();
+        memberRepository.deleteAll();
     }
 
     @DisplayName("청원 크롤링 서버에서 가져와서 나의 제목과 컨텐츠와 함께 저장한다")
@@ -211,6 +217,8 @@ public class BoardControllerTest {
     @Test
     void 게시글을_불러온다() throws Exception {
         // given
+        Member member = MemberCreator.create();
+        memberRepository.save(member);
         Board board = BoardCreator.create(1L, "title1", "content1");
         boardRepository.save(board);
 
@@ -244,7 +252,11 @@ public class BoardControllerTest {
                                 fieldWithPath("data.boardCommentCounts").description("댓글 개수"),
                                 fieldWithPath("data.boardLikeCounts").description("좋아요 개수"),
                                 fieldWithPath("data.boardUnLikeCounts").description("싫어요 개수"),
-                                fieldWithPath("data.createdDate").description("생성날짜")
+                                fieldWithPath("data.createdDate").description("생성날짜"),
+                                fieldWithPath("data.memberResponse.name").description("작성자 이름"),
+                                fieldWithPath("data.memberResponse.email").description("작성자 이메일"),
+                                fieldWithPath("data.memberResponse.picture").description("작성자 사진"),
+                                fieldWithPath("data.memberResponse.nickName").description("작성자 닉네임")
                         )
                 ));
         resultActions.andExpect(status().isOk());
