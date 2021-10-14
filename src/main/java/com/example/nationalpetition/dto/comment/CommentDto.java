@@ -21,14 +21,17 @@ public class CommentDto {
 
     private int depth;
 
+    private long childrenCounts;
+
     private LocalDateTime createdAt;
 
     @Builder
-    private CommentDto(Long commentId, Long memberId, String content, int depth, LocalDateTime createdAt) {
+    private CommentDto(Long commentId, Long memberId, String content, int depth, long childrenCounts, LocalDateTime createdAt) {
         this.commentId = commentId;
         this.memberId = memberId;
         this.content = content;
         this.depth = depth;
+        this.childrenCounts = childrenCounts;
         this.createdAt = createdAt;
     }
 
@@ -41,6 +44,7 @@ public class CommentDto {
                 .memberId(comment.getMemberId())
                 .content(comment.getContent())
                 .depth(comment.getDepth())
+                .childrenCounts(comment.getChildCommentsCount())
                 .createdAt(comment.getCreatedDate())
                 .build();
     }
@@ -51,6 +55,7 @@ public class CommentDto {
                 .memberId(null)
                 .content(DELETED_MESSAGE)
                 .depth(comment.getDepth())
+                .childrenCounts(comment.getChildCommentsCount())
                 .createdAt(comment.getCreatedDate())
                 .build();
     }
