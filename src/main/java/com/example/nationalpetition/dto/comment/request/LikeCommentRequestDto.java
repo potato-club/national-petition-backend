@@ -8,12 +8,13 @@ import lombok.NoArgsConstructor;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @NoArgsConstructor
 public class LikeCommentRequestDto {
 
-    @NotBlank(message = "commentId를 입력해주세요.")
+    @NotNull(message = "commentId를 입력해주세요.")
     private Long commentId;
 
     @Enumerated(EnumType.STRING)
