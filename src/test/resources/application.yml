@@ -9,8 +9,16 @@ spring:
             scope:
               - profile
               - email
+  flyway:
+    enabled: false
 jwt:
   secret: test
 google:
   redirect:
     uri: uri
+  jpa:
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        use_sql_comments: true

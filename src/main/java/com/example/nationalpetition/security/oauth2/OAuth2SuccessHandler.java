@@ -2,7 +2,6 @@ package com.example.nationalpetition.security.oauth2;
 
 import com.example.nationalpetition.domain.member.entity.Member;
 import com.example.nationalpetition.domain.member.repository.MemberRepository;
-import com.example.nationalpetition.security.jwt.JwtProperties;
 import com.example.nationalpetition.utils.error.exception.NotFoundException;
 import com.example.nationalpetition.security.jwt.Token;
 import com.example.nationalpetition.security.jwt.TokenService;
@@ -13,6 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -34,18 +34,21 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 	private final MemberRepository memberRepository;
 
 	@Override
+	@Transactional
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
 		final OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
 		final Member member = memberRepository.findByEmail((String) oAuth2User.getAttributes().get("email"))
 				.orElseThrow(() -> new NotFoundException(String.format("해당하는 이메일 (%s)을 가진 유저는 존재하지 않습니다", oAuth2User.getAttributes().get("email")), ErrorCode.NOT_FOUND_EXCEPTION_USER));
-		final Token token = tokenService.generateToken(member.getId());
 
+		String idToken = tokenService.generateIdToken(member.getId());
+		String refreshToken = tokenService.generateRefreshToken();
+		member.updateRefreshToken(refreshToken);
+
+		Token token = new Token(idToken, refreshToken);
 		if (!StringUtils.hasText(member.getNickName())) {
 			getRedirectStrategy().sendRedirect(request, response, createRedirectUri(false, token));
 			return;
 		}
-
-		response.addHeader(JwtProperties.HEADER_NAME, JwtProperties.TOKEN_PREFIX + token);
 		getRedirectStrategy().sendRedirect(request, response, createRedirectUri(true, token));
 	}
 

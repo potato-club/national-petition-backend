@@ -27,6 +27,8 @@ public class Member extends BaseTimeEntity {
     @Column(length = 20)
     private String nickName;
 
+    private String refreshToken;
+
     @Builder
     public Member(String name, String email, String picture) {
         this.name = name;
@@ -38,6 +40,10 @@ public class Member extends BaseTimeEntity {
         this.nickName = nickName;
     }
 
+    public void updateRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
+
     public static Member of(String name, String email, String picture) {
         return new Member(name, email, picture);
     }
@@ -47,6 +53,10 @@ public class Member extends BaseTimeEntity {
         this.picture = picture;
 
         return this;
+    }
+
+    public void removeRefreshToken() {
+        this.refreshToken = null;
     }
 
 }
