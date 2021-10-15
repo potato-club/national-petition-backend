@@ -7,7 +7,6 @@ import com.example.nationalpetition.dto.comment.request.CommentCreateDto;
 import com.example.nationalpetition.dto.comment.request.CommentUpdateDto;
 import com.example.nationalpetition.dto.comment.request.LikeCommentRequestDto;
 import com.example.nationalpetition.dto.comment.response.CommentPageResponseDto;
-import com.example.nationalpetition.dto.comment.response.CommentRetrieveResponseDto;
 import com.example.nationalpetition.service.comment.CommentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -15,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 
 @RequiredArgsConstructor

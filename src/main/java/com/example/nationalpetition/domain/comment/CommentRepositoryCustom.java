@@ -10,10 +10,10 @@ public interface CommentRepositoryCustom {
 
     Comment findByIdAndMemberIdAndIsDeletedIsFalse(Long commentId, Long MemberId);
 
-    List<Comment> findByBoardIdAndIsDeletedIsFalse(Long boardId);
-
     Long findCommentCountByBoardIdAndIsDeletedIsFalse(Long boardId);
 
     Page<Comment> findAllRootCommentByBoardId(Pageable pageable, Long boardId);
+
+
 
 }

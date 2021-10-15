@@ -1,6 +1,7 @@
 package com.example.nationalpetition.dto.comment;
 
 import com.example.nationalpetition.domain.comment.Comment;
+import com.example.nationalpetition.domain.member.entity.Member;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,14 +26,18 @@ public class CommentDto {
 
     private LocalDateTime createdAt;
 
+    private String nickName;
+
     @Builder
-    private CommentDto(Long commentId, Long memberId, String content, int depth, long childrenCounts, LocalDateTime createdAt) {
+    private CommentDto(Long commentId, Long memberId, String content, int depth, long childrenCounts, LocalDateTime createdAt, String nickName) {
         this.commentId = commentId;
         this.memberId = memberId;
         this.content = content;
         this.depth = depth;
         this.childrenCounts = childrenCounts;
         this.createdAt = createdAt;
+        this.nickName = nickName;
+
     }
 
     public static CommentDto of(Comment comment) {
