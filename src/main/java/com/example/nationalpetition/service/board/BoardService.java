@@ -82,11 +82,12 @@ public class BoardService {
 
     @Transactional
     public void boardLikeOrUnLike(BoardLikeRequest request, Long memberId) {
-        boardRepository.findByIdAndIsDeletedFalse(request.getBoardId())
+        Board board = boardRepository.findByIdAndIsDeletedFalse(request.getBoardId())
                 .orElseThrow(() -> new NotFoundException(String.format("해당하는 게시글 (%s)은 존재하지 않습니다", request.getBoardId()), ErrorCode.NOT_FOUND_EXCEPTION_BOARD));
         BoardLike boardLike = boardLikeRepository.findByBoardIdAndMemberId(request.getBoardId(), memberId);
         if (boardLike == null) {
             boardLikeRepository.save(request.toEntity(memberId));
+            board.incrementLikeCounts();
         } else {
             boardLike.updateState(request.getBoardState());
         }
@@ -94,10 +95,11 @@ public class BoardService {
 
     @Transactional
     public void deleteBoardLikeOrUnLike(Long boardId, Long memberId) {
-        boardRepository.findByIdAndIsDeletedFalse(boardId)
+        Board board = boardRepository.findByIdAndIsDeletedFalse(boardId)
                 .orElseThrow(() -> new NotFoundException(String.format("해당하는 게시글 (%s)은 존재하지 않습니다", boardId), ErrorCode.NOT_FOUND_EXCEPTION_BOARD));
         BoardLike boardLike = boardLikeRepository.findByBoardIdAndMemberId(boardId, memberId);
         boardLikeRepository.delete(boardLike);
+        board.decrementLikeCounts();
     }
 
     @Transactional
