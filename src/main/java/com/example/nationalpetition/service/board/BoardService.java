@@ -8,6 +8,7 @@ import com.example.nationalpetition.domain.board.repository.BoardRepository;
 import com.example.nationalpetition.domain.member.entity.Member;
 import com.example.nationalpetition.domain.member.repository.MemberRepository;
 import com.example.nationalpetition.dto.board.request.BoardLikeRequest;
+import com.example.nationalpetition.dto.board.request.BoardRetrieveRequest;
 import com.example.nationalpetition.dto.board.request.CreateBoardRequest;
 import com.example.nationalpetition.dto.board.request.UpdateBoardRequest;
 import com.example.nationalpetition.dto.board.response.BoardInfoResponseWithLikeCount;
@@ -18,12 +19,16 @@ import com.example.nationalpetition.external.petition.dto.response.PetitionRespo
 import com.example.nationalpetition.utils.error.ErrorCode;
 import com.example.nationalpetition.utils.error.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static org.springframework.data.domain.Sort.Direction.DESC;
 
 @Service
 @RequiredArgsConstructor
@@ -71,12 +76,23 @@ public class BoardService {
     }
 
     @Transactional(readOnly = true)
-    public BoardListResponse retrieveBoard(String search, Pageable pageable) {
-        List<BoardInfoResponseWithLikeCount> boardList = boardRepository.findByPetitionTitleContainingOrTitleContaining(search, search, pageable)
-                .stream().map(board -> BoardInfoResponseWithLikeCount.of(board, boardLikeRepository.countLikeByBoardId(board.getId())
-                        .orElse(BoardLikeAndUnLikeCounts.of(0, 0))))
-                .collect(Collectors.toList());
-        long boardCounts = boardRepository.findBoardCounts(search);
+    public BoardListResponse retrieveBoard(BoardRetrieveRequest request) {
+        List<BoardInfoResponseWithLikeCount> boardList = null;
+        String sort = request.getSort() == null ? "id" : request.getSort();
+        if (sort.equals("like")) {
+            Pageable pageable = PageRequest.of(request.getPage() - 1, request.getSize());
+            boardList = boardRepository.findBoardPagination(request.getSearch(), pageable)
+                    .stream().map(board -> BoardInfoResponseWithLikeCount.of(board, boardLikeRepository.countLikeByBoardId(board.getId())
+                            .orElse(BoardLikeAndUnLikeCounts.of(0, 0))))
+                    .collect(Collectors.toList());
+        } else {
+            Pageable pageable = PageRequest.of(request.getPage() - 1, request.getSize(), Sort.by(DESC, sort));
+            boardList = boardRepository.findByPetitionTitleContainingOrTitleContaining(request.getSearch(), request.getSearch(), pageable)
+                    .stream().map(board -> BoardInfoResponseWithLikeCount.of(board, boardLikeRepository.countLikeByBoardId(board.getId())
+                            .orElse(BoardLikeAndUnLikeCounts.of(0, 0))))
+                    .collect(Collectors.toList());
+        }
+        long boardCounts = boardRepository.findBoardCounts(request.getSearch());
         return BoardListResponse.of(boardList, boardCounts);
     }
 

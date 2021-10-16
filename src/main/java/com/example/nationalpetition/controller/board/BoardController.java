@@ -11,14 +11,9 @@ import com.example.nationalpetition.service.board.BoardService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-
-import static org.springframework.data.domain.Sort.Direction.DESC;
 
 @RestController
 @RequiredArgsConstructor
@@ -49,9 +44,7 @@ public class BoardController {
 	@Operation(summary = "게시글 리스트 불러오는 API")
 	@GetMapping("/api/v1/getBoard/list")
 	public ApiResponse<BoardListResponse> retrieveBoard(@Valid BoardRetrieveRequest request) {
-		String sort = request.getSort() == null ? "id" : request.getSort();
-		Pageable pageable = PageRequest.of(request.getPage() - 1, request.getSize(), Sort.by(DESC, sort));
-		return ApiResponse.success(boardService.retrieveBoard(request.getSearch(), pageable));
+		return ApiResponse.success(boardService.retrieveBoard(request));
 	}
 
 	@Operation(summary = "게시글 찬성 / 반대하는 API", security = {@SecurityRequirement(name = "BearerKey")})

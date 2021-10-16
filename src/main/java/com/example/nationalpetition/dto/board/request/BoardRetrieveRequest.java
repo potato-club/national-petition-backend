@@ -20,4 +20,15 @@ public class BoardRetrieveRequest {
     @Min(1)
     private int page;
 
+    public BoardRetrieveRequest(String search, int size, String sort, int page) {
+        this.search = search;
+        this.size = size;
+        this.sort = sort;
+        this.page = page;
+    }
+
+    public static BoardRetrieveRequest testInstance(String search, int size, String sort, int page) {
+        return new BoardRetrieveRequest(search, size, sort, page);
+    }
+
 }

@@ -8,6 +8,7 @@ import com.example.nationalpetition.domain.board.repository.BoardRepository;
 import com.example.nationalpetition.domain.member.entity.Member;
 import com.example.nationalpetition.domain.member.repository.MemberRepository;
 import com.example.nationalpetition.dto.board.request.BoardLikeRequest;
+import com.example.nationalpetition.dto.board.request.BoardRetrieveRequest;
 import com.example.nationalpetition.dto.board.request.CreateBoardRequest;
 import com.example.nationalpetition.dto.board.request.UpdateBoardRequest;
 import com.example.nationalpetition.dto.board.response.BoardInfoResponseWithLikeCount;
@@ -223,10 +224,10 @@ public class BoardServiceTest {
     void 게시글_리스트_불러오기() {
         // given
         insert10();
+        BoardRetrieveRequest request = BoardRetrieveRequest.testInstance("", 10, "id", 1);
 
         // when
-        final Pageable pageable = PageRequest.of(0, 10, DESC, "id");
-        BoardListResponse responseList = boardService.retrieveBoard("", pageable);
+        BoardListResponse responseList = boardService.retrieveBoard(request);
 
         // then
         final List<Board> boardList = boardRepository.findAll();
@@ -241,10 +242,10 @@ public class BoardServiceTest {
     void 게시글_리스트_불러오기2() {
         // given
         insert10();
+        BoardRetrieveRequest request = BoardRetrieveRequest.testInstance("1", 10, "id", 1);
 
         // when
-        final Pageable pageable = PageRequest.of(0, 10, DESC, "id");
-        BoardListResponse responseList = boardService.retrieveBoard("1", pageable);
+        BoardListResponse responseList = boardService.retrieveBoard(request);
 
         // then
         final List<Board> boardList = boardRepository.findAll();
@@ -259,10 +260,10 @@ public class BoardServiceTest {
     void 게시글_리스트_불러오기3() {
         // given
         insert10();
+        BoardRetrieveRequest request = BoardRetrieveRequest.testInstance("", 10, "id", 2);
 
         // when
-        final Pageable pageable = PageRequest.of(1, 10, DESC, "id");
-        BoardListResponse responseList = boardService.retrieveBoard("1", pageable);
+        BoardListResponse responseList = boardService.retrieveBoard(request);
 
         // then
         assertThat(responseList.getBoardList()).isEmpty();
@@ -279,10 +280,10 @@ public class BoardServiceTest {
         Board board3 = BoardCreator.create(1L, "title3", "content3");
         board3.incrementViewCount();
         boardRepository.saveAll(Arrays.asList(board1, board2, board3));
+        BoardRetrieveRequest request = BoardRetrieveRequest.testInstance("", 3, "viewCounts", 1);
 
         // when
-        final Pageable pageable = PageRequest.of(0, 3, Sort.by(DESC, "viewCounts"));
-        BoardListResponse responseList = boardService.retrieveBoard("", pageable);
+        BoardListResponse responseList = boardService.retrieveBoard(request);
 
         // then
         assertThat(responseList.getBoardList()).hasSize(3);
