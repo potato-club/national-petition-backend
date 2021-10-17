@@ -47,6 +47,9 @@ public class Board extends BaseTimeEntity {
     @Column(nullable = false)
     private int rootCommentsCount;
 
+    @Column(nullable = false)
+    private int likeCounts;
+
     private Boolean isDeleted;
 
     @Builder
@@ -65,6 +68,7 @@ public class Board extends BaseTimeEntity {
         this.isDeleted = false;
         this.viewCounts = 0;
         this.rootCommentsCount = 0;
+        this.likeCounts = 0;
     }
 
     public void updateBoard(String title, String content) {
@@ -73,11 +77,18 @@ public class Board extends BaseTimeEntity {
     }
 
     public void incrementViewCount() {
-        this.viewCounts ++;
+        this.viewCounts++;
     }
 
     public void countRootComments() {
-        this.rootCommentsCount ++;
+        this.rootCommentsCount++;
     }
 
+    public void incrementLikeCounts() {
+        this.likeCounts++;
+    }
+
+    public void decrementLikeCounts() {
+        this.likeCounts--;
+    }
 }
