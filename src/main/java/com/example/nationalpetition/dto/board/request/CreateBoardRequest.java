@@ -1,5 +1,6 @@
 package com.example.nationalpetition.dto.board.request;
 
+import com.example.nationalpetition.config.validator.PetitionUrl;
 import com.example.nationalpetition.domain.board.Board;
 import com.example.nationalpetition.external.petition.dto.response.PetitionResponse;
 import lombok.Getter;
@@ -13,6 +14,7 @@ public class CreateBoardRequest {
 
     private String content;
 
+    @PetitionUrl
     private String petitionUrl;
 
     public CreateBoardRequest(String title, String content, String petitionUrl) {

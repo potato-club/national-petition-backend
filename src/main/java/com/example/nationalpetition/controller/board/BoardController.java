@@ -50,7 +50,7 @@ public class BoardController {
 	@GetMapping("/api/v1/getBoard/list")
 	public ApiResponse<BoardListResponse> retrieveBoard(@Valid BoardRetrieveRequest request) {
 		String sort = request.getSort() == null ? "id" : request.getSort();
-		Pageable pageable = PageRequest.of(request.getPage() - 1, request.getSize(), Sort.by(DESC, sort));
+		Pageable pageable = PageRequest.of(request.getPage() - 1, request.getSize(), Sort.by(DESC, sort, "id"));
 		return ApiResponse.success(boardService.retrieveBoard(request.getSearch(), pageable));
 	}
 
