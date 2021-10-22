@@ -46,7 +46,8 @@ public class CommentDto {
         }
         return CommentDto.builder()
                 .commentId(comment.getId())
-                .memberId(comment.getMemberId())
+                .memberId(comment.getMember().getId())
+                .nickName(comment.getMember().getNickName())
                 .content(comment.getContent())
                 .depth(comment.getDepth())
                 .childrenCounts(comment.getChildCommentsCount())

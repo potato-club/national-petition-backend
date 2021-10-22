@@ -3,6 +3,8 @@ package com.example.nationalpetition.service.comment;
 import com.example.nationalpetition.domain.board.Board;
 import com.example.nationalpetition.domain.board.repository.BoardRepository;
 import com.example.nationalpetition.domain.comment.*;
+import com.example.nationalpetition.domain.member.entity.Member;
+import com.example.nationalpetition.domain.member.repository.MemberRepository;
 import com.example.nationalpetition.dto.comment.request.CommentCreateDto;
 import com.example.nationalpetition.dto.comment.CommentDto;
 import com.example.nationalpetition.dto.comment.request.CommentUpdateDto;
@@ -28,14 +30,16 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final LikeCommentRepository likeCommentRepository;
     private final BoardRepository boardRepository;
+    private final MemberRepository memberRepository;
 
     @Transactional
     public Long addComment(CommentCreateDto dto, Long boardId, Long memberId) {
         Board board = BoardServiceUtils.findBoardById(boardRepository, boardId);
+        Member member = memberRepository.findById(memberId).orElseThrow( () -> new NotFoundException("멤버를 찾을 수 없어요", ErrorCode.NOT_FOUND_EXCEPTION_COMMENT));
 
         if (dto.getParentId() == null) {
             board.countRootComments();
-            return commentRepository.save(Comment.newRootComment(memberId, boardId, dto.getContent())).getId();
+            return commentRepository.save(Comment.newRootComment(member, boardId, dto.getContent())).getId();
         }
         Comment parentComment = CommentServiceUtils.findCommentById(commentRepository, dto.getParentId());
 
@@ -43,7 +47,7 @@ public class CommentService {
 
         parentComment.countChildComments();
 
-        return commentRepository.save(Comment.newChildComment(dto.getParentId(), memberId, board.getId(), depth + 1, dto.getContent())).getId();
+        return commentRepository.save(Comment.newChildComment(dto.getParentId(), member, board.getId(), depth + 1, dto.getContent())).getId();
     }
 
     @Transactional
@@ -107,13 +111,24 @@ public class CommentService {
     @Transactional(readOnly = true)
     public CommentPageResponseDto pageRequest(int page, int size, Long boardId) {
         Page<Comment> commentList = commentRepository.findAllRootCommentByBoardId(PageRequest.of(page - 1, size), boardId);
-
         return CommentPageResponseDto.builder()
                 .contents(commentList.stream()
                         .map(CommentDto::of)
                         .collect(Collectors.toList()))
                 .totalPages(commentList.getTotalPages())
                 .totalElements(commentList.getTotalElements())
+                .build();
+    }
+
+    @Transactional
+    public CommentPageResponseDto bigCommentRequest(int page, int size, Long parentId) {
+        Page<Comment> comments = commentRepository.findAllChildCommentByCommentId(PageRequest.of(page-1, size), parentId);
+        return CommentPageResponseDto.builder()
+                .contents(comments.stream()
+                        .map(CommentDto::of)
+                        .collect(Collectors.toList()))
+                .totalPages(comments.getTotalPages())
+                .totalElements(comments.getTotalElements())
                 .build();
     }
 

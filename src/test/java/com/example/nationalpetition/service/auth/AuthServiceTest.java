@@ -75,7 +75,7 @@ class AuthServiceTest {
 	@Test
 	void 로그아웃시_존재하지_않은_유저면_404에러발생() {
 		// given
-		Long memberId = 999L;
+		Long memberId = 120L;
 
 		// when
 		assertThatThrownBy(() -> authService.logout(memberId)).isInstanceOf(NotFoundException.class);

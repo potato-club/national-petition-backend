@@ -1,6 +1,7 @@
 package com.example.nationalpetition.domain.comment;
 
 import com.example.nationalpetition.domain.BaseTimeEntity;
+import com.example.nationalpetition.domain.member.entity.Member;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,8 +17,9 @@ public class Comment extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
-    private Long memberId;
+    @ManyToOne
+    @JoinColumn(name="member_id")
+    private Member member;
 
     @Column
     private Long boardId;
@@ -37,20 +39,20 @@ public class Comment extends BaseTimeEntity {
     private boolean isDeleted;
 
     @Builder
-    private Comment(Long memberId, Long boardId, Long parentId, String content, int depth, boolean isDeleted) {
-        this.memberId = memberId;
+    private Comment(Long boardId, Long parentId, String content, int depth, boolean isDeleted, Member member) {
         this.boardId = boardId;
         this.parentId = parentId;
         this.content = content;
         this.depth = depth;
         this.isDeleted = isDeleted;
         this.childCommentsCount = 0;
+        this.member = member;
     }
 
-    public static Comment newRootComment(Long memberId, Long boardId, String content) {
+    public static Comment newRootComment(Member member, Long boardId, String content) {
         return Comment.builder()
                 .parentId(null)
-                .memberId(memberId)
+                .member(member)
                 .boardId(boardId)
                 .content(content)
                 .depth(1)
@@ -58,10 +60,10 @@ public class Comment extends BaseTimeEntity {
                 .build();
     }
 
-    public static Comment newChildComment(Long parentId, Long memberId, Long boardId, int depth, String content) {
+    public static Comment newChildComment(Long parentId, Member member, Long boardId, int depth, String content) {
         return Comment.builder()
                 .parentId(parentId)
-                .memberId(memberId)
+                .member(member)
                 .boardId(boardId)
                 .content(content)
                 .depth(depth)

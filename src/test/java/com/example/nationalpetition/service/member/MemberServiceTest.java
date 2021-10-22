@@ -10,7 +10,6 @@ import com.example.nationalpetition.domain.member.entity.Member;
 import com.example.nationalpetition.domain.member.repository.DeleteMemberRepository;
 import com.example.nationalpetition.domain.member.repository.MemberRepository;
 import com.example.nationalpetition.dto.board.request.BoardLikeRequest;
-import com.example.nationalpetition.dto.board.response.BoardInfoResponseInMyPage;
 import com.example.nationalpetition.dto.member.request.MemberPageRequest;
 import com.example.nationalpetition.dto.member.request.NickNameRequest;
 import com.example.nationalpetition.dto.member.response.MemberResponse;
@@ -56,10 +55,10 @@ public class MemberServiceTest {
 
     @AfterEach
     public void clear() {
-        memberRepository.deleteAll();
+        commentRepository.deleteAll();
         boardRepository.deleteAll();
         boardLikeRepository.deleteAll();
-        commentRepository.deleteAll();
+        memberRepository.deleteAll();
         deleteMemberRepository.deleteAll();
 
     }
@@ -68,9 +67,9 @@ public class MemberServiceTest {
     @DisplayName("회원 정보 조회 (마이페이지)")
     void getMyInfo()  {
         //given
-        final Long memberId = 회원가입하기();
+        final Member member = 회원가입하기();
         //when
-        final MemberResponse memberResponse = memberService.findById(memberId);
+        final MemberResponse memberResponse = memberService.findById(member.getId());
         //then
         assertThat(memberResponse.getName()).isEqualTo("이름");
         assertThat(memberResponse.getEmail()).isEqualTo("aa@naver.com");
@@ -80,9 +79,9 @@ public class MemberServiceTest {
     @DisplayName("회원 정보 조회 중 리포지토리에 저장되지 않은 Id값으로 회원을 찾는 경우 예외 발생")
     void getMyInfo_fail() {
         //given
-        Long memberId = 123123L;
+        Member member = memberRepository.save(Member.of("yerimkoko", "gochi97@naver.com", "wefwef"));
         //when && then
-        assertThatThrownBy( () ->memberService.findById(memberId))
+        assertThatThrownBy( () ->memberService.findById(member.getId()+1L))
                 .isInstanceOf(NotFoundException.class);
     }
 
@@ -115,28 +114,27 @@ public class MemberServiceTest {
     @DisplayName("닉네임 등록 실패 --> 이미 닉네임을 등록한 계정")
     void addNickName_fail2() {
         //given
-        final Long memberId = 회원가입하기();
+        final Member member = 회원가입하기();
         final NickNameRequest request = new NickNameRequest("닉네임222");
         //when && then
-        assertThatThrownBy(() -> memberService.addNickName(memberId, request))
+        assertThatThrownBy(() -> memberService.addNickName(member.getId(), request))
                 .isInstanceOf(ConflictException.class);
     }
-
 
 
     @Test
     @DisplayName("마이페이지 - 내가 쓴 게시글 조회")
     void getMyBoardList() {
         //given
-        final Long memberId = 회원가입하기();
-        final Long boardId = 게시글_생성하기(memberId, 12);
-        댓글_대댓글_생성하기(memberId, boardId, 10);
+        final Member member = 회원가입하기();
+        final Long boardId = 게시글_생성하기(member.getId(), 12);
+        댓글_대댓글_생성하기(member, boardId, 10);
         좋아요_싫어요_생성하기(boardId,10);
         게시글_조회수_증가시키기(boardId, 10);
 
         final MemberPageRequest request = new MemberPageRequest(1, 10);
         //when
-        final MyPageBoardListResponse myBoardList = memberService.getMyBoardList(memberId, request);
+        final MyPageBoardListResponse myBoardList = memberService.getMyBoardList(member.getId(), request);
         //then
 
         assertThat(boardRepository.findAll().size()).isEqualTo(12);
@@ -160,11 +158,12 @@ public class MemberServiceTest {
     @DisplayName("마이페이지 - 페이징 테스트")
     void getMyBoardList2() {
         //given
-        final Long memberId = 회원가입하기();
-        게시글_생성하기(memberId, 12);
+        final Member member = 회원가입하기();
+
+        게시글_생성하기(member.getId(), 12);
         final Pageable pageable = PageRequest.of(0, 10, Sort.by(DESC, "id"));
         //when
-        final Page<Board> page = boardRepository.findByMemberIdAndIsDeletedIsFalse(memberId, pageable);
+        final Page<Board> page = boardRepository.findByMemberIdAndIsDeletedIsFalse(member.getId(), pageable);
         //then
         assertThat(page.getTotalElements()).isEqualTo(12);
         assertThat(page.getContent().size()).isEqualTo(10);
@@ -179,13 +178,13 @@ public class MemberServiceTest {
     @DisplayName("회원 탈퇴 성공")
     void deleteMember() {
         //given
-        final Long memberId = 회원가입하기();
+        final Member member = 회원가입하기();
         //when
-        final String message = memberService.deleteMember(memberId);
+        final String message = memberService.deleteMember(member.getId());
         //then
         assertThat(message).isEqualTo(MessageType.DELETE_MEMBER.getMessage());
         assertThat(deleteMemberRepository.findAll().size()).isEqualTo(1);
-        assertThatThrownBy(() -> memberService.findById(memberId))
+        assertThatThrownBy(() -> memberService.findById(member.getId()))
                 .isInstanceOf(NotFoundException.class);
     }
 
@@ -194,9 +193,9 @@ public class MemberServiceTest {
     @DisplayName("ID값으로 회원 찾기")
     void findById() {
         //given
-        final Long memberId = 회원가입하기();
+        final Member member = 회원가입하기();
         //when
-        final MemberResponse memberResponse = memberService.findById(memberId);
+        final MemberResponse memberResponse = memberService.findById(member.getId());
         //then
         assertThat(memberResponse.getName()).isEqualTo("이름");
         assertThat(memberResponse.getNickName()).isEqualTo("닉네임");
@@ -207,9 +206,9 @@ public class MemberServiceTest {
     @DisplayName("Id값으로 회원 찾기 - 실패")
     void findById_fail() {
         //given
-        final Long memberId = 회원가입하기();
+        final Member member = 회원가입하기();
         //when && then
-        assertThatThrownBy(() -> memberService.findById(memberId + 1L))
+        assertThatThrownBy(() -> memberService.findById(member.getId() + 1L))
                 .isInstanceOf(NotFoundException.class);
 
     }
@@ -268,10 +267,10 @@ public class MemberServiceTest {
     }
 
 
-    protected void 댓글_대댓글_생성하기(Long memberId, Long boardId, int count) {
+    protected void 댓글_대댓글_생성하기(Member member, Long boardId, int count) {
         for (int i = 0; i < count; i++) {
-            commentRepository.save(Comment.newRootComment(memberId, boardId, "댓글" + i));
-            commentRepository.save(Comment.newChildComment((long) i, memberId, boardId, 2, "대댓글" + i));
+            commentRepository.save(Comment.newRootComment(member, boardId, "댓글" + i));
+            commentRepository.save(Comment.newChildComment((long) i, member, boardId, 2, "대댓글" + i));
         }
     }
 
@@ -283,10 +282,10 @@ public class MemberServiceTest {
             boardLikeRepository.save(unlikeRequest.toEntity(i + 10));
         }
     }
-    protected Long 회원가입하기() {
+    protected Member 회원가입하기() {
         final Member member = Member.of("이름", "aa@naver.com", "picturepicture");
         member.addNickName("닉네임");
-        return memberRepository.save(member).getId();
+        return memberRepository.save(member);
     }
 
     protected void 게시글_조회수_증가시키기(Long boardId, int count) {
