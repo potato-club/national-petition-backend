@@ -111,7 +111,6 @@ public class CommentService {
     @Transactional(readOnly = true)
     public CommentPageResponseDto pageRequest(int page, int size, Long boardId) {
         Page<Comment> commentList = commentRepository.findAllRootCommentByBoardId(PageRequest.of(page - 1, size), boardId);
-
         return CommentPageResponseDto.builder()
                 .contents(commentList.stream()
                         .map(CommentDto::of)
