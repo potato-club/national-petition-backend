@@ -9,12 +9,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MemberResponse {
 
+    private Long memberId;
     private String name;
     private String email;
     private String picture;
     private String nickName;
 
-    public MemberResponse(String name, String email, String picture, String nickName) {
+    public MemberResponse(Long memberId, String name, String email, String picture, String nickName) {
+        this.memberId  = memberId;
         this.name = name;
         this.email = email;
         this.picture = picture;
@@ -22,6 +24,6 @@ public class MemberResponse {
     }
 
     public static MemberResponse of(Member member) {
-        return new MemberResponse(member.getName(), member.getEmail(), member.getPicture(), member.getNickName());
+        return new MemberResponse(member.getId(), member.getName(), member.getEmail(), member.getPicture(), member.getNickName());
     }
 }

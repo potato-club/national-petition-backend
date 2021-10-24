@@ -255,6 +255,7 @@ public class BoardControllerTest {
                                 fieldWithPath("data.boardLikeCounts").description("좋아요 개수"),
                                 fieldWithPath("data.boardUnLikeCounts").description("싫어요 개수"),
                                 fieldWithPath("data.createdDate").description("생성날짜"),
+                                fieldWithPath("data.memberResponse.memberId").description("작성자 Id"),
                                 fieldWithPath("data.memberResponse.name").description("작성자 이름"),
                                 fieldWithPath("data.memberResponse.email").description("작성자 이메일"),
                                 fieldWithPath("data.memberResponse.picture").description("작성자 사진"),

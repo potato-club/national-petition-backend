@@ -81,6 +81,7 @@ class MemberControllerTest {
 						responseFields(
 								fieldWithPath("code").type(JsonFieldType.STRING).description("code"),
 								fieldWithPath("message").type(JsonFieldType.STRING).description("message"),
+								fieldWithPath("data.memberId").type(JsonFieldType.NUMBER).description("작성자 Id"),
 								fieldWithPath("data.name").type(JsonFieldType.STRING).description("이름"),
 								fieldWithPath("data.email").type(JsonFieldType.STRING).description("이메일"),
 								fieldWithPath("data.picture").type(JsonFieldType.STRING).description("프로필사진"),
