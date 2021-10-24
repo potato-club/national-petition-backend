@@ -160,7 +160,7 @@ public class BoardServiceTest {
         // given
         Member member = MemberCreator.create();
         memberRepository.save(member);
-        Board board = BoardCreator.create(1L, "title1", "content1");
+        Board board = BoardCreator.create(member.getId(), "title1", "content1");
         boardRepository.save(board);
         BoardLike boardLike = BoardLikeCreator.create(board.getId(), board.getMemberId(), BoardState.LIKE);
         boardLikeRepository.save(boardLike);

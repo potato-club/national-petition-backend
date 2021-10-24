@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 import static com.example.nationalpetition.domain.comment.QComment.comment;
+import static com.example.nationalpetition.domain.member.entity.QMember.*;
 
 @RequiredArgsConstructor
 public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
@@ -21,7 +22,7 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
         return queryFactory.selectFrom(comment)
                 .where(
                         comment.id.eq(commentId),
-                        comment.memberId.eq(memberId),
+                        comment.member.id.eq(memberId),
                         comment.isDeleted.isFalse()
                 ).fetchOne();
     }
@@ -47,6 +48,8 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
     public Page<Comment> findAllRootCommentByBoardId(Pageable pageable, Long boardId) {
         QueryResults<Comment> result = queryFactory
                 .selectFrom(comment)
+                .innerJoin(member)
+                .on(member.id.eq(comment.member.id))
                 .where(comment.parentId.isNull(),
                         comment.boardId.eq(boardId))
                 .offset(pageable.getOffset())
@@ -54,6 +57,19 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
                 .fetchResults();
         return new PageImpl<>(result.getResults(), pageable, result.getTotal());
 
+    }
+
+    @Override
+    public Page<Comment> findAllChildCommentByCommentId(Pageable pageable, Long parentId) {
+        QueryResults<Comment> result = queryFactory
+                .selectFrom(comment)
+                .innerJoin(member)
+                .on(member.id.eq(comment.member.id))
+                .where(comment.parentId.eq(parentId))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetchResults();
+        return new PageImpl<>(result.getResults(), pageable, result.getTotal());
     }
 
 }

@@ -7,7 +7,6 @@ import com.example.nationalpetition.dto.comment.request.CommentCreateDto;
 import com.example.nationalpetition.dto.comment.request.CommentUpdateDto;
 import com.example.nationalpetition.dto.comment.request.LikeCommentRequestDto;
 import com.example.nationalpetition.dto.comment.response.CommentPageResponseDto;
-import com.example.nationalpetition.dto.comment.response.CommentRetrieveResponseDto;
 import com.example.nationalpetition.service.comment.CommentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -15,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 
 @RequiredArgsConstructor
@@ -68,6 +66,12 @@ public class CommentController {
     @GetMapping("/api/v1/comment/page/{boardId}")
     public ApiResponse<CommentPageResponseDto> getPaginationComments(@RequestParam int page, @RequestParam int size, @PathVariable Long boardId) {
         return ApiResponse.success(commentService.pageRequest(page, size, boardId));
+    }
+
+    @Operation(summary = "대댓글 페이지네이션 API")
+    @GetMapping("/api/v1/bigComment/page/{parentId}")
+    public ApiResponse<CommentPageResponseDto> getPaginationBigComments(@RequestParam int page, @RequestParam int size, @PathVariable Long parentId) {
+        return ApiResponse.success(commentService.bigCommentRequest(page, size, parentId));
     }
 
 }
