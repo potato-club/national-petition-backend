@@ -67,6 +67,16 @@ public class ExceptionControllerAdvice {
 	}
 
 	/**
+	 * 403
+	 */
+	@ExceptionHandler(ForbiddenException.class)
+	@ResponseStatus(FORBIDDEN)
+	protected  ApiResponse<Object> handleForbiddenException(ForbiddenException e) {
+		log.error(e.getMessage(), e);
+		return ApiResponse.error(e.getErrorCode().getCode(), e.getErrorCode().getMessage());
+	}
+
+	/**
 	 * 404
 	 */
 	@ExceptionHandler(NotFoundException.class)

@@ -12,6 +12,7 @@ import com.example.nationalpetition.dto.comment.request.LikeCommentRequestDto;
 import com.example.nationalpetition.dto.comment.response.CommentPageResponseDto;
 import com.example.nationalpetition.service.board.BoardServiceUtils;
 import com.example.nationalpetition.utils.error.ErrorCode;
+import com.example.nationalpetition.utils.error.exception.ForbiddenException;
 import com.example.nationalpetition.utils.error.exception.NotFoundException;
 
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,8 @@ import java.util.stream.Collectors;
 @Service
 public class CommentService {
 
+    private static final int commentDepthLimit = 2;
+
     private final CommentRepository commentRepository;
     private final LikeCommentRepository likeCommentRepository;
     private final BoardRepository boardRepository;
@@ -41,9 +44,14 @@ public class CommentService {
             board.countRootComments();
             return commentRepository.save(Comment.newRootComment(member, boardId, dto.getContent())).getId();
         }
+
         Comment parentComment = CommentServiceUtils.findCommentById(commentRepository, dto.getParentId());
 
         int depth = parentComment.getDepth();
+
+        if (depth == commentDepthLimit) {
+            throw new ForbiddenException(String.format("더 이상 댓글 (%s) 을 생성할 수 없습니다.", parentComment.getId()), ErrorCode.FORBIDDEN_COMMENT_EXCEPTION);
+        }
 
         parentComment.countChildComments();
 
