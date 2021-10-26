@@ -27,6 +27,10 @@ public enum ErrorCode {
 	DUPLICATE_EXCEPTION_NICKNAME("C002", "닉네임이 중복됩니다."),
 	ALREADY_EXIST_EXCEPTION_ADD_NICKNAME("C003", "이미 닉네임을 등록하셨습니다."),
 
+	// Forbidden
+	FORBIDDEN_EXCEPTION("F001", "접근할 수 없습니다."),
+	FORBIDDEN_COMMENT_EXCEPTION("F002", "더 이상 댓글을 생성할 수 없습니다."),
+
 	// Internal Server
 	INTERNAL_SERVER_EXCEPTION("I001", "서버 내부에서 문제가 발생하였습니다"),
 	;

@@ -8,6 +8,7 @@ import com.example.nationalpetition.domain.member.repository.MemberRepository;
 import com.example.nationalpetition.dto.comment.request.CommentCreateDto;
 import com.example.nationalpetition.dto.comment.request.CommentUpdateDto;
 import com.example.nationalpetition.dto.comment.request.LikeCommentRequestDto;
+import com.example.nationalpetition.utils.error.exception.ForbiddenException;
 import com.example.nationalpetition.utils.error.exception.NotFoundException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -200,7 +201,8 @@ public class CommentServiceTest {
         String petitionCreatedAt = "2021-06-06";
         String petitionFinishedAt = "2021-06-06";
 
-        Board board = new Board(member.getId(), petitionTitle, title, petitionContent, content, petitionUrl, petitionCount, category, petitionCreatedAt, petitionFinishedAt);boardRepository.save(board);
+        Board board = new Board(member.getId(), petitionTitle, title, petitionContent, content, petitionUrl, petitionCount, category, petitionCreatedAt, petitionFinishedAt);
+        boardRepository.save(board);
 
         Comment comment = commentRepository.save(Comment.newRootComment(member, board.getId(), content));
 
@@ -317,6 +319,36 @@ public class CommentServiceTest {
         // when & then
         assertThatThrownBy(() -> commentService.deleteStatus(comment.getMember().getId(), requestDto))
                 .isInstanceOf(NotFoundException.class);
+    }
+
+    @Test
+    void 댓글뎁스제한하기() {
+        // given
+        String content = "234234";
+        String title = "안녕하세요.";
+        String petitionUrl = "www1.national-petition.co.kr";
+        String petitionsCounts = "1";
+        String category = "인권";
+        String petitionCreatedAt = "2021-06-06";
+        String petitionFinishedAt = "2021-06-06";
+
+        Board board = new Board(member.getId(), title, title, content, content, petitionUrl, petitionsCounts, category, petitionCreatedAt, petitionFinishedAt);
+        boardRepository.save(board);
+
+        Comment comment = commentRepository.save(Comment.newRootComment(member, board.getId(), content));
+
+        Comment bigComment = Comment.newChildComment(comment.getParentId(), member, comment.getBoardId(), comment.getDepth() + 1, comment.getContent());
+
+        commentRepository.save(bigComment);
+
+        CommentCreateDto dto = CommentCreateDto.builder().parentId(bigComment.getId())
+                .content(content)
+                .build();
+
+        // when & then
+        assertThatThrownBy(() -> commentService.addComment(dto, comment.getBoardId(), member.getId()))
+                .isInstanceOf(ForbiddenException.class);
+
     }
 
 }
