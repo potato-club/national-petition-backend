@@ -129,7 +129,7 @@ public class CommentService {
     }
 
     @Transactional
-    public CommentPageResponseDto bigCommentRequest(int page, int size, Long parentId) {
+    public CommentPageResponseDto replyCommentRequest(int page, int size, Long parentId) {
         Page<Comment> comments = commentRepository.findAllChildCommentByCommentId(PageRequest.of(page-1, size), parentId);
         return CommentPageResponseDto.builder()
                 .contents(comments.stream()
