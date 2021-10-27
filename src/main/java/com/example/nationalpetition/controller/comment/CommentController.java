@@ -69,9 +69,9 @@ public class CommentController {
     }
 
     @Operation(summary = "대댓글 페이지네이션 API")
-    @GetMapping("/api/v1/bigComment/page/{parentId}")
-    public ApiResponse<CommentPageResponseDto> getPaginationBigComments(@RequestParam int page, @RequestParam int size, @PathVariable Long parentId) {
-        return ApiResponse.success(commentService.bigCommentRequest(page, size, parentId));
+    @GetMapping("/api/v1/replyComment/page/{parentId}")
+    public ApiResponse<CommentPageResponseDto> getPaginationReplyComments(@RequestParam int page, @RequestParam int size, @PathVariable Long parentId) {
+        return ApiResponse.success(commentService.replyCommentRequest(page, size, parentId));
     }
 
 }

@@ -27,14 +27,6 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
                 ).fetchOne();
     }
 
-    public List<Comment> findByBoardIdAndIsDeletedIsFalse(Long boardId) {
-        return queryFactory.selectFrom(comment)
-                .where(
-                        comment.boardId.eq(boardId),
-                        comment.isDeleted.isFalse()
-                ).fetch();
-    }
-
     @Override
     public Long findCommentCountByBoardIdAndIsDeletedIsFalse(Long boardId) {
         return queryFactory
@@ -52,6 +44,7 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
                 .on(member.id.eq(comment.member.id))
                 .where(comment.parentId.isNull(),
                         comment.boardId.eq(boardId))
+                .orderBy(comment.createdDate.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetchResults();
