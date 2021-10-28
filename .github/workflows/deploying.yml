@@ -3,7 +3,7 @@ on:
   push:
     branches:
       - develop
-      - feature/BAC-2
+      - feature/cicd
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -35,28 +35,11 @@ jobs:
           docker tag $DOCKER_REGISTRY/$DOCKER_REPOSITORY:$IMAGE_TAG $DOCKER_REGISTRY/$DOCKER_REPOSITORY:latest
           docker push $DOCKER_REGISTRY/$DOCKER_REPOSITORY:$IMAGE_TAG
           docker push $DOCKER_REGISTRY/$DOCKER_REPOSITORY:latest
-
-          echo -e "$DOCKER_REGISTRY/$DOCKER_REPOSITORY:$IMAGE_TAG" > ./image.txt
-
-      - name: Upload image.txt
-        uses: actions/upload-artifact@v2
-        with:
-          name: image.txt
-          path: image.txt
-
   deploy:
     name: Deploy in k8s
     needs:
       - build
     runs-on: deploy
     steps:
-      - name: Download version.txt
-        uses: actions/download-artifact@v2
-        with:
-          name: image.txt
-
-      - name: Deploy k8s
-        run: |
-          IMAGE=`cat ./image.txt`
-          echo image=$IMAGE
-          kubectl set image deployment/petition-api-deployment petition-api=$IMAGE --namespace dev --record
+      - name: Deploy
+        run: sh ~/deploy.sh
