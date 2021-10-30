@@ -149,6 +149,7 @@ public class MemberServiceTest {
         assertThat(myBoardList.getMyBoardList().get(0).getViewCounts()).isEqualTo(10);
 
         assertThat(myBoardList.getMyBoardList().get(0).getBoardCommentCounts()).isEqualTo(20);
+        assertThat(myBoardList.getBoardCounts()).isEqualTo(12);
     }
 
 

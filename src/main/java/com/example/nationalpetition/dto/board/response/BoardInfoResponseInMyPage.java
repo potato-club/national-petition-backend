@@ -25,6 +25,7 @@ public class BoardInfoResponseInMyPage {
     private LocalDateTime createdDate;
 
 
+
     @Builder
     public BoardInfoResponseInMyPage(Long boardId, Long memberId, String petitionTitle, String title, String content, String category, long boardLikeCounts,
                                      long boardUnLikeCounts, int viewCounts, long boardCommentCounts, LocalDateTime createdDate) {

@@ -11,12 +11,14 @@ import java.util.List;
 public class MyPageBoardListResponse {
 
     private List<BoardInfoResponseInMyPage> myBoardList;
+    private long boardCounts;
 
-    public MyPageBoardListResponse(List<BoardInfoResponseInMyPage> myBoardList) {
+    public MyPageBoardListResponse(List<BoardInfoResponseInMyPage> myBoardList, long boardCounts) {
         this.myBoardList = myBoardList;
+        this.boardCounts = boardCounts;
     }
 
-    public static MyPageBoardListResponse of(List<BoardInfoResponseInMyPage> myBoardList) {
-        return new MyPageBoardListResponse(myBoardList);
+    public static MyPageBoardListResponse of(List<BoardInfoResponseInMyPage> myBoardList, long boardCounts) {
+        return new MyPageBoardListResponse(myBoardList, boardCounts);
     }
 }

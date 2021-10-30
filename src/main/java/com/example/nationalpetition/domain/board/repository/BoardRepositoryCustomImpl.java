@@ -35,4 +35,13 @@ public class BoardRepositoryCustomImpl implements BoardRepositoryCustom {
                 ).fetchCount();
     }
 
+    @Override
+    public long findBoardCountsWithMemberId(Long memberId) {
+        return queryFactory.selectFrom(board)
+                .where(
+                        board.memberId.eq(memberId),
+                        board.isDeleted.isFalse()
+                ).fetchCount();
+    }
+
 }
