@@ -73,7 +73,7 @@ public class MemberServiceImpl implements MemberService {
                 .stream()
                 .map(b -> BoardInfoResponseInMyPage.of(b, boardLikeRepository.countLikeByBoardId(b.getId()).orElse(BoardLikeAndUnLikeCounts.of(0, 0)),
                         commentRepository.findCommentCountByBoardIdAndIsDeletedIsFalse(b.getId())))
-                .collect(Collectors.toList()));
+                .collect(Collectors.toList()), boardRepository.findBoardCountsWithMemberId(memberId));
 
     }
 

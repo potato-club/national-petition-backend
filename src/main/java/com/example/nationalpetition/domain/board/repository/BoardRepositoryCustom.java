@@ -10,4 +10,5 @@ public interface BoardRepositoryCustom {
 
     long findBoardCounts(String search);
 
+    long findBoardCountsWithMemberId(Long memberId);
 }

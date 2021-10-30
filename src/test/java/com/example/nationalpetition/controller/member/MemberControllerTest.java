@@ -240,7 +240,8 @@ class MemberControllerTest {
 								fieldWithPath("data.myBoardList[].boardUnLikeCounts").type(JsonFieldType.NUMBER).description("싫어요 개수"),
 								fieldWithPath("data.myBoardList[].viewCounts").type(JsonFieldType.NUMBER).description("조회수"),
 								fieldWithPath("data.myBoardList[].boardCommentCounts").type(JsonFieldType.NUMBER).description("댓글 개수"),
-								fieldWithPath("data.myBoardList[].createdDate").type(JsonFieldType.STRING).description("작성일")
+								fieldWithPath("data.myBoardList[].createdDate").type(JsonFieldType.STRING).description("작성일"),
+								fieldWithPath("data.boardCounts").type(JsonFieldType.NUMBER).description("게시글 총 개수")
 						)));
 
 		//then
