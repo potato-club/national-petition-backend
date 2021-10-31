@@ -1,6 +1,7 @@
 package com.example.nationalpetition.controller.board;
 
 import com.example.nationalpetition.domain.board.Board;
+import com.example.nationalpetition.domain.board.BoardCategory;
 import com.example.nationalpetition.domain.board.BoardLike;
 import com.example.nationalpetition.domain.board.BoardState;
 import com.example.nationalpetition.domain.board.repository.BoardLikeRepository;
@@ -430,6 +431,54 @@ public class BoardControllerTest {
                                 parameterWithName("page").description("page [required]"),
                                 parameterWithName("size").description("size [optional] default = 10"),
                                 parameterWithName("sort").description("정렬할 필드")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").description("code"),
+                                fieldWithPath("message").description("message"),
+                                fieldWithPath("data.boardList[].boardId").description("boardId"),
+                                fieldWithPath("data.boardList[].memberId").description("작성한 유저"),
+                                fieldWithPath("data.boardList[].petitionTitle").description("크롤링 해서 가져온 제목"),
+                                fieldWithPath("data.boardList[].title").description("나의 작성한 제목"),
+                                fieldWithPath("data.boardList[].petitionContent").description("크롤링해서 가져온 글"),
+                                fieldWithPath("data.boardList[].content").description("내가 작성한 글"),
+                                fieldWithPath("data.boardList[].petitionUrl").description("url"),
+                                fieldWithPath("data.boardList[].petitionsCount").description("청원 수"),
+                                fieldWithPath("data.boardList[].category").description("청원 카테고리"),
+                                fieldWithPath("data.boardList[].petitionCreatedAt").description("청원 시작일"),
+                                fieldWithPath("data.boardList[].petitionFinishedAt").description("청원 만료일"),
+                                fieldWithPath("data.boardList[].viewCounts").description("조회수"),
+                                fieldWithPath("data.boardList[].boardCommentCounts").description("댓글 개수"),
+                                fieldWithPath("data.boardList[].boardLikeCounts").description("좋아요 개수"),
+                                fieldWithPath("data.boardList[].boardUnLikeCounts").description("싫어요 개수"),
+                                fieldWithPath("data.boardList[].createdDate").description("생성날짜"),
+                                fieldWithPath("data.boardList[].memberResponse").description("작성자 정보"),
+                                fieldWithPath("data.boardCounts").description("게시글 총 개수")
+                        )
+                ));
+        resultActions.andExpect(status().isOk());
+    }
+
+    @Test
+    void 게시글리스트를_불러온다_카테고리별로() throws Exception {
+        // given
+        Board board1 = BoardCreator.create(1L, "title1", "content1", BoardCategory.HEALTH);
+        Board board2 = BoardCreator.create(1L, "title2", "content2", BoardCategory.HUMAN);
+        boardRepository.saveAll(Arrays.asList(board1, board2));
+
+        // when & then
+        final ResultActions resultActions = mockMvc.perform(
+                        RestDocumentationRequestBuilders.get("/api/v1/getBoard/list?search=&page=1&size=10&category=HUMAN")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andDo(document("board/list",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestParameters(
+                                parameterWithName("search").description("타이틀 기준 검색어 [required] required 아니게 바꿀까??"),
+                                parameterWithName("page").description("page [required]"),
+                                parameterWithName("size").description("size [optional] default = 10"),
+                                parameterWithName("category").description("카테고리")
                         ),
                         responseFields(
                                 fieldWithPath("code").description("code"),
