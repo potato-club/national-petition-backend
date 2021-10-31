@@ -51,7 +51,7 @@ public class BoardController {
 	public ApiResponse<BoardListResponse> retrieveBoard(@Valid BoardRetrieveRequest request) {
 		String sort = request.getSort() == null ? "id" : request.getSort();
 		Pageable pageable = PageRequest.of(request.getPage() - 1, request.getSize(), Sort.by(DESC, sort, "id"));
-		return ApiResponse.success(boardService.retrieveBoard(request.getSearch(), pageable));
+		return ApiResponse.success(boardService.retrieveBoard(request.getSearch(), request.getCategory(), pageable));
 	}
 
 	@Operation(summary = "게시글 찬성 / 반대하는 API", security = {@SecurityRequirement(name = "BearerKey")})

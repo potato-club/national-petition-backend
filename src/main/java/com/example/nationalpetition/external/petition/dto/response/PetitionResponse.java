@@ -35,4 +35,8 @@ public class PetitionResponse {
 		return new PetitionResponse(title, content, petitionsCount, status, category, createdAt, finishedAt);
 	}
 
+	public void setCategory(String category) {
+		this.category = category;
+	}
+
 }

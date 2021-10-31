@@ -1,6 +1,7 @@
 package com.example.nationalpetition.service.board;
 
 import com.example.nationalpetition.domain.board.Board;
+import com.example.nationalpetition.domain.board.BoardCategory;
 import com.example.nationalpetition.domain.board.BoardLike;
 import com.example.nationalpetition.domain.board.BoardState;
 import com.example.nationalpetition.domain.board.repository.BoardLikeRepository;
@@ -71,12 +72,12 @@ public class BoardService {
     }
 
     @Transactional(readOnly = true)
-    public BoardListResponse retrieveBoard(String search, Pageable pageable) {
-        List<BoardInfoResponseWithLikeCount> boardList = boardRepository.findByPetitionTitleContainingOrTitleContaining(search, search, pageable)
+    public BoardListResponse retrieveBoard(String search, BoardCategory category, Pageable pageable) {
+        List<BoardInfoResponseWithLikeCount> boardList = boardRepository.findBySearchingAndCategory(search, category, pageable)
                 .stream().map(board -> BoardInfoResponseWithLikeCount.of(board, boardLikeRepository.countLikeByBoardId(board.getId())
                         .orElse(BoardLikeAndUnLikeCounts.of(0, 0))))
                 .collect(Collectors.toList());
-        long boardCounts = boardRepository.findBoardCounts(search);
+        long boardCounts = boardRepository.findBoardCounts(search, category);
         return BoardListResponse.of(boardList, boardCounts);
     }
 
@@ -110,4 +111,5 @@ public class BoardService {
         }
         return boardLike.getBoardState();
     }
+
 }

@@ -24,7 +24,7 @@ GET {{local}}/api/v1/getBoard/1
 Content-Type: application/json
 
 ### 게시글 리스트 불러오기
-GET {{local}}/api/v1/getBoard/list?search=2&size=3&page=1
+GET {{local}}/api/v1/getBoard/list?search=&size=3&page=1
 Content-Type: application/json
 
 ### 게시글 리스트 불러오기 조회순
@@ -34,6 +34,11 @@ Content-Type: application/json
 ### 게시글 리스트 불러오기 추천순
 GET {{local}}/api/v1/getBoard/list?search=1&page=1&size=3&sort=likeCounts
 Content-Type: application/json
+
+### 게시글 카테고리 별로 리스트 불러오기
+GET {{local}}/api/v1/getBoard/list?search=&size=3&page=1&category=HUMAN
+Content-Type: application/json
+
 
 ### 게시글 찬성/반대
 POST {{local}}/api/v1/board/like

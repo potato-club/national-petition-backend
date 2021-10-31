@@ -1,6 +1,7 @@
 package com.example.nationalpetition.service.member;
 
 import com.example.nationalpetition.domain.board.Board;
+import com.example.nationalpetition.domain.board.BoardCategory;
 import com.example.nationalpetition.domain.board.BoardState;
 import com.example.nationalpetition.domain.board.repository.BoardLikeRepository;
 import com.example.nationalpetition.domain.board.repository.BoardRepository;
@@ -244,7 +245,7 @@ public class MemberServiceTest {
             Board board = Board.builder()
                     .memberId(memberId)
                     .content("content")
-                    .category("category")
+                    .category(BoardCategory.HEALTH)
                     .petitionContent("petitionContent")
                     .petitionsCount("10000")
                     .petitionTitle("petitionTitle")
@@ -256,7 +257,7 @@ public class MemberServiceTest {
         Board board = Board.builder()
                 .memberId(memberId)
                 .content("content")
-                .category("category")
+                .category(BoardCategory.HEALTH)
                 .petitionContent("petitionContent")
                 .petitionsCount("10000")
                 .petitionTitle("petitionTitle")
