@@ -314,6 +314,47 @@ public class BoardServiceTest {
         assertThat(responseList.getBoardList().get(1).getBoardId()).isEqualTo(board3.getId());
     }
 
+    @DisplayName("게시글 불러올 때 인권/성평등 카테고리를 불러오기")
+    @Test
+    void 게시글_리스트_불러오기6() {
+        // given
+        Board board1 = BoardCreator.create(1L, "title1", "content1");
+        Board board2 = BoardCreator.create(1L, "title2", "content2");
+        Board board3 = BoardCreator.create(1L, "title3", "content3", BoardCategory.HEALTH);
+        boardRepository.saveAll(Arrays.asList(board1, board2, board3));
+
+        // when
+        final Pageable pageable = PageRequest.of(0, 3, Sort.by(DESC, "likeCounts"));
+        BoardListResponse responseList = boardService.retrieveBoard("", BoardCategory.HUMAN, pageable);
+
+        // then
+        assertThat(responseList.getBoardList()).hasSize(2);
+        assertThat(responseList.getBoardList().get(0).getBoardId()).isEqualTo(board2.getId());
+        assertThat(responseList.getBoardList().get(1).getBoardId()).isEqualTo(board1.getId());
+    }
+
+    @DisplayName("게시글 불러올 때 인권/성평등 카테고리를 불러오기 - 좋아요 순으로")
+    @Test
+    void 게시글_리스트_불러오기7() {
+        // given
+        Board board1 = BoardCreator.create(1L, "title1", "content1");
+        board1.incrementLikeCounts();
+        board1.incrementLikeCounts();
+        Board board2 = BoardCreator.create(1L, "title2", "content2");
+        Board board3 = BoardCreator.create(1L, "title3", "content3", BoardCategory.HEALTH);
+        board3.incrementLikeCounts();
+        boardRepository.saveAll(Arrays.asList(board1, board2, board3));
+
+        // when
+        final Pageable pageable = PageRequest.of(0, 3, Sort.by(DESC, "likeCounts"));
+        BoardListResponse responseList = boardService.retrieveBoard("", BoardCategory.HUMAN, pageable);
+
+        // then
+        assertThat(responseList.getBoardList()).hasSize(2);
+        assertThat(responseList.getBoardList().get(0).getBoardId()).isEqualTo(board1.getId());
+        assertThat(responseList.getBoardList().get(1).getBoardId()).isEqualTo(board2.getId());
+    }
+
     @DisplayName("게시글 찬성/반대를 한다. 이미 게시글에 찬성이나 반대를 했으면 boardState 의 값으로 업데이트 쳐주고 찬성/반대를 한적이 없으면 새로 생성해준다.")
     @Test
     void 게시글_찬성_반대1() {
