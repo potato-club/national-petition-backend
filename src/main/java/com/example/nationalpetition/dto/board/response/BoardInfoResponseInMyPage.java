@@ -49,7 +49,7 @@ public class BoardInfoResponseInMyPage {
                 .petitionTitle(board.getPetitionTitle())
                 .title(board.getTitle())
                 .content(board.getContent())
-                .category(board.getCategory())
+                .category(board.getCategory().getCategory())
                 .boardLikeCounts(boardLikeAndUnLikeCounts.getBoardLikeCounts())
                 .boardUnLikeCounts(boardLikeAndUnLikeCounts.getBoardUnLikeCounts())
                 .viewCounts(board.getViewCounts())

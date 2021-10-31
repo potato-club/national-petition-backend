@@ -35,7 +35,8 @@ public class Board extends BaseTimeEntity {
 
     private String petitionsCount;
 
-    private String category;
+    @Enumerated(EnumType.STRING)
+    private BoardCategory category;
 
     private String petitionCreatedAt;
 
@@ -54,7 +55,7 @@ public class Board extends BaseTimeEntity {
 
     @Builder
     public Board(Long memberId, String petitionTitle, String title, String petitionContent, String content, String petitionUrl,
-                 String petitionsCount, String category, String petitionCreatedAt, String petitionFinishedAt) {
+                 String petitionsCount, BoardCategory category, String petitionCreatedAt, String petitionFinishedAt) {
         this.memberId = memberId;
         this.petitionTitle = petitionTitle;
         this.title = title;

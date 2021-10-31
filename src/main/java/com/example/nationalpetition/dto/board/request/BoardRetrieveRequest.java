@@ -1,5 +1,6 @@
 package com.example.nationalpetition.dto.board.request;
 
+import com.example.nationalpetition.domain.board.BoardCategory;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,5 +20,7 @@ public class BoardRetrieveRequest {
     private String sort;
     @Min(1)
     private int page;
+
+    private BoardCategory category;
 
 }

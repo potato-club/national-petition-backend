@@ -1,6 +1,7 @@
 package com.example.nationalpetition.service.board;
 
 import com.example.nationalpetition.domain.board.Board;
+import com.example.nationalpetition.domain.board.BoardCategory;
 import com.example.nationalpetition.domain.board.BoardLike;
 import com.example.nationalpetition.domain.board.BoardState;
 import com.example.nationalpetition.domain.board.repository.BoardLikeRepository;
@@ -69,7 +70,7 @@ public class BoardServiceTest {
             Board board = Board.builder()
                     .memberId(1L)
                     .content("content")
-                    .category("category")
+                    .category(BoardCategory.ADMINISTRATION)
                     .petitionContent("petitionContent")
                     .petitionsCount("10000")
                     .petitionTitle("petitionTitle")
@@ -225,14 +226,15 @@ public class BoardServiceTest {
         insert10();
 
         // when
-        final Pageable pageable = PageRequest.of(0, 10, DESC, "id");
-        BoardListResponse responseList = boardService.retrieveBoard("", pageable);
+        final Pageable pageable = PageRequest.of(0, 10, Sort.by(DESC, "id"));
+        BoardListResponse responseList = boardService.retrieveBoard("", null, pageable);
 
         // then
         final List<Board> boardList = boardRepository.findAll();
         assertThat(boardList).hasSize(10);
         assertThat(responseList.getBoardList()).hasSize(10);
         assertThat(responseList.getBoardList().get(0).getTitle()).isEqualTo("title10");
+        assertThat(responseList.getBoardList().get(1).getTitle()).isEqualTo("title9");
         assertThat(responseList.getBoardCounts()).isEqualTo(10);
     }
 
@@ -244,7 +246,7 @@ public class BoardServiceTest {
 
         // when
         final Pageable pageable = PageRequest.of(0, 10, DESC, "id");
-        BoardListResponse responseList = boardService.retrieveBoard("1", pageable);
+        BoardListResponse responseList = boardService.retrieveBoard("1", null, pageable);
 
         // then
         final List<Board> boardList = boardRepository.findAll();
@@ -262,7 +264,7 @@ public class BoardServiceTest {
 
         // when
         final Pageable pageable = PageRequest.of(1, 10, DESC, "id");
-        BoardListResponse responseList = boardService.retrieveBoard("1", pageable);
+        BoardListResponse responseList = boardService.retrieveBoard("1", null, pageable);
 
         // then
         assertThat(responseList.getBoardList()).isEmpty();
@@ -282,7 +284,7 @@ public class BoardServiceTest {
 
         // when
         final Pageable pageable = PageRequest.of(0, 3, Sort.by(DESC, "viewCounts"));
-        BoardListResponse responseList = boardService.retrieveBoard("", pageable);
+        BoardListResponse responseList = boardService.retrieveBoard("", null, pageable);
 
         // then
         assertThat(responseList.getBoardList()).hasSize(3);
@@ -304,7 +306,7 @@ public class BoardServiceTest {
 
         // when
         final Pageable pageable = PageRequest.of(0, 3, Sort.by(DESC, "likeCounts"));
-        BoardListResponse responseList = boardService.retrieveBoard("", pageable);
+        BoardListResponse responseList = boardService.retrieveBoard("", null, pageable);
 
         // then
         assertThat(responseList.getBoardList()).hasSize(3);
@@ -369,7 +371,7 @@ public class BoardServiceTest {
     private static class MockPetitionApiCaller implements PetitionClient {
         @Override
         public PetitionResponse getPetitionInfo(Long id) {
-            return PetitionResponse.of("감자좀 살려주세요", "감자가 위험해요", "10000", "청원중", "인권", "2021-06-22", "2021-06-23");
+            return PetitionResponse.of("감자좀 살려주세요", "감자가 위험해요", "10000", "청원중", "인권/성평등", "2021-06-22", "2021-06-23");
         }
     }
 
