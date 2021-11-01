@@ -71,9 +71,19 @@ public class CommentService {
     @Transactional
     public void deleteComment(Long memberId, Long commentId) {
         Comment comment = CommentServiceUtils.findCommentByCommentIdAndMemberId(commentRepository, commentId, memberId);
-        BoardServiceUtils.findBoardById(boardRepository, comment.getBoardId());
-
+        Board board = BoardServiceUtils.findBoardById(boardRepository, comment.getBoardId());
+        decreaseCounts(comment, board);
         comment.delete();
+    }
+
+    private void decreaseCounts(Comment comment, Board board) {
+        if (comment.isRootComment()) {
+            board.decrementLikeCounts();
+            return;
+        }
+        Comment parentComment = commentRepository.findById(comment.getParentId())
+                .orElseThrow(() -> new NotFoundException(String.format("해당하는 부모댓글 (%s)은 존재하지 않습니다", comment.getParentId()), ErrorCode.NOT_FOUND_EXCEPTION_COMMENT));
+        parentComment.decreaseChildCommentsCounts();
     }
 
     @Transactional

@@ -83,4 +83,12 @@ public class Comment extends BaseTimeEntity {
         this.childCommentsCount ++;
     }
 
+    public void decreaseChildCommentsCounts() {
+        this.childCommentsCount --;
+    }
+
+    public boolean isRootComment() {
+        return this.parentId == null;
+    }
+
 }
