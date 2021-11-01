@@ -99,11 +99,14 @@ public class BoardService {
         Board board = boardRepository.findByIdAndIsDeletedFalse(boardId)
                 .orElseThrow(() -> new NotFoundException(String.format("해당하는 게시글 (%s)은 존재하지 않습니다", boardId), ErrorCode.NOT_FOUND_EXCEPTION_BOARD));
         BoardLike boardLike = boardLikeRepository.findByBoardIdAndMemberId(boardId, memberId);
+        if (boardLike == null) {
+            throw new NotFoundException(String.format("멤버 (%s)는 해당하는 게시글(%s)에 좋아요 혹은 싫어요를 누르지 않았습니다.", memberId, boardId), ErrorCode.NOT_FOUND_EXCEPTION_BOARD);
+        }
         boardLikeRepository.delete(boardLike);
         board.decrementLikeCounts();
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public BoardState getBoardStatus(Long boardId, Long memberId) {
         BoardLike boardLike = boardLikeRepository.findByBoardIdAndMemberId(boardId, memberId);
         if (boardLike == null) {
