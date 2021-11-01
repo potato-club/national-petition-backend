@@ -13,6 +13,7 @@ import com.example.nationalpetition.dto.board.request.CreateBoardRequest;
 import com.example.nationalpetition.dto.board.request.UpdateBoardRequest;
 import com.example.nationalpetition.dto.board.response.BoardInfoResponseWithLikeCount;
 import com.example.nationalpetition.dto.board.response.BoardListResponse;
+import com.example.nationalpetition.external.petition.PetitionClientWrapper;
 import com.example.nationalpetition.testObject.BoardCreator;
 import com.example.nationalpetition.testObject.BoardLikeCreator;
 import com.example.nationalpetition.testObject.MemberCreator;
@@ -54,7 +55,7 @@ public class BoardServiceTest {
 
     @BeforeEach
     void setup() {
-        boardService = new BoardService(boardRepository, boardLikeRepository, new MockPetitionApiCaller(), memberRepository);
+        boardService = new BoardService(boardRepository, boardLikeRepository, new PetitionClientWrapper(new MockPetitionApiCaller()),  memberRepository);
     }
 
     @AfterEach

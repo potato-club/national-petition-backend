@@ -14,7 +14,7 @@ import com.example.nationalpetition.dto.board.request.UpdateBoardRequest;
 import com.example.nationalpetition.dto.board.response.BoardInfoResponseWithLikeCount;
 import com.example.nationalpetition.dto.board.response.BoardLikeAndUnLikeCounts;
 import com.example.nationalpetition.dto.board.response.BoardListResponse;
-import com.example.nationalpetition.external.petition.PetitionClient;
+import com.example.nationalpetition.external.petition.PetitionClientWrapper;
 import com.example.nationalpetition.external.petition.dto.response.PetitionResponse;
 import com.example.nationalpetition.utils.error.ErrorCode;
 import com.example.nationalpetition.utils.error.exception.NotFoundException;
@@ -32,13 +32,13 @@ public class BoardService {
 
     private final BoardRepository boardRepository;
     private final BoardLikeRepository boardLikeRepository;
-    private final PetitionClient petitionClient;
+    private final PetitionClientWrapper petitionClientWrapper;
     private final MemberRepository memberRepository;
 
     @Transactional
     public BoardInfoResponseWithLikeCount createBoard(CreateBoardRequest request, Long memberId) {
         Long petitionId = extractionPetitionId(request.getPetitionUrl());
-        PetitionResponse petitionInfo = petitionClient.getPetitionInfo(petitionId);
+        PetitionResponse petitionInfo = petitionClientWrapper.getPetitionInfo(petitionId);
         final Board board = boardRepository.save(request.toEntity(petitionInfo, memberId));
         return BoardInfoResponseWithLikeCount.of(board, BoardLikeAndUnLikeCounts.of(0, 0));
     }

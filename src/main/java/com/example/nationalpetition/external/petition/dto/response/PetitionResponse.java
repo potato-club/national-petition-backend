@@ -39,4 +39,8 @@ public class PetitionResponse {
 		this.category = category;
 	}
 
+	public boolean isNotAvailable() {
+		return title.isBlank() || content.isBlank();
+	}
+
 }
