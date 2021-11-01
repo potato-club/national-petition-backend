@@ -16,6 +16,10 @@ import java.util.Date;
 @Service
 public class TokenService {
 
+	private static final long DAY = 1000 * 60 * 60 * 24;
+	private static final long ACCESS_TOKEN_EXPIRED_TIME = DAY * 3; // AccessToken 만료시간: 3일
+	private static final long REFRESH_TOKEN_EXPIRED_TIME = DAY * 30; // RefreshToken 만료시간: 30일
+
 	@Value("${jwt.secret}")
 	private String secretKey;
 
@@ -25,17 +29,13 @@ public class TokenService {
 	}
 
 	public Token generateToken(Long memberId) {
-		// 토큰 인증시간 = 30분, refresh 토큰 만료 시간 = 3주
-		final long tokenPeriod = 1000L * 60L * 30L;
-		final long refreshPeriod = 1000L * 60L * 60L * 24L * 30L * 3L;
-
 		final Claims claims = Jwts.claims().setSubject(String.valueOf(memberId));
 		final Date now = new Date();
 
 		String refreshToken = Jwts.builder()
 				.setClaims(claims)
 				.setIssuedAt(now)
-				.setExpiration(new Date(now.getTime() + refreshPeriod))
+				.setExpiration(new Date(now.getTime() + REFRESH_TOKEN_EXPIRED_TIME))
 				.signWith(SignatureAlgorithm.HS256, secretKey)
 				.compact();
 
@@ -44,7 +44,7 @@ public class TokenService {
 				Jwts.builder()
 						.setClaims(claims)
 						.setIssuedAt(now)
-						.setExpiration(new Date(now.getTime() + tokenPeriod))
+						.setExpiration(new Date(now.getTime() + ACCESS_TOKEN_EXPIRED_TIME))
 						.signWith(SignatureAlgorithm.HS256, secretKey)
 						.compact(), refreshToken
 		);
@@ -78,11 +78,10 @@ public class TokenService {
 	}
 
 	public String generateRefreshToken() {
-		final long refreshPeriod = 1000L * 60L * 60L * 24L * 30L * 3L;
 		final Date now = new Date();
 		return Jwts.builder()
 				.setIssuedAt(now)
-				.setExpiration(new Date(now.getTime() + refreshPeriod))
+				.setExpiration(new Date(now.getTime() + REFRESH_TOKEN_EXPIRED_TIME))
 				.signWith(SignatureAlgorithm.HS256, secretKey)
 				.compact();
 
