@@ -32,7 +32,7 @@ public class BoardRepositoryCustomImpl implements BoardRepositoryCustom {
                         .where(
                                 board.id.eq(boardId),
                                 board.memberId.eq(memberId),
-                                board.isDeleted.eq(Boolean.FALSE)
+                                board.isDeleted.isFalse()
                         )
                         .fetchOne()
         );
@@ -44,7 +44,8 @@ public class BoardRepositoryCustomImpl implements BoardRepositoryCustom {
                 .where(
                         board.title.contains(search)
                                 .or(board.petitionTitle.contains(search)),
-                        eqCategory(category)
+                        eqCategory(category),
+                        board.isDeleted.isFalse()
                 ).fetchCount();
     }
 
@@ -63,7 +64,8 @@ public class BoardRepositoryCustomImpl implements BoardRepositoryCustom {
                 .where(
                         board.title.contains(search)
                                 .or(board.petitionTitle.contains(search)),
-                        eqCategory(category)
+                        eqCategory(category),
+                        board.isDeleted.isFalse()
                 )
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())

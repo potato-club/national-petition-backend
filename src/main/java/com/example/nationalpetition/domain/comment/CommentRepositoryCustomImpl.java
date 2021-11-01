@@ -42,8 +42,11 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
                 .selectFrom(comment)
                 .innerJoin(member)
                 .on(member.id.eq(comment.member.id))
-                .where(comment.parentId.isNull(),
-                        comment.boardId.eq(boardId))
+                .where(
+                        comment.parentId.isNull(),
+                        comment.boardId.eq(boardId),
+                        comment.isDeleted.isFalse()
+                )
                 .orderBy(comment.createdDate.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -58,7 +61,10 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
                 .selectFrom(comment)
                 .innerJoin(member)
                 .on(member.id.eq(comment.member.id))
-                .where(comment.parentId.eq(parentId))
+                .where(
+                        comment.parentId.eq(parentId),
+                        comment.isDeleted.isFalse()
+                )
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetchResults();
