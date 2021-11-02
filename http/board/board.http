@@ -68,3 +68,11 @@ client.global.set('TOKEN', response.body.data.token)
 client.log(client.global.get('TOKEN'));
  %}
 
+###
+POST {{local}}/api/v1/comment/1
+Content-Type: application/json
+Authorization: Bearer {{TOKEN}}
+
+{
+  "content": "야이 씨발1234"
+}

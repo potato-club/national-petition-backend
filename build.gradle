@@ -109,6 +109,9 @@ dependencies {
     // db
     implementation group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.4.1'
 
+    //csv 파일 읽기
+    implementation group: 'com.opencsv', name: 'opencsv', version: '5.2'
+
 }
 
 dependencyManagement {
