@@ -10,12 +10,14 @@ import com.example.nationalpetition.dto.comment.CommentDto;
 import com.example.nationalpetition.dto.comment.request.CommentUpdateDto;
 import com.example.nationalpetition.dto.comment.request.LikeCommentRequestDto;
 import com.example.nationalpetition.dto.comment.response.CommentPageResponseDto;
+import com.example.nationalpetition.dto.notification.NotificationEvent;
 import com.example.nationalpetition.service.board.BoardServiceUtils;
 import com.example.nationalpetition.utils.error.ErrorCode;
 import com.example.nationalpetition.utils.error.exception.ForbiddenException;
 import com.example.nationalpetition.utils.error.exception.NotFoundException;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -30,6 +32,7 @@ public class CommentService {
 
     private static final int commentDepthLimit = 2;
 
+    private final ApplicationEventPublisher eventPublisher;
     private final CommentRepository commentRepository;
     private final LikeCommentRepository likeCommentRepository;
     private final BoardRepository boardRepository;
@@ -39,9 +42,10 @@ public class CommentService {
     public Long addComment(CommentCreateDto dto, Long boardId, Long memberId) {
         Board board = BoardServiceUtils.findBoardById(boardRepository, boardId);
         Member member = memberRepository.findById(memberId).orElseThrow( () -> new NotFoundException("멤버를 찾을 수 없어요", ErrorCode.NOT_FOUND_EXCEPTION_COMMENT));
-
+        String content = String.format("%s 님이 게시글:(%s)에 댓글을 남겼습니다.", member.getNickName(), board.getTitle());
         if (dto.getParentId() == null) {
             board.countRootComments();
+            eventPublisher.publishEvent(NotificationEvent.of(content, false, member.getId(), board.getMemberId(), board.getId()));
             return commentRepository.save(Comment.newRootComment(member, boardId, dto.getContent())).getId();
         }
 
@@ -55,6 +59,7 @@ public class CommentService {
 
         parentComment.countChildComments();
 
+        eventPublisher.publishEvent(NotificationEvent.of(content, false, member.getId(), board.getMemberId(), board.getId()));
         return commentRepository.save(Comment.newChildComment(dto.getParentId(), member, board.getId(), depth + 1, dto.getContent())).getId();
     }
 

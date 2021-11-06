@@ -7,12 +7,15 @@ import com.example.nationalpetition.domain.member.entity.DeleteMember;
 import com.example.nationalpetition.domain.member.entity.Member;
 import com.example.nationalpetition.domain.member.repository.DeleteMemberRepository;
 import com.example.nationalpetition.domain.member.repository.MemberRepository;
+import com.example.nationalpetition.domain.notification.Notification;
+import com.example.nationalpetition.domain.notification.repository.NotificationRepository;
 import com.example.nationalpetition.dto.board.response.BoardInfoResponseInMyPage;
 import com.example.nationalpetition.dto.board.response.BoardLikeAndUnLikeCounts;
 import com.example.nationalpetition.dto.member.request.MemberPageRequest;
 import com.example.nationalpetition.dto.member.request.NickNameRequest;
 import com.example.nationalpetition.dto.member.response.MemberResponse;
 import com.example.nationalpetition.dto.member.response.MyPageBoardListResponse;
+import com.example.nationalpetition.dto.notification.response.NotificationInfoResponse;
 import com.example.nationalpetition.utils.error.exception.ConflictException;
 import com.example.nationalpetition.utils.message.MessageType;
 import com.example.nationalpetition.utils.error.exception.NotFoundException;
@@ -24,6 +27,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.springframework.data.domain.Sort.Direction.DESC;
@@ -39,7 +44,7 @@ public class MemberServiceImpl implements MemberService {
     private final BoardLikeRepository boardLikeRepository;
     private final DeleteMemberRepository deleteMemberRepository;
     private final CommentRepository commentRepository;
-
+    private final NotificationRepository notificationRepository;
 
     @Override
     public MemberResponse findById(Long memberId) {
@@ -68,7 +73,7 @@ public class MemberServiceImpl implements MemberService {
     // TODO : 순조가 댓글개수 가져오는 기능 추가하면 commentRepository 에서 조회수 찾아오는거 수정하기
     @Override
     public MyPageBoardListResponse getMyBoardList(Long memberId, MemberPageRequest request) {
-        final PageRequest pageable = PageRequest.of(request.getPage()-1, request.getSize(), Sort.by(DESC, "id"));
+        final PageRequest pageable = PageRequest.of(request.getPage() - 1, request.getSize(), Sort.by(DESC, "id"));
         return MyPageBoardListResponse.of(boardRepository.findByMemberIdAndIsDeletedIsFalse(memberId, pageable)
                 .stream()
                 .map(b -> BoardInfoResponseInMyPage.of(b, boardLikeRepository.countLikeByBoardId(b.getId()).orElse(BoardLikeAndUnLikeCounts.of(0, 0)),
@@ -86,6 +91,12 @@ public class MemberServiceImpl implements MemberService {
         deleteMemberRepository.save(deleteMember);
         memberRepository.delete(member);
         return MessageType.DELETE_MEMBER.getMessage();
+    }
+
+    @Override
+    public List<NotificationInfoResponse> retrieveNotification(Long memberId) {
+        return notificationRepository.findByNotificationMemberId(memberId).stream()
+                .map(NotificationInfoResponse::of).collect(Collectors.toList());
     }
 
 }

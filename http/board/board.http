@@ -68,3 +68,15 @@ client.global.set('TOKEN', response.body.data.token)
 client.log(client.global.get('TOKEN'));
  %}
 
+### 댓글 남기기
+POST {{local}}/api/v1/comment/1
+Content-Type: application/json
+Authorization: Bearer {{TOKEN}}
+
+{
+  "content": "댓글을 남겨봅시다!~~"
+}
+
+### 게시글 단 사람의 알림 리스트 불러오기
+GET {{local}}/api/v1/notification
+Authorization: Bearer {{TOKEN}}

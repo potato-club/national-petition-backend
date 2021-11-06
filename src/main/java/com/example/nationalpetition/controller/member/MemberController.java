@@ -7,6 +7,7 @@ import com.example.nationalpetition.dto.member.request.MemberPageRequest;
 import com.example.nationalpetition.dto.member.request.NickNameRequest;
 import com.example.nationalpetition.dto.member.response.MemberResponse;
 import com.example.nationalpetition.dto.member.response.MyPageBoardListResponse;
+import com.example.nationalpetition.dto.notification.response.NotificationInfoResponse;
 import com.example.nationalpetition.security.oauth2.OAuth2Dto;
 import com.example.nationalpetition.service.member.MemberService;
 import com.example.nationalpetition.utils.ValidationUtils;
@@ -18,6 +19,7 @@ import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
+import java.util.List;
 
 
 @Slf4j
@@ -66,5 +68,11 @@ public class MemberController {
 		return ApiResponse.success(memberService.deleteMember(memberId));
 	}
 
+	@Operation(summary = "알림들을 가져오는 API", security = {@SecurityRequirement(name = "BearerKey")})
+	@Auth
+	@GetMapping("/api/v1/notification")
+	public ApiResponse<List<NotificationInfoResponse>> retrieveNotification(@MemberId Long memberId) {
+		return ApiResponse.success(memberService.retrieveNotification(memberId));
+	}
 
 }
