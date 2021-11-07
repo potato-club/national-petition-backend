@@ -45,7 +45,9 @@ public class CommentService {
         String content = String.format("%s 님이 게시글:(%s)에 댓글을 남겼습니다.", member.getNickName(), board.getTitle());
         if (dto.getParentId() == null) {
             board.countRootComments();
-            eventPublisher.publishEvent(NotificationEvent.of(content, false, member.getId(), board.getMemberId(), board.getId()));
+            if (board.isNotification()) {
+                eventPublisher.publishEvent(NotificationEvent.of(content, false, member.getId(), board.getMemberId(), board.getId()));
+            }
             return commentRepository.save(Comment.newRootComment(member, boardId, dto.getContent())).getId();
         }
 
@@ -59,7 +61,9 @@ public class CommentService {
 
         parentComment.countChildComments();
 
-        eventPublisher.publishEvent(NotificationEvent.of(content, false, member.getId(), board.getMemberId(), board.getId()));
+        if (board.isNotification()) {
+            eventPublisher.publishEvent(NotificationEvent.of(content, false, member.getId(), board.getMemberId(), board.getId()));
+        }
         return commentRepository.save(Comment.newChildComment(dto.getParentId(), member, board.getId(), depth + 1, dto.getContent())).getId();
     }
 

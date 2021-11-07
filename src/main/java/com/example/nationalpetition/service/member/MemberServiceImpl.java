@@ -7,7 +7,6 @@ import com.example.nationalpetition.domain.member.entity.DeleteMember;
 import com.example.nationalpetition.domain.member.entity.Member;
 import com.example.nationalpetition.domain.member.repository.DeleteMemberRepository;
 import com.example.nationalpetition.domain.member.repository.MemberRepository;
-import com.example.nationalpetition.domain.notification.Notification;
 import com.example.nationalpetition.domain.notification.repository.NotificationRepository;
 import com.example.nationalpetition.dto.board.response.BoardInfoResponseInMyPage;
 import com.example.nationalpetition.dto.board.response.BoardLikeAndUnLikeCounts;
@@ -16,6 +15,7 @@ import com.example.nationalpetition.dto.member.request.NickNameRequest;
 import com.example.nationalpetition.dto.member.response.MemberResponse;
 import com.example.nationalpetition.dto.member.response.MyPageBoardListResponse;
 import com.example.nationalpetition.dto.notification.response.NotificationInfoResponse;
+import com.example.nationalpetition.dto.notification.response.NotificationInfoResponseComparator;
 import com.example.nationalpetition.utils.error.exception.ConflictException;
 import com.example.nationalpetition.utils.message.MessageType;
 import com.example.nationalpetition.utils.error.exception.NotFoundException;
@@ -27,7 +27,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -95,8 +94,14 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public List<NotificationInfoResponse> retrieveNotification(Long memberId) {
-        return notificationRepository.findByNotificationMemberId(memberId).stream()
+        List<NotificationInfoResponse> myBoardNotificationList = notificationRepository.findByNotificationNotificationMemberId(memberId).stream()
                 .map(NotificationInfoResponse::of).collect(Collectors.toList());
+        List<Long> boardIdList = notificationRepository.findByWriteMemberId(memberId);
+        List<NotificationInfoResponse> myCommentNotificationList = notificationRepository.findByBoardIdList(boardIdList, memberId).stream()
+                .map(NotificationInfoResponse::of).collect(Collectors.toList());
+        myBoardNotificationList.addAll(myCommentNotificationList);
+        myBoardNotificationList.sort(new NotificationInfoResponseComparator().reversed());
+        return myBoardNotificationList;
     }
 
 }

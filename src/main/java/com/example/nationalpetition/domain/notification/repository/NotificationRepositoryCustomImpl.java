@@ -14,10 +14,30 @@ public class NotificationRepositoryCustomImpl implements NotificationRepositoryC
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<Notification> findByNotificationMemberId(Long memberId) {
+    public List<Notification> findByNotificationNotificationMemberId(Long memberId) {
         return queryFactory.selectFrom(notification)
                 .where(
                         notification.notificationMemberId.eq(memberId)
+                )
+                .fetch();
+    }
+
+    @Override
+    public List<Long> findByWriteMemberId(Long memberId) {
+        return queryFactory.select(notification.writeMemberId)
+                .from(notification)
+                .where(
+                        notification.writeMemberId.eq(memberId)
+                )
+                .fetch();
+    }
+
+    @Override
+    public List<Notification> findByBoardIdList(List<Long> boardIdList, Long memberId) {
+        return queryFactory.selectFrom(notification)
+                .where(
+                        notification.boardId.in(boardIdList),
+                        notification.writeMemberId.ne(memberId)
                 )
                 .fetch();
     }

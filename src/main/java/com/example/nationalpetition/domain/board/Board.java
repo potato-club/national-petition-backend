@@ -53,6 +53,8 @@ public class Board extends BaseTimeEntity {
 
     private Boolean isDeleted;
 
+    private boolean isNotification;
+
     @Builder
     public Board(Long memberId, String petitionTitle, String title, String petitionContent, String content, String petitionUrl,
                  String petitionsCount, BoardCategory category, String petitionCreatedAt, String petitionFinishedAt) {
@@ -67,6 +69,7 @@ public class Board extends BaseTimeEntity {
         this.petitionCreatedAt = petitionCreatedAt;
         this.petitionFinishedAt = petitionFinishedAt;
         this.isDeleted = false;
+        this.isNotification = true;
         this.viewCounts = 0;
         this.rootCommentsCount = 0;
         this.likeCounts = 0;

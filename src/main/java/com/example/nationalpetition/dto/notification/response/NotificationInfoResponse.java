@@ -10,14 +10,16 @@ public class NotificationInfoResponse {
 
     private Long id;
     private String content;
+    private Boolean isRead;
 
-    public NotificationInfoResponse(Long id, String content) {
+    public NotificationInfoResponse(Long id, String content, Boolean isRead) {
         this.id = id;
         this.content = content;
+        this.isRead = isRead;
     }
 
     public static NotificationInfoResponse of(Notification notification) {
-        return new NotificationInfoResponse(notification.getId(), notification.getContent());
+        return new NotificationInfoResponse(notification.getId(), notification.getContent(), notification.isRead());
     }
 
 }
