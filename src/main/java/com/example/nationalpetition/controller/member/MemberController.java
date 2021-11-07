@@ -3,6 +3,7 @@ package com.example.nationalpetition.controller.member;
 import com.example.nationalpetition.config.auth.Auth;
 import com.example.nationalpetition.config.auth.MemberId;
 import com.example.nationalpetition.controller.ApiResponse;
+import com.example.nationalpetition.dto.member.request.AlarmRequest;
 import com.example.nationalpetition.dto.member.request.MemberPageRequest;
 import com.example.nationalpetition.dto.member.request.NickNameRequest;
 import com.example.nationalpetition.dto.member.response.MemberResponse;
@@ -66,5 +67,19 @@ public class MemberController {
 		return ApiResponse.success(memberService.deleteMember(memberId));
 	}
 
+	@Operation(summary = "게시글 알람을 구독 또는 해제하는 API", security = {@SecurityRequirement(name = "BearerKey")})
+	@Auth
+	@PostMapping("/api/v1/mypage/changeBoardAlarm")
+	public ApiResponse<String> changeBoardAlarm(@MemberId Long memberId, @RequestBody AlarmRequest request)  {
+		memberService.changeBoardAlarm(memberId, request);
+		return ApiResponse.OK;
+	}
 
+	@Operation(summary = "댓글 알람을 구독 또는 해제하는 API", security = {@SecurityRequirement(name = "BearerKey")})
+	@Auth
+	@PostMapping("/api/v1/mypage/changeCommentAlarm")
+	public ApiResponse<String> changeCommentAlarm(@MemberId Long memberId, @RequestBody AlarmRequest request)  {
+		memberService.changeCommentAlarm(memberId, request);
+		return ApiResponse.OK;
+	}
 }

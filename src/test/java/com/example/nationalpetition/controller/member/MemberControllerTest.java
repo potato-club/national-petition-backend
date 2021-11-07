@@ -4,6 +4,7 @@ import com.example.nationalpetition.domain.board.Board;
 import com.example.nationalpetition.domain.board.repository.BoardRepository;
 import com.example.nationalpetition.domain.member.entity.Member;
 import com.example.nationalpetition.domain.member.repository.MemberRepository;
+import com.example.nationalpetition.dto.member.request.AlarmRequest;
 import com.example.nationalpetition.dto.member.request.NickNameRequest;
 import com.example.nationalpetition.testObject.BoardCreator;
 import com.example.nationalpetition.utils.error.ErrorCode;
@@ -330,6 +331,57 @@ class MemberControllerTest {
 	}
 
 
+	@Test
+	@DisplayName("게시글 알람 성공")
+	void changeBoardAlarm() throws Exception {
+		//given
+		final Long memberId = MemberServiceUtils.saveMember(memberRepository);
+		final Token token = tokenService.generateToken(memberId);
+		final AlarmRequest request = new AlarmRequest(true);
+		//when && then
+		mockMvc
+				.perform(post("/api/v1/mypage/changeBoardAlarm")
+						.header("Authorization", "Bearer ".concat(token.getToken()))
+						.content(objectMapper.writeValueAsString(request))
+						.contentType(MediaType.APPLICATION_JSON)
+						.accept(MediaType.APPLICATION_JSON))
+				.andDo(print())
+				.andDo(document("member/alarm/board",
+						preprocessResponse(prettyPrint()),
+						responseFields(
+								fieldWithPath("code").type(JsonFieldType.STRING).description("code"),
+								fieldWithPath("message").type(JsonFieldType.STRING).description("message"),
+								fieldWithPath("data").type(JsonFieldType.STRING).description("성공 메세지")
 
+						)
+						)
+				);
+	}
 
+	@Test
+	@DisplayName("댓글 알람 성공")
+	void changeCommentAlarm() throws Exception {
+		//given
+		final Long memberId = MemberServiceUtils.saveMember(memberRepository);
+		final Token token = tokenService.generateToken(memberId);
+		final AlarmRequest request = new AlarmRequest(true);
+		//when && then
+		mockMvc
+				.perform(post("/api/v1/mypage/changeCommentAlarm")
+						.header("Authorization", "Bearer ".concat(token.getToken()))
+						.content(objectMapper.writeValueAsString(request))
+						.contentType(MediaType.APPLICATION_JSON)
+						.accept(MediaType.APPLICATION_JSON))
+				.andDo(print())
+				.andDo(document("member/alarm/board",
+						preprocessResponse(prettyPrint()),
+						responseFields(
+								fieldWithPath("code").type(JsonFieldType.STRING).description("code"),
+								fieldWithPath("message").type(JsonFieldType.STRING).description("message"),
+								fieldWithPath("data").type(JsonFieldType.STRING).description("성공 메세지")
+
+						)
+						)
+				);
+	}
 }

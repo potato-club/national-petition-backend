@@ -11,6 +11,7 @@ import com.example.nationalpetition.domain.member.entity.Member;
 import com.example.nationalpetition.domain.member.repository.DeleteMemberRepository;
 import com.example.nationalpetition.domain.member.repository.MemberRepository;
 import com.example.nationalpetition.dto.board.request.BoardLikeRequest;
+import com.example.nationalpetition.dto.member.request.AlarmRequest;
 import com.example.nationalpetition.dto.member.request.MemberPageRequest;
 import com.example.nationalpetition.dto.member.request.NickNameRequest;
 import com.example.nationalpetition.dto.member.response.MemberResponse;
@@ -28,6 +29,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.transaction.annotation.Transactional;
 
 
 import static org.assertj.core.api.Assertions.*;
@@ -239,6 +241,33 @@ public class MemberServiceTest {
         assertThatThrownBy(() -> memberService.findByEmail(email))
                 .isInstanceOf(NotFoundException.class);
     }
+
+    @Transactional
+    @Test
+    @DisplayName("게시글 알람 구독하기")
+    void changeBoardAlarm() {
+        //given
+        final Member member = 회원가입하기();
+        final AlarmRequest request = new AlarmRequest(true);
+        //when
+        memberService.changeBoardAlarm(member.getId(), request);
+        //then
+        assertThat(member.getIsBoardSubscribe()).isTrue();
+    }
+
+    @Transactional
+    @Test
+    @DisplayName("댓글 알람 구독하기")
+    void changeCommentAlarm() {
+        //given
+        final Member member = 회원가입하기();
+        final AlarmRequest request = new AlarmRequest(true);
+        //when
+        memberService.changeCommentAlarm(member.getId(), request);
+        //then
+        assertThat(member.getIsCommentSubscribe()).isTrue();
+    }
+
 
     protected Long 게시글_생성하기(Long memberId, int count) {
         for (int i = 0; i < count-1; i++) {
