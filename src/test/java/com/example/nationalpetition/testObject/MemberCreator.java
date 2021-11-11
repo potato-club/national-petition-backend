@@ -14,4 +14,14 @@ public class MemberCreator {
         return member;
     }
 
+    public static Member create(String email, String name) {
+        Member member = Member.builder()
+                .email(email)
+                .name("name")
+                .picture("http://naver.com")
+                .build();
+        member.addNickName(name);
+        return member;
+    }
+
 }
