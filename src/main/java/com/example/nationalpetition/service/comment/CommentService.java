@@ -10,6 +10,7 @@ import com.example.nationalpetition.dto.comment.CommentDto;
 import com.example.nationalpetition.dto.comment.request.CommentUpdateDto;
 import com.example.nationalpetition.dto.comment.request.LikeCommentRequestDto;
 import com.example.nationalpetition.dto.comment.response.CommentPageResponseDto;
+import com.example.nationalpetition.service.alarm.AlarmService;
 import com.example.nationalpetition.service.board.BoardServiceUtils;
 import com.example.nationalpetition.utils.error.ErrorCode;
 import com.example.nationalpetition.utils.error.exception.ForbiddenException;
@@ -34,15 +35,19 @@ public class CommentService {
     private final LikeCommentRepository likeCommentRepository;
     private final BoardRepository boardRepository;
     private final MemberRepository memberRepository;
+    private final AlarmService alarmService;
 
     @Transactional
     public Long addComment(CommentCreateDto dto, Long boardId, Long memberId) {
         Board board = BoardServiceUtils.findBoardById(boardRepository, boardId);
         Member member = memberRepository.findById(memberId).orElseThrow( () -> new NotFoundException("멤버를 찾을 수 없어요", ErrorCode.NOT_FOUND_EXCEPTION_COMMENT));
 
+
         if (dto.getParentId() == null) {
             board.countRootComments();
-            return commentRepository.save(Comment.newRootComment(member, boardId, dto.getContent())).getId();
+            final Long commentId = commentRepository.save(Comment.newRootComment(member, boardId, dto.getContent())).getId();
+            alarmService.createCommentAlarm(board, member.getNickName(), commentId);
+            return commentId;
         }
 
         Comment parentComment = CommentServiceUtils.findCommentById(commentRepository, dto.getParentId());
@@ -55,7 +60,9 @@ public class CommentService {
 
         parentComment.countChildComments();
 
-        return commentRepository.save(Comment.newChildComment(dto.getParentId(), member, board.getId(), depth + 1, dto.getContent())).getId();
+        final Long commentId = commentRepository.save(Comment.newChildComment(dto.getParentId(), member, board.getId(), depth + 1, dto.getContent())).getId();
+        alarmService.createReplyCommentAlarm(board, member.getNickName(), parentComment.getId(), commentId);
+        return commentId;
     }
 
     @Transactional

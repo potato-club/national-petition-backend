@@ -1,8 +1,9 @@
 package com.example.nationalpetition.domain.alarm.entity;
 
-import lombok.Builder;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -10,8 +11,8 @@ import javax.persistence.Id;
 
 @Entity
 @Getter
-@NoArgsConstructor
-public class CommentAlarm{
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class ReplyCommentAlarm{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,22 +20,22 @@ public class CommentAlarm{
 
     private long boardId;
     private long memberId;
+    private long parentId;
     private long commentId;
     private String message;
     private Boolean isRead;
 
-    @Builder
-    public CommentAlarm(long boardId, long memberId, long commentId, String message) {
+    public ReplyCommentAlarm(long boardId, long memberId, long parentId, long commentId, String message) {
         this.boardId = boardId;
         this.memberId = memberId;
+        this.parentId = parentId;
         this.commentId = commentId;
         this.message = message;
         this.isRead = false;
     }
 
-    public static CommentAlarm of(long boardId, long memberId, long commentId, String message) {
-        return new CommentAlarm(boardId, memberId, commentId, message);
+    public static ReplyCommentAlarm of(long boardId, long memberId, long parentId, long commentId, String message) {
+        return new ReplyCommentAlarm(boardId, memberId, parentId, commentId, message);
     }
-
 
 }
