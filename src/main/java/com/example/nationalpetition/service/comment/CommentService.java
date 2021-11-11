@@ -42,12 +42,12 @@ public class CommentService {
     public Long addComment(CommentCreateDto dto, Long boardId, Long memberId) {
         Board board = BoardServiceUtils.findBoardById(boardRepository, boardId);
         Member member = memberRepository.findById(memberId).orElseThrow( () -> new NotFoundException("멤버를 찾을 수 없어요", ErrorCode.NOT_FOUND_EXCEPTION_COMMENT));
-        String content = String.format("%s 님이 게시글:(%s)에 댓글을 남겼습니다.", member.getNickName(), board.getTitle());
         if (dto.getParentId() == null) {
             board.countRootComments();
             Comment comment = commentRepository.save(Comment.newRootComment(member, boardId, dto.getContent()));
             if (board.isNotification()) {
-                eventPublisher.publishEvent(NotificationEvent.of(content, false, member.getId(), board.getMemberId(), comment.getId(), board.getId()));
+                String content = String.format("%s 님이 댓글을 남겼습니다.: %s", member.getNickName(), board.getTitle());
+                eventPublisher.publishEvent(NotificationEvent.of(content, false, member.getId(), board.getMemberId(), comment.getId(), null, board.getId()));
             }
             return comment.getId();
         }
@@ -64,7 +64,8 @@ public class CommentService {
 
         Comment comment = commentRepository.save(Comment.newChildComment(dto.getParentId(), member, board.getId(), depth + 1, dto.getContent()));
         if (board.isNotification()) {
-            eventPublisher.publishEvent(NotificationEvent.of(content, false, member.getId(), board.getMemberId(), comment.getId(), board.getId()));
+            String content = String.format("%s 님이 대댓글을 남겼습니다.: %s", member.getNickName(), board.getTitle());
+            eventPublisher.publishEvent(NotificationEvent.of(content, false, member.getId(), board.getMemberId(), comment.getId(), dto.getParentId(), board.getId()));
         }
         return comment.getId();
     }

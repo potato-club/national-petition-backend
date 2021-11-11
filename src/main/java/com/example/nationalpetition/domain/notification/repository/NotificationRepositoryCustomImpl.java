@@ -17,7 +17,8 @@ public class NotificationRepositoryCustomImpl implements NotificationRepositoryC
     public List<Notification> findByBoardMemberId(Long memberId) {
         return queryFactory.selectFrom(notification)
                 .where(
-                        notification.boardMemberId.eq(memberId)
+                        notification.boardMemberId.eq(memberId),
+                        notification.commentParentId.isNull()
                 )
                 .fetch();
     }
@@ -48,6 +49,17 @@ public class NotificationRepositoryCustomImpl implements NotificationRepositoryC
                 .where(
                         notification.boardId.eq(boardId),
                         notification.commentId.gt(commentId)
+                )
+                .fetch();
+    }
+
+    @Override
+    public List<Notification> findByParentId(Long commentMemberId, Long commentId) {
+        return queryFactory.selectFrom(notification)
+                .where(
+                        notification.commentParentId.eq(commentId),
+                        notification.commentId.gt(commentId),
+                        notification.commentMemberId.ne(commentMemberId)
                 )
                 .fetch();
     }

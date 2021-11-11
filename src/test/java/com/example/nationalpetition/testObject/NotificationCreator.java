@@ -4,8 +4,8 @@ import com.example.nationalpetition.domain.notification.Notification;
 
 public class NotificationCreator {
 
-    public static Notification create(String content, Long commentMemberId, Long boardMemberId, Long commentId, Long boardId) {
-        return Notification.of(content, false, commentMemberId, boardMemberId, commentId, boardId);
+    public static Notification create(String content, Long commentMemberId, Long boardMemberId, Long commentId, Long commentParentId, Long boardId) {
+        return Notification.of(content, false, commentMemberId, boardMemberId, commentId, commentParentId, boardId);
     }
 
 }

@@ -14,4 +14,6 @@ public interface NotificationRepositoryCustom {
 
     List<Notification> findByBoardId(Long boardId, Long commentId);
 
+    List<Notification> findByParentId(Long commentMemberId, Long commentId);
+
 }

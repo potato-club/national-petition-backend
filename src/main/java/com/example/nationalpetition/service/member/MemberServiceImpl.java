@@ -98,10 +98,11 @@ public class MemberServiceImpl implements MemberService {
         List<NotificationInfoResponse> myBoardNotificationList = notificationRepository.findByBoardMemberId(memberId).stream()
                 .map(NotificationInfoResponse::of).collect(Collectors.toList());
         List<Notification> notificationList = notificationRepository.findByCommentMemberId(memberId);
-        List<Long> boardIdList = notificationList.stream().map(Notification::getBoardId).collect(Collectors.toList());
-        List<NotificationInfoResponse> myCommentNotificationList = notificationRepository.findByBoardIdList(boardIdList, memberId).stream()
-                .map(NotificationInfoResponse::of).collect(Collectors.toList());
-        myBoardNotificationList.addAll(myCommentNotificationList);
+        notificationList.forEach(notification -> {
+            List<NotificationInfoResponse> commentNotification = notificationRepository.findByParentId(notification.getCommentMemberId(), notification.getCommentId()).stream()
+                    .map(NotificationInfoResponse::of).collect(Collectors.toList());
+            myBoardNotificationList.addAll(commentNotification);
+        });
         myBoardNotificationList.sort(new NotificationInfoResponseComparator().reversed());
         return myBoardNotificationList;
     }

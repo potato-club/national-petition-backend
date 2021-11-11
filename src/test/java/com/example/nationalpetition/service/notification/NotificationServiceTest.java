@@ -13,6 +13,7 @@ import com.example.nationalpetition.dto.notification.response.NotificationInfoRe
 import com.example.nationalpetition.service.comment.CommentService;
 import com.example.nationalpetition.service.member.MemberService;
 import com.example.nationalpetition.testObject.BoardCreator;
+import com.example.nationalpetition.testObject.CommentCreator;
 import com.example.nationalpetition.testObject.NotificationCreator;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -90,34 +91,36 @@ public class NotificationServiceTest {
         assertThat(notificationList).hasSize(1);
     }
 
-    @DisplayName("999번 유저가 게시글을 작성 - 1번이 2개 댓글, 2번이 1개 3번이 1개일 경우")
+    @DisplayName("999번 유저가 게시글을 작성 - 1개만 그냥 댓글, 나머지 3개는 1번의 대댓글")
     @Test
     void 알림_리스트1() {
         // given
         Board board = BoardCreator.create(999L, "title", "content");
         boardRepository.save(board);
-        Notification notification11 = NotificationCreator.create("content1 - 1", member1.getId(), 999L, 1L, board.getId());
-        Notification notification12 = NotificationCreator.create("content1 - 2", member1.getId(), 999L, 2L, board.getId());
-        Notification notification21 = NotificationCreator.create("content2 - 1", member2.getId(), 999L, 3L, board.getId());
-        Notification notification31 = NotificationCreator.create("content3 - 1", member3.getId(), 999L, 4L, board.getId());
+        Comment comment = CommentCreator.create("댓글입니다.", board.getId(), null, member1, 0);
+
+        Notification notification11 = NotificationCreator.create("content1 - 1", member1.getId(), 999L, 1L, null, board.getId());
+        Notification notification12 = NotificationCreator.create("content1 - 2", member1.getId(), 999L, 2L, 1L, board.getId());
+        Notification notification21 = NotificationCreator.create("content2 - 1", member2.getId(), 999L, 3L, 1L, board.getId());
+        Notification notification31 = NotificationCreator.create("content3 - 1", member3.getId(), 999L, 4L, 1L,  board.getId());
         notificationRepository.saveAll(Arrays.asList(notification11, notification12, notification21, notification31));
 
         List<NotificationInfoResponse> notificationInfoResponses = memberService.retrieveNotification(999L);
 
         // then
-        assertThat(notificationInfoResponses).hasSize(4);
+        assertThat(notificationInfoResponses).hasSize(1);
     }
 
-    @DisplayName("999번 유저가 게시글을 작성 - 1번이 2개 댓글, 2번이 1개 3번이 1개일 경우")
+    @DisplayName("999번 유저가 게시글을 작성 - 1개만 그냥 댓글, 나머지 3개는 1번의 대댓글 - 자기 자신의 댓글은 알림을 받지 않는다")
     @Test
     void 알림_리스트2() {
         // given
         Board board = BoardCreator.create(999L, "title", "content");
         boardRepository.save(board);
-        Notification notification11 = NotificationCreator.create("content1 - 1", member1.getId(), 999L, 1L, board.getId());
-        Notification notification12 = NotificationCreator.create("content1 - 2", member1.getId(), 999L, 2L, board.getId());
-        Notification notification21 = NotificationCreator.create("content2 - 1", member2.getId(), 999L, 3L, board.getId());
-        Notification notification31 = NotificationCreator.create("content3 - 1", member3.getId(), 999L, 4L, board.getId());
+        Notification notification11 = NotificationCreator.create("content1 - 1", member1.getId(), 999L, 1L, null, board.getId());
+        Notification notification12 = NotificationCreator.create("content1 - 2", member1.getId(), 999L, 2L, 1L, board.getId());
+        Notification notification21 = NotificationCreator.create("content2 - 1", member2.getId(), 999L, 3L, 1L, board.getId());
+        Notification notification31 = NotificationCreator.create("content3 - 1", member3.getId(), 999L, 4L, 1L, board.getId());
         notificationRepository.saveAll(Arrays.asList(notification11, notification12, notification21, notification31));
 
         List<NotificationInfoResponse> notificationInfoResponses = memberService.retrieveNotification(member1.getId());
@@ -126,22 +129,22 @@ public class NotificationServiceTest {
         assertThat(notificationInfoResponses).hasSize(2);
     }
 
-    @DisplayName("999번 유저가 게시글을 작성 - 1번이 2개 댓글, 2번이 1개 3번이 1개일 경우")
+    @DisplayName("999번 유저가 게시글을 작성 - 1개만 그냥 댓글, 나머지 3개는 1번의 대댓글")
     @Test
     void 알림_리스트3() {
         // given
         Board board = BoardCreator.create(999L, "title", "content");
         boardRepository.save(board);
-        Notification notification11 = NotificationCreator.create("content1 - 1", member1.getId(), 999L, 1L, board.getId());
-        Notification notification12 = NotificationCreator.create("content1 - 2", member1.getId(), 999L, 2L, board.getId());
-        Notification notification21 = NotificationCreator.create("content2 - 1", member2.getId(), 999L, 3L, board.getId());
-        Notification notification31 = NotificationCreator.create("content3 - 1", member3.getId(), 999L, 4L, board.getId());
+        Notification notification11 = NotificationCreator.create("content1 - 1", member1.getId(), 999L, 1L, null, board.getId());
+        Notification notification12 = NotificationCreator.create("content1 - 2", member1.getId(), 999L, 2L, 1L, board.getId());
+        Notification notification21 = NotificationCreator.create("content2 - 1", member2.getId(), 999L, 3L, null, board.getId());
+        Notification notification31 = NotificationCreator.create("content3 - 1", member3.getId(), 999L, 4L, 3L, board.getId());
         notificationRepository.saveAll(Arrays.asList(notification11, notification12, notification21, notification31));
 
         List<NotificationInfoResponse> notificationInfoResponses = memberService.retrieveNotification(member2.getId());
 
         // then
-        assertThat(notificationInfoResponses).hasSize(3);
+        assertThat(notificationInfoResponses).hasSize(1);
     }
 
 }

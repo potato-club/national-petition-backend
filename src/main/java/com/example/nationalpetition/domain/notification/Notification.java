@@ -34,21 +34,23 @@ public class Notification extends BaseTimeEntity {
 
     private Long commentId;
 
-    // 게시글
+    private Long commentParentId;
+
     private Long boardId;
 
-    public Notification(String content, boolean isRead, Long commentMemberId, Long boardMemberId, Long commentId, Long boardId) {
+    public Notification(String content, boolean isRead, Long commentMemberId, Long boardMemberId, Long commentId, Long commentParentId, Long boardId) {
         this.content = content;
         this.isRead = isRead;
         this.isCommentNotification = true;
         this.commentMemberId = commentMemberId;
         this.boardMemberId = boardMemberId;
         this.commentId = commentId;
+        this.commentParentId = commentParentId;
         this.boardId = boardId;
     }
 
-    public static Notification of(String content, boolean isRead, Long commentMemberId, Long boardMemberId, Long commentId, Long boardId) {
-        return new Notification(content, isRead, commentMemberId, boardMemberId, commentId, boardId);
+    public static Notification of(String content, boolean isRead, Long commentMemberId, Long boardMemberId, Long commentId, Long commentParentId, Long boardId) {
+        return new Notification(content, isRead, commentMemberId, boardMemberId, commentId, commentParentId, boardId);
     }
 
 }

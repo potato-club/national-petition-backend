@@ -18,23 +18,26 @@ public class NotificationEvent {
 
     private Long commentId;
 
+    private Long commentParentId;
+
     private Long boardId;
 
-    public NotificationEvent(String content, boolean isRead, Long commentMemberId, Long boardMemberId, Long commentId, Long boardId) {
+    public NotificationEvent(String content, boolean isRead, Long commentMemberId, Long boardMemberId, Long commentId, Long commentParentId, Long boardId) {
         this.content = content;
         this.isRead = isRead;
         this.commentMemberId = commentMemberId;
         this.boardMemberId = boardMemberId;
         this.commentId = commentId;
+        this.commentParentId = commentParentId;
         this.boardId = boardId;
     }
 
-    public static NotificationEvent of(String content, boolean isRead, Long commentMemberId, Long boardMemberId, Long commentId, Long boardId) {
-        return new NotificationEvent(content, isRead, commentMemberId, boardMemberId, commentId, boardId);
+    public static NotificationEvent of(String content, boolean isRead, Long commentMemberId, Long boardMemberId, Long commentId, Long commentParentId, Long boardId) {
+        return new NotificationEvent(content, isRead, commentMemberId, boardMemberId, commentId, commentParentId, boardId);
     }
 
     public Notification toEntity() {
-        return Notification.of(content, isRead, commentMemberId, boardMemberId, commentId, boardId);
+        return Notification.of(content, isRead, commentMemberId, boardMemberId, commentId, commentParentId, boardId);
     }
 
 }
