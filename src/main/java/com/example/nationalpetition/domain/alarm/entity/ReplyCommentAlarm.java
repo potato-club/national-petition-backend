@@ -38,4 +38,8 @@ public class ReplyCommentAlarm{
         return new ReplyCommentAlarm(boardId, memberId, parentId, commentId, message);
     }
 
+    public static ReplyCommentAlarm Return() {
+        return new ReplyCommentAlarm();
+    }
+
 }

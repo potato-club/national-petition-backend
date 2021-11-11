@@ -2,6 +2,8 @@ package com.example.nationalpetition.domain.board.repository;
 
 import com.example.nationalpetition.domain.board.Board;
 import com.example.nationalpetition.domain.board.BoardCategory;
+import com.example.nationalpetition.domain.member.entity.Member;
+import com.example.nationalpetition.domain.member.entity.QMember;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
@@ -19,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.example.nationalpetition.domain.board.QBoard.board;
+import static com.example.nationalpetition.domain.member.entity.QMember.*;
 
 @RequiredArgsConstructor
 public class BoardRepositoryCustomImpl implements BoardRepositoryCustom {
@@ -78,6 +81,9 @@ public class BoardRepositoryCustomImpl implements BoardRepositoryCustom {
         long total = results.getTotal();
         return new PageImpl<>(content, pageable, total);
     }
+
+
+
 
     private List<OrderSpecifier> getOrderSpecifier(Sort sort) {
         List<OrderSpecifier> orders = new ArrayList<>();

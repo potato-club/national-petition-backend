@@ -1,9 +1,12 @@
 package com.example.nationalpetition.domain.member.entity;
 
 import com.example.nationalpetition.domain.BaseTimeEntity;
+import com.example.nationalpetition.domain.comment.Comment;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -30,7 +33,6 @@ public class Member extends BaseTimeEntity {
     private String refreshToken;
 
     private Boolean isAlarm;
-
 
     @Builder
     public Member(String name, String email, String picture) {
@@ -66,7 +68,5 @@ public class Member extends BaseTimeEntity {
     public void changeAlarm(boolean isAlarmOn) {
         this.isAlarm = isAlarmOn;
     }
-
-
 
 }

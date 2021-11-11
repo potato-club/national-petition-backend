@@ -2,6 +2,7 @@ package com.example.nationalpetition.domain.board.repository;
 
 import com.example.nationalpetition.domain.board.Board;
 import com.example.nationalpetition.domain.board.BoardCategory;
+import com.example.nationalpetition.domain.member.entity.Member;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -16,5 +17,6 @@ public interface BoardRepositoryCustom {
     long findBoardCountsWithMemberId(Long memberId);
 
     Page<Board> findBySearchingAndCategory(String search, BoardCategory category, Pageable pageable);
+
 
 }

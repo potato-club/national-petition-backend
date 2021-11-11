@@ -1,5 +1,6 @@
 package com.example.nationalpetition.domain.alarm.entity;
 
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,7 +11,7 @@ import javax.persistence.Id;
 
 @Entity
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CommentAlarm{
 
     @Id
@@ -34,6 +35,10 @@ public class CommentAlarm{
 
     public static CommentAlarm of(long boardId, long memberId, long commentId, String message) {
         return new CommentAlarm(boardId, memberId, commentId, message);
+    }
+
+    public static CommentAlarm Return() {
+        return new CommentAlarm();
     }
 
 

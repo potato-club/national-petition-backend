@@ -1,10 +1,12 @@
 package com.example.nationalpetition.service.alarm;
 
+import com.example.nationalpetition.domain.alarm.entity.CommentAlarm;
+import com.example.nationalpetition.domain.alarm.entity.ReplyCommentAlarm;
 import com.example.nationalpetition.domain.board.Board;
 
 public interface AlarmService {
 
-    void createCommentAlarm(Board board, String nickName, Long commentId);
+    CommentAlarm createCommentAlarm(Board board, String nickName, Long commentId);
 
-    void createReplyCommentAlarm(Board board, String nickName, Long parentId, Long commentId);
+    ReplyCommentAlarm createReplyCommentAlarm(Board board, String nickName, Long parentId, Long commentId);
 }
