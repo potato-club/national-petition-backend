@@ -2,7 +2,6 @@ package com.example.nationalpetition.domain.member.entity;
 
 import com.example.nationalpetition.domain.BaseTimeEntity;
 import lombok.*;
-import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 
@@ -30,17 +29,15 @@ public class Member extends BaseTimeEntity {
 
     private String refreshToken;
 
-    private Boolean isBoardSubscribe;
+    private Boolean isAlarm;
 
-    private Boolean isCommentSubscribe;
 
     @Builder
     public Member(String name, String email, String picture) {
         this.name = name;
         this.email = email;
         this.picture = picture;
-        this.isBoardSubscribe = false;
-        this.isCommentSubscribe = false;
+        this.isAlarm = true;
     }
 
     public void addNickName(String nickName) {
@@ -66,12 +63,10 @@ public class Member extends BaseTimeEntity {
         this.refreshToken = null;
     }
 
-    public void changeBoardAlarm(boolean isSubscribe) {
-        this.isBoardSubscribe = isSubscribe;
+    public void changeAlarm(boolean isAlarmOn) {
+        this.isAlarm = isAlarmOn;
     }
 
-    public void changeCommentAlarm(boolean isSubscribe) {
-        this.isCommentSubscribe = isSubscribe;
-    }
+
 
 }

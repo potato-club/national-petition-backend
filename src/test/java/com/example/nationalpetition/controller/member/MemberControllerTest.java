@@ -340,7 +340,7 @@ class MemberControllerTest {
 		final AlarmRequest request = new AlarmRequest(true);
 		//when && then
 		mockMvc
-				.perform(post("/api/v1/mypage/changeBoardAlarm")
+				.perform(post("/api/v1/mypage/changeAlarm")
 						.header("Authorization", "Bearer ".concat(token.getToken()))
 						.content(objectMapper.writeValueAsString(request))
 						.contentType(MediaType.APPLICATION_JSON)
@@ -358,30 +358,5 @@ class MemberControllerTest {
 				);
 	}
 
-	@Test
-	@DisplayName("댓글 알람 성공")
-	void changeCommentAlarm() throws Exception {
-		//given
-		final Long memberId = MemberServiceUtils.saveMember(memberRepository);
-		final Token token = tokenService.generateToken(memberId);
-		final AlarmRequest request = new AlarmRequest(true);
-		//when && then
-		mockMvc
-				.perform(post("/api/v1/mypage/changeCommentAlarm")
-						.header("Authorization", "Bearer ".concat(token.getToken()))
-						.content(objectMapper.writeValueAsString(request))
-						.contentType(MediaType.APPLICATION_JSON)
-						.accept(MediaType.APPLICATION_JSON))
-				.andDo(print())
-				.andDo(document("member/alarm/board",
-						preprocessResponse(prettyPrint()),
-						responseFields(
-								fieldWithPath("code").type(JsonFieldType.STRING).description("code"),
-								fieldWithPath("message").type(JsonFieldType.STRING).description("message"),
-								fieldWithPath("data").type(JsonFieldType.STRING).description("성공 메세지")
 
-						)
-						)
-				);
-	}
 }

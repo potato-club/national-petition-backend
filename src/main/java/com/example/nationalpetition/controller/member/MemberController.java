@@ -69,17 +69,13 @@ public class MemberController {
 
 	@Operation(summary = "게시글 알람을 구독 또는 해제하는 API", security = {@SecurityRequirement(name = "BearerKey")})
 	@Auth
-	@PostMapping("/api/v1/mypage/changeBoardAlarm")
+	@PostMapping("/api/v1/mypage/changeAlarm")
 	public ApiResponse<String> changeBoardAlarm(@MemberId Long memberId, @RequestBody AlarmRequest request)  {
-		memberService.changeBoardAlarm(memberId, request);
+		memberService.changeAlarm(memberId, request);
 		return ApiResponse.OK;
 	}
 
-	@Operation(summary = "댓글 알람을 구독 또는 해제하는 API", security = {@SecurityRequirement(name = "BearerKey")})
-	@Auth
-	@PostMapping("/api/v1/mypage/changeCommentAlarm")
-	public ApiResponse<String> changeCommentAlarm(@MemberId Long memberId, @RequestBody AlarmRequest request)  {
-		memberService.changeCommentAlarm(memberId, request);
-		return ApiResponse.OK;
-	}
+
+
+
 }

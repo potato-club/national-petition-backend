@@ -91,17 +91,11 @@ public class MemberServiceImpl implements MemberService {
 
     @Transactional
     @Override
-    public void changeBoardAlarm(Long memberId, AlarmRequest request) {
+    public void changeAlarm(Long memberId, AlarmRequest request) {
         final Member member = memberRepository.findById(memberId).
                 orElseThrow(() -> new NotFoundException(String.format("해당하는 멤버 (%s)는 존재하지 않습니다", memberId), ErrorCode.NOT_FOUND_EXCEPTION_USER));
-        member.changeBoardAlarm(request.getIsSubscribe());
+        member.changeAlarm(request.getIsSubscribe());
     }
 
-    @Transactional
-    @Override
-    public void changeCommentAlarm(Long memberId, AlarmRequest request) {
-        final Member member = memberRepository.findById(memberId).
-                orElseThrow(() -> new NotFoundException(String.format("해당하는 멤버 (%s)는 존재하지 않습니다", memberId), ErrorCode.NOT_FOUND_EXCEPTION_USER));
-        member.changeCommentAlarm(request.getIsSubscribe());
-    }
+
 }

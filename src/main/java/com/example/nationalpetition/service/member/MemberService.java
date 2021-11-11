@@ -18,7 +18,6 @@ public interface MemberService {
 
     MyPageBoardListResponse getMyBoardList(Long memberId, MemberPageRequest request);
 
-    void changeBoardAlarm(Long memberId, AlarmRequest request);
+    void changeAlarm(Long memberId, AlarmRequest request);
 
-    void changeCommentAlarm(Long memberId, AlarmRequest request);
 }

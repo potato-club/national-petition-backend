@@ -244,30 +244,16 @@ public class MemberServiceTest {
 
     @Transactional
     @Test
-    @DisplayName("게시글 알람 구독하기")
+    @DisplayName("게시글 알람 설정하기")
     void changeBoardAlarm() {
         //given
         final Member member = 회원가입하기();
         final AlarmRequest request = new AlarmRequest(true);
         //when
-        memberService.changeBoardAlarm(member.getId(), request);
+        memberService.changeAlarm(member.getId(), request);
         //then
-        assertThat(member.getIsBoardSubscribe()).isTrue();
+        assertThat(member.getIsAlarm()).isTrue();
     }
-
-    @Transactional
-    @Test
-    @DisplayName("댓글 알람 구독하기")
-    void changeCommentAlarm() {
-        //given
-        final Member member = 회원가입하기();
-        final AlarmRequest request = new AlarmRequest(true);
-        //when
-        memberService.changeCommentAlarm(member.getId(), request);
-        //then
-        assertThat(member.getIsCommentSubscribe()).isTrue();
-    }
-
 
     protected Long 게시글_생성하기(Long memberId, int count) {
         for (int i = 0; i < count-1; i++) {
