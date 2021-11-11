@@ -7,6 +7,7 @@ import com.example.nationalpetition.domain.member.entity.DeleteMember;
 import com.example.nationalpetition.domain.member.entity.Member;
 import com.example.nationalpetition.domain.member.repository.DeleteMemberRepository;
 import com.example.nationalpetition.domain.member.repository.MemberRepository;
+import com.example.nationalpetition.domain.notification.Notification;
 import com.example.nationalpetition.domain.notification.repository.NotificationRepository;
 import com.example.nationalpetition.dto.board.response.BoardInfoResponseInMyPage;
 import com.example.nationalpetition.dto.board.response.BoardLikeAndUnLikeCounts;
@@ -96,7 +97,8 @@ public class MemberServiceImpl implements MemberService {
     public List<NotificationInfoResponse> retrieveNotification(Long memberId) {
         List<NotificationInfoResponse> myBoardNotificationList = notificationRepository.findByNotificationNotificationMemberId(memberId).stream()
                 .map(NotificationInfoResponse::of).collect(Collectors.toList());
-        List<Long> boardIdList = notificationRepository.findByWriteMemberId(memberId);
+        List<Notification> notificationList = notificationRepository.findByWriteMemberId(memberId);
+        List<Long> boardIdList = notificationList.stream().map(Notification::getBoardId).collect(Collectors.toList());
         List<NotificationInfoResponse> myCommentNotificationList = notificationRepository.findByBoardIdList(boardIdList, memberId).stream()
                 .map(NotificationInfoResponse::of).collect(Collectors.toList());
         myBoardNotificationList.addAll(myCommentNotificationList);

@@ -23,8 +23,8 @@ public class NotificationRepositoryCustomImpl implements NotificationRepositoryC
     }
 
     @Override
-    public List<Long> findByWriteMemberId(Long memberId) {
-        return queryFactory.select(notification.writeMemberId)
+    public List<Notification> findByWriteMemberId(Long memberId) {
+        return queryFactory.select(notification)
                 .from(notification)
                 .where(
                         notification.writeMemberId.eq(memberId)
