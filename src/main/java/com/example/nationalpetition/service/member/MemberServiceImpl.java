@@ -95,9 +95,9 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public List<NotificationInfoResponse> retrieveNotification(Long memberId) {
-        List<NotificationInfoResponse> myBoardNotificationList = notificationRepository.findByNotificationNotificationMemberId(memberId).stream()
+        List<NotificationInfoResponse> myBoardNotificationList = notificationRepository.findByBoardMemberId(memberId).stream()
                 .map(NotificationInfoResponse::of).collect(Collectors.toList());
-        List<Notification> notificationList = notificationRepository.findByWriteMemberId(memberId);
+        List<Notification> notificationList = notificationRepository.findByCommentMemberId(memberId);
         List<Long> boardIdList = notificationList.stream().map(Notification::getBoardId).collect(Collectors.toList());
         List<NotificationInfoResponse> myCommentNotificationList = notificationRepository.findByBoardIdList(boardIdList, memberId).stream()
                 .map(NotificationInfoResponse::of).collect(Collectors.toList());

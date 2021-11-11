@@ -6,10 +6,12 @@ import java.util.List;
 
 public interface NotificationRepositoryCustom {
 
-    List<Notification> findByNotificationNotificationMemberId(Long memberId);
+    List<Notification> findByBoardMemberId(Long memberId);
 
-    List<Notification> findByWriteMemberId(Long memberId);
+    List<Notification> findByCommentMemberId(Long memberId);
 
     List<Notification> findByBoardIdList(List<Long> boardIdList, Long memberId);
+
+    List<Notification> findByBoardId(Long boardId, Long commentId);
 
 }

@@ -4,7 +4,6 @@ import com.example.nationalpetition.domain.board.Board;
 import com.example.nationalpetition.domain.board.repository.BoardRepository;
 import com.example.nationalpetition.domain.comment.Comment;
 import com.example.nationalpetition.domain.comment.CommentRepository;
-import com.example.nationalpetition.domain.comment.LikeCommentRepository;
 import com.example.nationalpetition.domain.member.entity.Member;
 import com.example.nationalpetition.domain.member.repository.MemberRepository;
 import com.example.nationalpetition.domain.notification.Notification;
@@ -14,7 +13,6 @@ import com.example.nationalpetition.dto.notification.response.NotificationInfoRe
 import com.example.nationalpetition.service.comment.CommentService;
 import com.example.nationalpetition.service.member.MemberService;
 import com.example.nationalpetition.testObject.BoardCreator;
-import com.example.nationalpetition.testObject.CommentCreator;
 import com.example.nationalpetition.testObject.NotificationCreator;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -98,10 +96,10 @@ public class NotificationServiceTest {
         // given
         Board board = BoardCreator.create(999L, "title", "content");
         boardRepository.save(board);
-        Notification notification11 = NotificationCreator.create("content1 - 1", member1.getId(), 999L, board.getId());
-        Notification notification12 = NotificationCreator.create("content1 - 2", member1.getId(), 999L, board.getId());
-        Notification notification21 = NotificationCreator.create("content2 - 1", member2.getId(), 999L, board.getId());
-        Notification notification31 = NotificationCreator.create("content3 - 1", member3.getId(), 999L, board.getId());
+        Notification notification11 = NotificationCreator.create("content1 - 1", member1.getId(), 999L, 1L, board.getId());
+        Notification notification12 = NotificationCreator.create("content1 - 2", member1.getId(), 999L, 2L, board.getId());
+        Notification notification21 = NotificationCreator.create("content2 - 1", member2.getId(), 999L, 3L, board.getId());
+        Notification notification31 = NotificationCreator.create("content3 - 1", member3.getId(), 999L, 4L, board.getId());
         notificationRepository.saveAll(Arrays.asList(notification11, notification12, notification21, notification31));
 
         List<NotificationInfoResponse> notificationInfoResponses = memberService.retrieveNotification(999L);
@@ -116,10 +114,10 @@ public class NotificationServiceTest {
         // given
         Board board = BoardCreator.create(999L, "title", "content");
         boardRepository.save(board);
-        Notification notification11 = NotificationCreator.create("content1 - 1", member1.getId(), 999L, board.getId());
-        Notification notification12 = NotificationCreator.create("content1 - 2", member1.getId(), 999L, board.getId());
-        Notification notification21 = NotificationCreator.create("content2 - 1", member2.getId(), 999L, board.getId());
-        Notification notification31 = NotificationCreator.create("content3 - 1", member3.getId(), 999L, board.getId());
+        Notification notification11 = NotificationCreator.create("content1 - 1", member1.getId(), 999L, 1L, board.getId());
+        Notification notification12 = NotificationCreator.create("content1 - 2", member1.getId(), 999L, 2L, board.getId());
+        Notification notification21 = NotificationCreator.create("content2 - 1", member2.getId(), 999L, 3L, board.getId());
+        Notification notification31 = NotificationCreator.create("content3 - 1", member3.getId(), 999L, 4L, board.getId());
         notificationRepository.saveAll(Arrays.asList(notification11, notification12, notification21, notification31));
 
         List<NotificationInfoResponse> notificationInfoResponses = memberService.retrieveNotification(member1.getId());
@@ -134,10 +132,10 @@ public class NotificationServiceTest {
         // given
         Board board = BoardCreator.create(999L, "title", "content");
         boardRepository.save(board);
-        Notification notification11 = NotificationCreator.create("content1 - 1", member1.getId(), 999L, board.getId());
-        Notification notification12 = NotificationCreator.create("content1 - 2", member1.getId(), 999L, board.getId());
-        Notification notification21 = NotificationCreator.create("content2 - 1", member2.getId(), 999L, board.getId());
-        Notification notification31 = NotificationCreator.create("content3 - 1", member3.getId(), 999L, board.getId());
+        Notification notification11 = NotificationCreator.create("content1 - 1", member1.getId(), 999L, 1L, board.getId());
+        Notification notification12 = NotificationCreator.create("content1 - 2", member1.getId(), 999L, 2L, board.getId());
+        Notification notification21 = NotificationCreator.create("content2 - 1", member2.getId(), 999L, 3L, board.getId());
+        Notification notification31 = NotificationCreator.create("content3 - 1", member3.getId(), 999L, 4L, board.getId());
         notificationRepository.saveAll(Arrays.asList(notification11, notification12, notification21, notification31));
 
         List<NotificationInfoResponse> notificationInfoResponses = memberService.retrieveNotification(member2.getId());

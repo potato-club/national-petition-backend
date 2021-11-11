@@ -45,10 +45,11 @@ public class CommentService {
         String content = String.format("%s 님이 게시글:(%s)에 댓글을 남겼습니다.", member.getNickName(), board.getTitle());
         if (dto.getParentId() == null) {
             board.countRootComments();
+            Comment comment = commentRepository.save(Comment.newRootComment(member, boardId, dto.getContent()));
             if (board.isNotification()) {
-                eventPublisher.publishEvent(NotificationEvent.of(content, false, member.getId(), board.getMemberId(), board.getId()));
+                eventPublisher.publishEvent(NotificationEvent.of(content, false, member.getId(), board.getMemberId(), comment.getId(), board.getId()));
             }
-            return commentRepository.save(Comment.newRootComment(member, boardId, dto.getContent())).getId();
+            return comment.getId();
         }
 
         Comment parentComment = CommentServiceUtils.findCommentById(commentRepository, dto.getParentId());
@@ -61,10 +62,11 @@ public class CommentService {
 
         parentComment.countChildComments();
 
+        Comment comment = commentRepository.save(Comment.newChildComment(dto.getParentId(), member, board.getId(), depth + 1, dto.getContent()));
         if (board.isNotification()) {
-            eventPublisher.publishEvent(NotificationEvent.of(content, false, member.getId(), board.getMemberId(), board.getId()));
+            eventPublisher.publishEvent(NotificationEvent.of(content, false, member.getId(), board.getMemberId(), comment.getId(), board.getId()));
         }
-        return commentRepository.save(Comment.newChildComment(dto.getParentId(), member, board.getId(), depth + 1, dto.getContent())).getId();
+        return comment.getId();
     }
 
     @Transactional

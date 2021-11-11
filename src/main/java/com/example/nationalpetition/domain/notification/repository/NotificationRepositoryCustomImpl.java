@@ -14,20 +14,20 @@ public class NotificationRepositoryCustomImpl implements NotificationRepositoryC
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<Notification> findByNotificationNotificationMemberId(Long memberId) {
+    public List<Notification> findByBoardMemberId(Long memberId) {
         return queryFactory.selectFrom(notification)
                 .where(
-                        notification.notificationMemberId.eq(memberId)
+                        notification.boardMemberId.eq(memberId)
                 )
                 .fetch();
     }
 
     @Override
-    public List<Notification> findByWriteMemberId(Long memberId) {
+    public List<Notification> findByCommentMemberId(Long memberId) {
         return queryFactory.select(notification)
                 .from(notification)
                 .where(
-                        notification.writeMemberId.eq(memberId)
+                        notification.commentMemberId.eq(memberId)
                 )
                 .fetch();
     }
@@ -37,7 +37,17 @@ public class NotificationRepositoryCustomImpl implements NotificationRepositoryC
         return queryFactory.selectFrom(notification)
                 .where(
                         notification.boardId.in(boardIdList),
-                        notification.writeMemberId.ne(memberId)
+                        notification.commentMemberId.ne(memberId)
+                )
+                .fetch();
+    }
+
+    @Override
+    public List<Notification> findByBoardId(Long boardId, Long commentId) {
+        return queryFactory.selectFrom(notification)
+                .where(
+                        notification.boardId.eq(boardId),
+                        notification.commentId.gt(commentId)
                 )
                 .fetch();
     }
