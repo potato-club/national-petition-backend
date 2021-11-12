@@ -13,6 +13,4 @@ public interface BoardRepository extends JpaRepository<Board, Long>, BoardReposi
     Optional<Board> findByIdAndIsDeletedFalse(Long boardId);
 
     Page<Board> findByMemberIdAndIsDeletedIsFalse(Long memberId, Pageable pageable);
-
-    Optional<Long> findMemberIdById(Long id);
 }
