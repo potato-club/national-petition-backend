@@ -18,10 +18,10 @@ public class AlarmController {
 
     private final AlarmService alarmService;
 
-//    @Operation(summary = "알람 등록 후 게시글에 댓글 또는 댓글에 대댓글이 달렸을 경우 보관하는 API", security = {@SecurityRequirement(name = "BearerKey")})
-//    @Auth
-//    @GetMapping("/api/v1/alarm/list")
-//    public ApiResponse<AlarmListResponse> getAlarmList(Long memberId) {
-//        alarmService.getAlarmList(memberId);
-//    }
+    @Operation(summary = "알람 등록 후 게시글에 댓글 또는 댓글에 대댓글이 달렸을 경우 보관하는 API", security = {@SecurityRequirement(name = "BearerKey")})
+    @Auth
+    @GetMapping("/api/v1/alarm/list")
+    public ApiResponse<AlarmListResponse> getAlarmList(Long memberId) {
+        return ApiResponse.success(alarmService.getAlarmList(memberId));
+    }
 }

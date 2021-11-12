@@ -11,5 +11,5 @@ public interface AlarmService {
 
     ReplyCommentAlarm createReplyCommentAlarm(Board board, String nickName, Long parentId, Long commentId);
 
-//    AlarmListResponse getAlarmList(Long memberId);
+    AlarmListResponse getAlarmList(Long memberId);
 }

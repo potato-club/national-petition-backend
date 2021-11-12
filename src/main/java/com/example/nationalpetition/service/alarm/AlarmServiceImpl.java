@@ -9,12 +9,15 @@ import com.example.nationalpetition.domain.comment.Comment;
 import com.example.nationalpetition.domain.comment.CommentRepository;
 import com.example.nationalpetition.domain.member.entity.Member;
 import com.example.nationalpetition.domain.member.repository.MemberRepository;
+import com.example.nationalpetition.dto.alarm.AlarmListResponse;
 import com.example.nationalpetition.utils.error.ErrorCode;
 import com.example.nationalpetition.utils.error.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -71,8 +74,6 @@ public class AlarmServiceImpl implements AlarmService {
         // 게시글 작성자
         final Member member = memberRepository.findById(board.getMemberId()).orElseThrow(() -> new NotFoundException(String.format("해당하는 멤버 (%s)는 존재하지 않습니다", board.getMemberId()), ErrorCode.NOT_FOUND_EXCEPTION_USER));
 
-
-
         // 마이페이지 알람 설정 안한 게시글 작성자면
         if (!member.getIsAlarm()) {
             return ReplyCommentAlarm.Return();
@@ -90,6 +91,15 @@ public class AlarmServiceImpl implements AlarmService {
         final ReplyCommentAlarm replyCommentAlarm = ReplyCommentAlarm.of(board.getId(), member.getId(), parentId, commentId, message);
 
         return replyCommentAlarmRepository.save(replyCommentAlarm);
+    }
+
+    @Override
+    public AlarmListResponse getAlarmList(Long memberId) {
+        // 게시글 댓글 알람 가져오기 - 안읽은 것만
+        final List<CommentAlarm> commentAlarmList = commentAlarmRepository.findByMemberIdAndIsReadIsFalseAndOrderByIdDesc(memberId);
+        final List<ReplyCommentAlarm> replyCommentAlarmList = replyCommentAlarmRepository.findByMemberIdAndIsReadIsFalseAndOrderByIdDesc(memberId);
+
+        return AlarmListResponse.of(commentAlarmList, replyCommentAlarmList);
     }
 
 
