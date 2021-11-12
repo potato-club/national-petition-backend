@@ -82,9 +82,6 @@ public class BoardRepositoryCustomImpl implements BoardRepositoryCustom {
         return new PageImpl<>(content, pageable, total);
     }
 
-
-
-
     private List<OrderSpecifier> getOrderSpecifier(Sort sort) {
         List<OrderSpecifier> orders = new ArrayList<>();
         // Sort
