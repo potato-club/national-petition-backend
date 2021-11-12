@@ -22,7 +22,6 @@ public class AlarmController {
 //    @Auth
 //    @GetMapping("/api/v1/alarm/list")
 //    public ApiResponse<AlarmListResponse> getAlarmList(Long memberId) {
-//
 //        alarmService.getAlarmList(memberId);
 //    }
 }

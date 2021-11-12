@@ -5,7 +5,6 @@ import com.example.nationalpetition.domain.alarm.entity.ReplyCommentAlarm;
 import com.example.nationalpetition.domain.alarm.repository.CommentAlarmRepository;
 import com.example.nationalpetition.domain.alarm.repository.ReplyCommentAlarmRepository;
 import com.example.nationalpetition.domain.board.Board;
-import com.example.nationalpetition.domain.board.repository.BoardRepository;
 import com.example.nationalpetition.domain.comment.Comment;
 import com.example.nationalpetition.domain.comment.CommentRepository;
 import com.example.nationalpetition.domain.member.entity.Member;
@@ -26,7 +25,6 @@ public class AlarmServiceImpl implements AlarmService {
     private final CommentAlarmRepository commentAlarmRepository;
     private final ReplyCommentAlarmRepository replyCommentAlarmRepository;
     private final MemberRepository memberRepository;
-    private final BoardRepository boardRepository;
     private final CommentRepository commentRepository;
 
 
@@ -93,4 +91,6 @@ public class AlarmServiceImpl implements AlarmService {
 
         return replyCommentAlarmRepository.save(replyCommentAlarm);
     }
+
+
 }
