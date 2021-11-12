@@ -1,5 +1,6 @@
 package com.example.nationalpetition.domain.alarm.entity;
 
+import com.example.nationalpetition.domain.BaseTimeEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +13,7 @@ import javax.persistence.Id;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ReplyCommentAlarm{
+public class ReplyCommentAlarm extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

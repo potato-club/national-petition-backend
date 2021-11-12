@@ -11,15 +11,13 @@ import java.util.List;
 @NoArgsConstructor
 public class AlarmListResponse {
 
-    List<CommentAlarm> commentAlarmList;
-    List<ReplyCommentAlarm> replyCommentAlarmList;
+    List<AlarmResponse> alarmResponseList;
 
-    public AlarmListResponse(List<CommentAlarm> commentAlarmList, List<ReplyCommentAlarm> replyCommentAlarmList) {
-        this.commentAlarmList = commentAlarmList;
-        this.replyCommentAlarmList = replyCommentAlarmList;
+    public AlarmListResponse(List<AlarmResponse> alarmResponseList) {
+        this.alarmResponseList = alarmResponseList;
     }
 
-    public static AlarmListResponse of(List<CommentAlarm> commentAlarmList, List<ReplyCommentAlarm> replyCommentAlarmList) {
-        return new AlarmListResponse(commentAlarmList, replyCommentAlarmList);
+    public static AlarmListResponse of(List<AlarmResponse> alarmResponseList) {
+        return new AlarmListResponse(alarmResponseList);
     }
 }
