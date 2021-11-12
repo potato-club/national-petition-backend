@@ -8,6 +8,4 @@ public interface MemberRepositoryCustom {
 
     boolean duplicateNickName(String nickName);
 
-    Optional<Member> findByBoardId(Long boardId);
-
 }

@@ -26,15 +26,6 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
                 .fetchFirst() != null;
     }
 
-    @Override
-    public Optional<Member> findByBoardId(Long boardId) {
-        return Optional.ofNullable(
-                queryFactory
-                    .select(member)
-                    .from(member, board)
-                    .where(member.id.eq(boardId))
-                    .fetchOne()
-        );
-    }
+
 
 }
