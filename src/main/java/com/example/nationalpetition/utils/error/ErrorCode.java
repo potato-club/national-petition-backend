@@ -16,6 +16,7 @@ public enum ErrorCode {
 	NOT_FOUND_EXCEPTION_COMMENT("N003", "해당 하는 댓글을 찾을 수 없습니다."),
 	NOT_FOUND_EXCEPTION_PETITION("N004", "해당 하는 청원 글을 찾을 수 없습니다."),
 	NOT_FOUND_EXCEPTION_BOARD_LIKE("N005", "해당 하는 좋아요를 찾을 수 없습니다."),
+	NOT_FOUND_EXCEPTION_NOTIFICATION("N006", "해당 하는 알림을 찾을 수 없습니다."),
 
 	// UnAuthorized
 	UNAUTHORIZED_EXCEPTION("U001", "잘못된 토큰입니다. 다시 로그인해주세요"),

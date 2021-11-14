@@ -5,17 +5,20 @@ import com.example.nationalpetition.domain.board.repository.BoardRepository;
 import com.example.nationalpetition.domain.comment.*;
 import com.example.nationalpetition.domain.member.entity.Member;
 import com.example.nationalpetition.domain.member.repository.MemberRepository;
+import com.example.nationalpetition.domain.notification.NotificationTemplate;
 import com.example.nationalpetition.dto.comment.request.CommentCreateDto;
 import com.example.nationalpetition.dto.comment.CommentDto;
 import com.example.nationalpetition.dto.comment.request.CommentUpdateDto;
 import com.example.nationalpetition.dto.comment.request.LikeCommentRequestDto;
 import com.example.nationalpetition.dto.comment.response.CommentPageResponseDto;
+import com.example.nationalpetition.dto.notification.NotificationEvent;
 import com.example.nationalpetition.service.board.BoardServiceUtils;
 import com.example.nationalpetition.utils.error.ErrorCode;
 import com.example.nationalpetition.utils.error.exception.ForbiddenException;
 import com.example.nationalpetition.utils.error.exception.NotFoundException;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -31,6 +34,7 @@ public class CommentService {
 
     private static final int commentDepthLimit = 2;
 
+    private final ApplicationEventPublisher eventPublisher;
     private final CommentRepository commentRepository;
     private final LikeCommentRepository likeCommentRepository;
     private final BoardRepository boardRepository;
@@ -43,6 +47,7 @@ public class CommentService {
 
         if (dto.getParentId() == null) {
             board.countRootComments();
+            eventPublisher.publishEvent(NotificationEvent.of(board.getMemberId(), board.getId(), NotificationTemplate.CREATE_COMMENT, member.getNickName()));
             return commentRepository.save(Comment.newRootComment(member, boardId, dto.getContent())).getId();
         }
 
@@ -55,7 +60,7 @@ public class CommentService {
         }
 
         parentComment.countChildComments();
-
+        eventPublisher.publishEvent(NotificationEvent.of(parentComment.getMember().getId(), board.getId(), NotificationTemplate.CREATE_RE_COMMENT, member.getNickName()));
         return commentRepository.save(Comment.newChildComment(dto.getParentId(), member, board.getId(), depth + 1, dto.getContent())).getId();
     }
 

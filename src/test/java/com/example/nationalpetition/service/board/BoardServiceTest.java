@@ -140,7 +140,7 @@ public class BoardServiceTest {
     @Test
     void 특정_게시글_불러오기() {
         // given
-        Member member = MemberCreator.create();
+        Member member = MemberCreator.create("nickname1");
         memberRepository.save(member);
         Board board = BoardCreator.create(member.getId(), "title1", "content1");
         boardRepository.save(board);
@@ -160,7 +160,7 @@ public class BoardServiceTest {
     @Test
     void 특정_게시글_불러오기2() {
         // given
-        Member member = MemberCreator.create();
+        Member member = MemberCreator.create("nickname1");
         memberRepository.save(member);
         Board board = BoardCreator.create(member.getId(), "title1", "content1");
         boardRepository.save(board);
@@ -185,7 +185,7 @@ public class BoardServiceTest {
     @Test
     void 특정_게시글_불러오기3() {
         // given
-        Member member = MemberCreator.create();
+        Member member = MemberCreator.create("nickname1");
         memberRepository.save(member);
         Board board = BoardCreator.create(member.getId(), "title", "content");
         boardRepository.save(board);
@@ -202,7 +202,7 @@ public class BoardServiceTest {
     @Test
     void 특정_게시글_불러오기4() {
         // given
-        Member member = MemberCreator.create();
+        Member member = MemberCreator.create("nickname1");
         memberRepository.save(member);
         Board board = BoardCreator.create(member.getId(), "title", "content");
         boardRepository.save(board);

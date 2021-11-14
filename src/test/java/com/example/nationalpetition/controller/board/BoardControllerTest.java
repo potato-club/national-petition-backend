@@ -220,7 +220,7 @@ public class BoardControllerTest {
     @Test
     void 게시글을_불러온다() throws Exception {
         // given
-        Member member = MemberCreator.create();
+        Member member = MemberCreator.create("nickname1");
         memberRepository.save(member);
         Board board = BoardCreator.create(member.getId(), "title1", "content1");
         boardRepository.save(board);
