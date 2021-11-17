@@ -42,8 +42,8 @@ public class CommentServiceTest {
 
     @AfterEach
     void cleanUp() {
-        commentRepository.deleteAll();
         likeCommentRepository.deleteAll();
+        commentRepository.deleteAll();
         boardRepository.deleteAll();
         memberRepository.deleteAll();
     }
@@ -282,7 +282,7 @@ public class CommentServiceTest {
 
         Comment comment = commentRepository.save(Comment.newRootComment(member, boardId, content));
 
-        likeCommentRepository.save(LikeComment.of(comment.getId(), likeStatus, member.getId()));
+        likeCommentRepository.save(LikeComment.of(comment, likeStatus, member.getId()));
 
         LikeCommentRequestDto requestDto = LikeCommentRequestDto.builder()
                 .commentId(comment.getId())
@@ -307,7 +307,7 @@ public class CommentServiceTest {
 
         Comment comment = commentRepository.save(Comment.newRootComment(member, boardId, content));
 
-        likeCommentRepository.save(LikeComment.of(comment.getId(), unLikeCommentStatus, member.getId()));
+        likeCommentRepository.save(LikeComment.of(comment, unLikeCommentStatus, member.getId()));
 
         LikeCommentRequestDto requestDto = LikeCommentRequestDto.builder()
                 .commentId(comment.getId())
