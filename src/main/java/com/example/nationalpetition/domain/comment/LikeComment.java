@@ -5,10 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Getter
 @NoArgsConstructor
@@ -18,22 +15,24 @@ public class LikeComment extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long commentId;
+    @ManyToOne
+    @JoinColumn(name = "comment_id")
+    private Comment comment;
 
     private Long memberId;
 
     private LikeCommentStatus likeCommentStatus;
 
     @Builder
-    public LikeComment(Long commentId, LikeCommentStatus likeCommentStatus, Long memberId) {
-        this.commentId = commentId;
+    public LikeComment(Comment comment, LikeCommentStatus likeCommentStatus, Long memberId) {
+        this.comment = comment;
         this.likeCommentStatus = likeCommentStatus;
         this.memberId = memberId;
     }
 
-    public static LikeComment of(Long commentId, LikeCommentStatus status, Long memberId) {
+    public static LikeComment of(Comment comment, LikeCommentStatus status, Long memberId) {
         return LikeComment.builder()
-                .commentId(commentId)
+                .comment(comment)
                 .memberId(memberId)
                 .likeCommentStatus(status)
                 .build();

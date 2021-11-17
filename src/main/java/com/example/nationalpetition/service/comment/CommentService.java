@@ -88,27 +88,26 @@ public class CommentService {
 
     @Transactional
     public void addStatus(Long memberId, LikeCommentRequestDto requestDto) {
-
-        validateExistedComment(requestDto);
+        Comment comment = CommentServiceUtils.findCommentById(commentRepository, requestDto.getCommentId());
 
         LikeComment likeComment = likeCommentRepository
-                .findByIdAndMemberId(requestDto.getCommentId(), memberId);
+                .findByIdAndMemberId(comment, memberId);
 
         if (likeComment != null) {
             likeComment.update(requestDto.getLikeCommentStatus());
             return;
         }
 
-        likeCommentRepository.save(LikeComment.of(requestDto.getCommentId(),
+        likeCommentRepository.save(LikeComment.of(comment,
                 requestDto.getLikeCommentStatus(), memberId));
     }
 
     @Transactional
     public void deleteStatus(Long memberId, LikeCommentRequestDto requestDto) {
-        validateExistedComment(requestDto);
+        Comment comment = CommentServiceUtils.findCommentById(commentRepository, requestDto.getCommentId());
 
         LikeComment likeComment = likeCommentRepository
-                .findByIdAndMemberIdAndLikeCommentStatus(requestDto.getCommentId(), memberId,
+                .findByIdAndMemberIdAndLikeCommentStatus(comment, memberId,
                         requestDto.getLikeCommentStatus());
 
         if (likeComment == null) {
@@ -119,11 +118,6 @@ public class CommentService {
             likeCommentRepository.deleteById(likeComment.getId());
         }
 
-    }
-
-    private void validateExistedComment(LikeCommentRequestDto requestDto) {
-        commentRepository.findById(requestDto.getCommentId())
-                .orElseThrow(() -> new NotFoundException(String.format("해당하는 댓글 (%s)은 존재하지 않습니다", requestDto.getCommentId()), ErrorCode.NOT_FOUND_EXCEPTION_COMMENT));
     }
 
     @Transactional(readOnly = true)
