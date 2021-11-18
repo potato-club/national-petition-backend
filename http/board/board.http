@@ -80,3 +80,8 @@ Authorization: Bearer {{TOKEN}}
 ### 알림 불러오기
 GET {{local}}/api/v1/notification/list
 Authorization: Bearer {{TOKEN}}
+
+###
+POST {{local}}/api/v1/notification/state/1
+Authorization: Bearer {{TOKEN}}
+
