@@ -12,7 +12,6 @@ import com.example.nationalpetition.domain.notification.repository.NotificationR
 import com.example.nationalpetition.dto.comment.request.CommentCreateDto;
 import com.example.nationalpetition.dto.notification.response.NotificationInfoResponse;
 import com.example.nationalpetition.service.comment.CommentService;
-import com.example.nationalpetition.service.member.MemberService;
 import com.example.nationalpetition.testObject.BoardCreator;
 import com.example.nationalpetition.testObject.CommentCreator;
 import com.example.nationalpetition.testObject.MemberCreator;
@@ -167,7 +166,7 @@ public class NotificationServiceTest {
         assertThat(notificationInfoResponses).hasSize(2);
     }
 
-    @DisplayName("999번 유저가 게시글을 작성 - 1개 그냥 댓글, 나머지 1개는 대댓글 - 그냥 댓글에만 알림이 온다")
+    @DisplayName("알림 상태를 변경한다")
     @Test
     void 알림_상태를_변경() {
         // given
