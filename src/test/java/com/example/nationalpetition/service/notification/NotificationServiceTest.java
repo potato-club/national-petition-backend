@@ -181,7 +181,9 @@ public class NotificationServiceTest {
 
         // then
         List<Notification> notificationList = notificationRepository.findAll();
-        assertThat(notificationList).hasSize(1);
+        for (Notification notification : notificationList) {
+            System.out.println("뭐야" + notification.getId());
+        }
         assertThat(notificationList.get(0).isRead()).isEqualTo(true);
     }
 
