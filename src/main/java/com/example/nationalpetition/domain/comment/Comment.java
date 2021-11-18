@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -20,6 +22,9 @@ public class Comment extends BaseTimeEntity {
     @ManyToOne
     @JoinColumn(name="member_id")
     private Member member;
+
+    @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<LikeComment> likeComments = new ArrayList<>();
 
     @Column
     private Long boardId;
@@ -39,7 +44,8 @@ public class Comment extends BaseTimeEntity {
     private boolean isDeleted;
 
     @Builder
-    private Comment(Long boardId, Long parentId, String content, int depth, boolean isDeleted, Member member) {
+    private Comment(Long boardId, Long parentId, String content, int depth,
+                    boolean isDeleted, Member member, List<LikeComment> likeComments) {
         this.boardId = boardId;
         this.parentId = parentId;
         this.content = content;
@@ -47,6 +53,7 @@ public class Comment extends BaseTimeEntity {
         this.isDeleted = isDeleted;
         this.childCommentsCount = 0;
         this.member = member;
+        this.likeComments = likeComments;
     }
 
     public static Comment newRootComment(Member member, Long boardId, String content) {

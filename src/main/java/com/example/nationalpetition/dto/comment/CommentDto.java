@@ -1,11 +1,14 @@
 package com.example.nationalpetition.dto.comment;
 
 import com.example.nationalpetition.domain.comment.Comment;
+import com.example.nationalpetition.domain.comment.LikeComment;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @NoArgsConstructor
@@ -27,8 +30,11 @@ public class CommentDto {
 
     private String nickName;
 
+    private LikeCommentDto likeComment;
+
     @Builder
-    private CommentDto(Long commentId, Long memberId, String content, int depth, long childrenCounts, LocalDateTime createdAt, String nickName) {
+    private CommentDto(Long commentId, Long memberId, String content, int depth, long childrenCounts, LocalDateTime createdAt,
+                       String nickName, LikeCommentDto likeComment) {
         this.commentId = commentId;
         this.memberId = memberId;
         this.content = content;
@@ -36,6 +42,7 @@ public class CommentDto {
         this.childrenCounts = childrenCounts;
         this.createdAt = createdAt;
         this.nickName = nickName;
+        this.likeComment = likeComment;
 
     }
 
@@ -51,6 +58,7 @@ public class CommentDto {
                 .depth(comment.getDepth())
                 .childrenCounts(comment.getChildCommentsCount())
                 .createdAt(comment.getCreatedDate())
+                .likeComment(LikeCommentDto.of(comment.getLikeComments()))
                 .build();
     }
 

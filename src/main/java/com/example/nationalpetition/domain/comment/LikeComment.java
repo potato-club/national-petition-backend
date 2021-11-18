@@ -21,6 +21,7 @@ public class LikeComment extends BaseTimeEntity {
 
     private Long memberId;
 
+    @Enumerated(EnumType.STRING)
     private LikeCommentStatus likeCommentStatus;
 
     @Builder
