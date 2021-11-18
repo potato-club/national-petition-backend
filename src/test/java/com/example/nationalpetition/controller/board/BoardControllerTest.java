@@ -222,7 +222,7 @@ public class BoardControllerTest {
         // given
         Member member = MemberCreator.create();
         memberRepository.save(member);
-        Board board = BoardCreator.create(1L, "title1", "content1");
+        Board board = BoardCreator.create(member.getId(), "title1", "content1");
         boardRepository.save(board);
 
         // when & then

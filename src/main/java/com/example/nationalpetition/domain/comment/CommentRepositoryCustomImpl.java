@@ -40,6 +40,8 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
                 .selectFrom(comment)
                 .innerJoin(member)
                 .on(member.id.eq(comment.member.id))
+                .innerJoin(QLikeComment.likeComment)
+                .on(QLikeComment.likeComment.comment.id.eq(comment.id))
                 .where(
                         comment.parentId.isNull(),
                         comment.boardId.eq(boardId)
