@@ -55,10 +55,10 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
     public List<Comment> findALlRootCommentsByBoardIdAndSize(Long boardId, int size) {
         return queryFactory
                 .selectFrom(comment)
-                .limit(size)
-                .orderBy(comment.id.desc())
                 .where(comment.boardId.eq(boardId),
                         comment.parentId.isNull())
+                .orderBy(comment.id.desc())
+                .limit(size)
                 .fetch();
     }
 
@@ -67,10 +67,10 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
         return queryFactory
                 .selectFrom(comment)
                 .limit(size)
-                .orderBy(comment.id.desc())
                 .where(comment.id.lt(lastId),
                         comment.boardId.eq(boardId),
                         comment.parentId.isNull())
+                .orderBy(comment.id.desc())
                 .fetch();
     }
 
