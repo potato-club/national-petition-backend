@@ -11,8 +11,6 @@ public interface CommentRepositoryCustom {
 
     Long findCommentCountByBoardIdAndIsDeletedIsFalse(Long boardId);
 
-    Page<Comment> findAllRootCommentByBoardId(Pageable pageable, Long boardId);
-
     Page<Comment> findAllChildCommentByCommentId(Pageable pageable, Long parentId);
 
     List<Comment> findALlRootCommentsByBoardIdAndSize(Long boardId, int size);

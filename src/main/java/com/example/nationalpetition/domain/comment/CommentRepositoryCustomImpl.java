@@ -37,25 +37,6 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
     }
 
     @Override
-    public Page<Comment> findAllRootCommentByBoardId(Pageable pageable, Long boardId) {
-        QueryResults<Comment> result = queryFactory
-                .selectFrom(comment)
-                .innerJoin(member)
-                .on(member.id.eq(comment.member.id))
-                .innerJoin(QLikeComment.likeComment)
-                .on(QLikeComment.likeComment.comment.id.eq(comment.id))
-                .where(
-                        comment.parentId.isNull(),
-                        comment.boardId.eq(boardId)
-                )
-                .orderBy(comment.createdDate.desc())
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetchResults();
-        return new PageImpl<>(result.getResults(), pageable, result.getTotal());
-    }
-
-    @Override
     public Page<Comment> findAllChildCommentByCommentId(Pageable pageable, Long parentId) {
         QueryResults<Comment> result = queryFactory
                 .selectFrom(comment)

@@ -3,8 +3,6 @@ package com.example.nationalpetition.domain.comment;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
-import java.util.List;
-
 import static com.example.nationalpetition.domain.comment.QLikeComment.likeComment;
 
 @RequiredArgsConstructor
@@ -29,15 +27,6 @@ public class LikeCommentRepositoryCustomImpl implements LikeCommentRepositoryCus
                         likeComment.comment.id.eq(comment.getId()),
                         likeComment.memberId.eq(memberId)
                 ).fetchOne();
-    }
-
-    @Override
-    public List<LikeComment> findByCommentIdAndLikeCommentStatus(Comment comment, LikeCommentStatus likeCommentStatus) {
-        return queryFactory.selectFrom(likeComment)
-                .where(
-                        likeComment.comment.id.eq(comment.getId()),
-                        likeComment.likeCommentStatus.eq(likeCommentStatus)
-                ).fetch();
     }
 
 }

@@ -64,10 +64,10 @@ public class CommentController {
         return ApiResponse.OK;
     }
 
-    @Operation(summary = "댓글 페이지네이션 API")
+    @Operation(summary = "무한스크롤 페이지네이션")
     @GetMapping("/api/v1/comment/page/{boardId}")
-    public ApiResponse<CommentPageResponseDto> getPaginationComments(@RequestParam int page, @RequestParam int size, @PathVariable Long boardId) {
-        return ApiResponse.success(commentService.pageRequest(page, size, boardId));
+    public ApiResponse<List<CommentDto>> getPagination(@PathVariable Long boardId, @RequestParam int size, @RequestParam(value = "lastId", required = false) Long lastId) {
+        return ApiResponse.success(commentService.commentRequest(boardId, size, lastId));
     }
 
     @Operation(summary = "대댓글 페이지네이션 API")
@@ -76,10 +76,5 @@ public class CommentController {
         return ApiResponse.success(commentService.replyCommentRequest(page, size, parentId));
     }
 
-    @Operation(summary = "무한스크롤 페이지네이션")
-    @GetMapping("/api/v1/comment/pagination/{boardId}")
-    public ApiResponse<List<CommentDto>> getPagination(@PathVariable Long boardId, @RequestParam int size, @RequestParam(value = "lastId", required = false) Long lastId) {
-        return ApiResponse.success(commentService.commentRequest(boardId, size, lastId));
-    }
 
 }
