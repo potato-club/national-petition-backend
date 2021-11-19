@@ -21,6 +21,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 
@@ -38,7 +39,7 @@ public class CommentService {
     @Transactional
     public Long addComment(CommentCreateDto dto, Long boardId, Long memberId) {
         Board board = BoardServiceUtils.findBoardById(boardRepository, boardId);
-        Member member = memberRepository.findById(memberId).orElseThrow( () -> new NotFoundException("멤버를 찾을 수 없어요", ErrorCode.NOT_FOUND_EXCEPTION_COMMENT));
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new NotFoundException("멤버를 찾을 수 없어요", ErrorCode.NOT_FOUND_EXCEPTION_COMMENT));
 
         if (dto.getParentId() == null) {
             board.countRootComments();
@@ -111,7 +112,7 @@ public class CommentService {
                         requestDto.getLikeCommentStatus());
 
         if (likeComment == null) {
-            throw new NotFoundException(String.format("멤버 (%s)는 댓글(%s)에 좋아요를 누르지 않았습니다.",memberId, requestDto.getCommentId()), ErrorCode.NOT_FOUND_EXCEPTION_COMMENT);
+            throw new NotFoundException(String.format("멤버 (%s)는 댓글(%s)에 좋아요를 누르지 않았습니다.", memberId, requestDto.getCommentId()), ErrorCode.NOT_FOUND_EXCEPTION_COMMENT);
         }
 
         if (likeComment.getLikeCommentStatus() == requestDto.getLikeCommentStatus()) {
@@ -120,21 +121,10 @@ public class CommentService {
 
     }
 
-    @Transactional(readOnly = true)
-    public CommentPageResponseDto pageRequest(int page, int size, Long boardId) {
-        Page<Comment> commentList = commentRepository.findAllRootCommentByBoardId(PageRequest.of(page - 1, size), boardId);
-        return CommentPageResponseDto.builder()
-                .contents(commentList.stream()
-                        .map(CommentDto::of)
-                        .collect(Collectors.toList()))
-                .totalPages(commentList.getTotalPages())
-                .totalElements(commentList.getTotalElements())
-                .build();
-    }
 
     @Transactional
     public CommentPageResponseDto replyCommentRequest(int page, int size, Long parentId) {
-        Page<Comment> comments = commentRepository.findAllChildCommentByCommentId(PageRequest.of(page-1, size), parentId);
+        Page<Comment> comments = commentRepository.findAllChildCommentByCommentId(PageRequest.of(page - 1, size), parentId);
         return CommentPageResponseDto.builder()
                 .contents(comments.stream()
                         .map(CommentDto::of)
@@ -142,6 +132,23 @@ public class CommentService {
                 .totalPages(comments.getTotalPages())
                 .totalElements(comments.getTotalElements())
                 .build();
+    }
+
+    @Transactional(readOnly = true)
+    public List<CommentDto> commentRequest(Long boardId, int size, Long lastId) {
+
+        if (lastId == null) {
+            List<Comment> contents = commentRepository.findALlRootCommentsByBoardIdAndSize(boardId, size);
+            return getComment(contents);
+
+        }
+        List<Comment> comments = commentRepository.findAllRootCommentByBoardIdAndSizeAndLastId(boardId, size, lastId);
+        return getComment(comments);
+
+    }
+
+    private List<CommentDto> getComment(List<Comment> contents) {
+        return contents.stream().map(CommentDto::of).collect(Collectors.toList());
     }
 
 }
