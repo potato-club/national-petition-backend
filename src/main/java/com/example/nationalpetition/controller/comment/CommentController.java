@@ -66,7 +66,7 @@ public class CommentController {
 
     @Operation(summary = "무한스크롤 페이지네이션")
     @GetMapping("/api/v1/comment/page/{boardId}")
-    public ApiResponse<List<CommentDto>> getPagination(@PathVariable Long boardId, @RequestParam int size, @RequestParam(value = "lastId", required = false) Long lastId) {
+    public ApiResponse<List<CommentDto>> getPagination(@PathVariable Long boardId, @RequestParam int size, @RequestParam(required = false) Long lastId) {
         return ApiResponse.success(commentService.commentRequest(boardId, size, lastId));
     }
 
