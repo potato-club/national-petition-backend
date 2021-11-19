@@ -7,6 +7,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 import static com.example.nationalpetition.domain.comment.QComment.comment;
 import static com.example.nationalpetition.domain.member.entity.QMember.*;
 
@@ -66,6 +68,29 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
                 .limit(pageable.getPageSize())
                 .fetchResults();
         return new PageImpl<>(result.getResults(), pageable, result.getTotal());
+    }
+
+    @Override
+    public List<Comment> findALlRootCommentsByBoardIdAndSize(Long boardId, int size) {
+        return queryFactory
+                .selectFrom(comment)
+                .limit(size)
+                .orderBy(comment.id.desc())
+                .where(comment.boardId.eq(boardId),
+                        comment.parentId.isNull())
+                .fetch();
+    }
+
+    @Override
+    public List<Comment> findAllRootCommentByBoardIdAndSizeAndLastId(Long boardId, int size, long lastId) {
+        return queryFactory
+                .selectFrom(comment)
+                .limit(size)
+                .orderBy(comment.id.desc())
+                .where(comment.id.lt(lastId),
+                        comment.boardId.eq(boardId),
+                        comment.parentId.isNull())
+                .fetch();
     }
 
 }

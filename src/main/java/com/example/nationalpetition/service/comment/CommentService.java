@@ -21,6 +21,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 
@@ -142,6 +143,19 @@ public class CommentService {
                 .totalPages(comments.getTotalPages())
                 .totalElements(comments.getTotalElements())
                 .build();
+    }
+
+    @Transactional
+    public List<CommentDto> commentRequest (Long boardId, int size, Long lastId) {
+        if (lastId == null) {
+            List<Comment> contents = commentRepository.findALlRootCommentsByBoardIdAndSize(boardId, size);
+
+            return contents.stream().map(CommentDto::of).collect(Collectors.toList());
+
+        }
+        List<Comment> comments = commentRepository.findAllRootCommentByBoardIdAndSizeAndLastId(boardId, size, lastId);
+        return comments.stream().map(CommentDto::of).collect(Collectors.toList());
+
     }
 
 }

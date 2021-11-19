@@ -3,6 +3,7 @@ package com.example.nationalpetition.controller.comment;
 import com.example.nationalpetition.config.auth.Auth;
 import com.example.nationalpetition.config.auth.MemberId;
 import com.example.nationalpetition.controller.ApiResponse;
+import com.example.nationalpetition.dto.comment.CommentDto;
 import com.example.nationalpetition.dto.comment.request.CommentCreateDto;
 import com.example.nationalpetition.dto.comment.request.CommentUpdateDto;
 import com.example.nationalpetition.dto.comment.request.LikeCommentRequestDto;
@@ -14,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 
 @RequiredArgsConstructor
@@ -69,9 +71,15 @@ public class CommentController {
     }
 
     @Operation(summary = "대댓글 페이지네이션 API")
-    @GetMapping("/api/v1/replyComment/page/{parentId}")
+    @GetMapping("/api/v1/reply-comment/page/{parentId}")
     public ApiResponse<CommentPageResponseDto> getPaginationReplyComments(@RequestParam int page, @RequestParam int size, @PathVariable Long parentId) {
         return ApiResponse.success(commentService.replyCommentRequest(page, size, parentId));
+    }
+
+    @Operation(summary = "무한스크롤 페이지네이션")
+    @GetMapping("/api/v1/comment/pagination/{boardId}")
+    public ApiResponse<List<CommentDto>> getPagination(@PathVariable Long boardId, @RequestParam int size, @RequestParam(value = "lastId", required = false) Long lastId) {
+        return ApiResponse.success(commentService.commentRequest(boardId, size, lastId));
     }
 
 }
