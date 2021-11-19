@@ -54,4 +54,6 @@ jobs:
           name: .env
 
       - name: Deploy
-        run: sh ~/deploy.sh
+        run: |
+        mv -f .env ~/.env
+        sh ~/deploy.sh
