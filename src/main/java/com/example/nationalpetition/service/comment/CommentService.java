@@ -135,8 +135,6 @@ public class CommentService {
 
     @Transactional(readOnly = true)
     public List<CommentDto> commentRequest(Long boardId, int size, Long lastId, Long memberId) {
-        // 로그인 안했으면 null 하면 1L
-
         if (lastId == null) {
             List<Comment> contents = commentRepository.findALlRootCommentsByBoardIdAndSize(boardId, size);
             return getComment(contents);

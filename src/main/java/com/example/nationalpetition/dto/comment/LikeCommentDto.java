@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 @NoArgsConstructor
@@ -17,13 +16,14 @@ public class LikeCommentDto {
 
     private long unLikeCounts;
 
-    private List<MyLikeCommentDto> myStatus;
+    private LikeCommentStatus myCommentStatus;
+
 
     @Builder
-    private LikeCommentDto(long likeCounts, long unLikeCounts, List<MyLikeCommentDto> myStatus) {
+    private LikeCommentDto(long likeCounts, long unLikeCounts, LikeCommentStatus myCommentStatus) {
         this.likeCounts = likeCounts;
         this.unLikeCounts = unLikeCounts;
-        this.myStatus = myStatus;
+        this.myCommentStatus = myCommentStatus;
     }
 
     public static LikeCommentDto of(List<LikeComment> likeComments, Long memberId) {
@@ -35,14 +35,14 @@ public class LikeCommentDto {
                 .filter(likeComment -> likeComment.getLikeCommentStatus().equals(LikeCommentStatus.UNLIKE))
                 .count();
 
-        List<MyLikeCommentDto> myDto = likeComments
-                .stream().map(MyLikeCommentDto::of)
+        LikeCommentStatus myStatus = likeComments
+                .stream()
                 .filter(likeComment -> likeComment.getMemberId().equals(memberId))
-                .collect(Collectors.toList());
+                .findFirst()
+                .map(LikeComment::getLikeCommentStatus)
+                .orElse(null);
 
-
-        return new LikeCommentDto(likeCounts, unLikeCounts, myDto);
-
+        return new LikeCommentDto(likeCounts, unLikeCounts, myStatus);
     }
 
 }
