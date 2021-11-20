@@ -33,7 +33,7 @@ public class CommentDto {
 
     @Builder
     private CommentDto(Long commentId, Long memberId, String content, int depth, long childrenCounts, LocalDateTime createdAt,
-                       String nickName, LikeCommentDto likeComment, LikeCommentStatus myStatus) {
+                       String nickName, LikeCommentDto likeComment) {
         this.commentId = commentId;
         this.memberId = memberId;
         this.content = content;
@@ -45,7 +45,7 @@ public class CommentDto {
 
     }
 
-    public static CommentDto of(Comment comment) {
+    public static CommentDto of(Comment comment, Long memberId) {
         if (comment.isDeleted()) {
             return deletedComment(comment);
         }
@@ -57,7 +57,7 @@ public class CommentDto {
                 .depth(comment.getDepth())
                 .childrenCounts(comment.getChildCommentsCount())
                 .createdAt(comment.getCreatedDate())
-                .likeComment(LikeCommentDto.of(comment.getLikeComments(), comment.getMember().getId()))
+                .likeComment(LikeCommentDto.of(comment.getLikeComments(), memberId))
                 .build();
     }
 
