@@ -135,7 +135,16 @@ public class CommentService {
     }
 
     @Transactional(readOnly = true)
-    public List<CommentDto> commentRequest(Long boardId, int size, Long lastId) {
+    public List<CommentDto> commentRequest(Long boardId, int size, Long lastId, String token) {
+        if (token == null) {
+            if (lastId == null) {
+                List<Comment> contents = commentRepository.findALlRootCommentsByBoardIdAndSize(boardId, size);
+                return getComment(contents);
+
+            }
+            List<Comment> comments = commentRepository.findAllRootCommentByBoardIdAndSizeAndLastId(boardId, size, lastId);
+            return getComment(comments);
+        }
 
         if (lastId == null) {
             List<Comment> contents = commentRepository.findALlRootCommentsByBoardIdAndSize(boardId, size);
@@ -150,5 +159,13 @@ public class CommentService {
     private List<CommentDto> getComment(List<Comment> contents) {
         return contents.stream().map(CommentDto::of).collect(Collectors.toList());
     }
+//
+//    @Transactional
+//    public void myStatus(List<CommentDto> contents, Long commentId, Long memberId) {
+//        Comment comment = CommentServiceUtils.findCommentById(commentRepository, commentId);
+//        LikeComment likeComment = likeCommentRepository.findByIdAndMemberId(comment, memberId);
+//
+//
+//    }
 
 }
