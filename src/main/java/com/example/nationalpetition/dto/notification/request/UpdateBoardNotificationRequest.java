@@ -15,4 +15,13 @@ public class UpdateBoardNotificationRequest {
     @NotNull
     private Boolean state;
 
+    public UpdateBoardNotificationRequest(Long boardId, Boolean state) {
+        this.boardId = boardId;
+        this.state = state;
+    }
+
+    public static UpdateBoardNotificationRequest testInstance(Long boardId, Boolean state) {
+        return new UpdateBoardNotificationRequest(boardId, state);
+    }
+
 }

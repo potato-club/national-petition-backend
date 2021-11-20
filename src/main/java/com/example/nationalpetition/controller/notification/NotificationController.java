@@ -4,6 +4,7 @@ import com.example.nationalpetition.config.auth.Auth;
 import com.example.nationalpetition.config.auth.MemberId;
 import com.example.nationalpetition.controller.ApiResponse;
 import com.example.nationalpetition.dto.notification.request.UpdateBoardNotificationRequest;
+import com.example.nationalpetition.dto.notification.request.UpdateCommentNotificationRequest;
 import com.example.nationalpetition.dto.notification.request.UpdateMemberNotificationRequest;
 import com.example.nationalpetition.dto.notification.response.NotificationInfoResponse;
 import com.example.nationalpetition.service.notification.NotificationService;
@@ -41,6 +42,22 @@ public class NotificationController {
     @PostMapping("/api/v1/member/notification/state")
     public ApiResponse<String> updateMemberNotification(@RequestBody @Valid UpdateMemberNotificationRequest request, @MemberId Long memberId) {
         notificationService.updateMemberNotification(request.getState(), memberId);
+        return ApiResponse.OK;
+    }
+
+    @Operation(summary = "게시글의 알림 상태를 변경하는 api", security = {@SecurityRequirement(name = "BearerKey")})
+    @Auth
+    @PostMapping("/api/v1/board/notification/state")
+    public ApiResponse<String> updateBoardNotification(@RequestBody @Valid UpdateBoardNotificationRequest request, @MemberId Long memberId) {
+        notificationService.updateBoardNotification(request, memberId);
+        return ApiResponse.OK;
+    }
+
+    @Operation(summary = "댓글의 알림 상태를 변경하는 api", security = {@SecurityRequirement(name = "BearerKey")})
+    @Auth
+    @PostMapping("/api/v1/comment/notification/state")
+    public ApiResponse<String> updateCommentNotification(@RequestBody @Valid UpdateCommentNotificationRequest request, @MemberId Long memberId) {
+        notificationService.updateCommentNotification(request, memberId);
         return ApiResponse.OK;
     }
 

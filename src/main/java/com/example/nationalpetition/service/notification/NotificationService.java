@@ -2,12 +2,15 @@ package com.example.nationalpetition.service.notification;
 
 import com.example.nationalpetition.domain.board.Board;
 import com.example.nationalpetition.domain.board.repository.BoardRepository;
+import com.example.nationalpetition.domain.comment.Comment;
+import com.example.nationalpetition.domain.comment.CommentRepository;
 import com.example.nationalpetition.domain.member.entity.Member;
 import com.example.nationalpetition.domain.member.repository.MemberRepository;
 import com.example.nationalpetition.domain.notification.Notification;
 import com.example.nationalpetition.domain.notification.repository.NotificationRepository;
 import com.example.nationalpetition.dto.notification.NotificationEvent;
 import com.example.nationalpetition.dto.notification.request.UpdateBoardNotificationRequest;
+import com.example.nationalpetition.dto.notification.request.UpdateCommentNotificationRequest;
 import com.example.nationalpetition.dto.notification.response.NotificationInfoResponse;
 import com.example.nationalpetition.utils.error.ErrorCode;
 import com.example.nationalpetition.utils.error.exception.NotFoundException;
@@ -24,6 +27,7 @@ public class NotificationService {
 
     private final MemberRepository memberRepository;
     private final BoardRepository boardRepository;
+    private final CommentRepository commentRepository;
     private final NotificationRepository notificationRepository;
 
     @Transactional
@@ -51,6 +55,23 @@ public class NotificationService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new NotFoundException("멤버를 찾을 수 없어요", ErrorCode.NOT_FOUND_EXCEPTION_COMMENT));
         member.updateMemberNotification(state);
+    }
+
+    @Transactional
+    public void updateBoardNotification(UpdateBoardNotificationRequest request, Long memberId) {
+        Board board = boardRepository.findByIdAndMemberId(request.getBoardId(), memberId)
+                .orElseThrow(() -> new NotFoundException(String.format("해당하는 멤버 (%s)에게 해당하는 게시글 (%s)은 존재하지 않습니다",
+                        memberId, request.getBoardId()), ErrorCode.NOT_FOUND_EXCEPTION_BOARD));
+        board.updateBoardNotification(request.getState());
+    }
+
+    @Transactional
+    public void updateCommentNotification(UpdateCommentNotificationRequest request, Long memberId) {
+        Comment comment = commentRepository.findByIdAndMemberIdAndIsDeletedIsFalse(request.getCommentId(), memberId);
+        if (comment == null) {
+            throw new NotFoundException(String.format("멤버(%s)에게 해당하는 댓글(%s)은 존재하지 않습니다", memberId, request.getCommentId()), ErrorCode.NOT_FOUND_EXCEPTION_COMMENT);
+        }
+        comment.updateCommentNotification(request.getState());
     }
 
 }
