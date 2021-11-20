@@ -64,17 +64,18 @@ public class CommentController {
         return ApiResponse.OK;
     }
 
-    @Operation(summary = "무한스크롤 페이지네이션")
+    @Auth(required = false)
+    @Operation(summary = "무한스크롤 페이지네이션 API")
     @GetMapping("/api/v1/comment/page/{boardId}")
-    public ApiResponse<List<CommentDto>> getPagination(@PathVariable Long boardId, @RequestParam int size, @RequestParam(required = false) Long lastId) {
-        return ApiResponse.success(commentService.commentRequest(boardId, size, lastId));
+    public ApiResponse<List<CommentDto>> getPagination(@PathVariable Long boardId, @RequestParam int size, @RequestParam(required = false) Long lastId, @MemberId Long memberId) {
+        return ApiResponse.success(commentService.commentRequest(boardId, size, lastId, memberId));
     }
 
     @Operation(summary = "대댓글 페이지네이션 API")
     @GetMapping("/api/v1/reply-comment/page/{parentId}")
-    public ApiResponse<CommentPageResponseDto> getPaginationReplyComments(@RequestParam int page, @RequestParam int size, @PathVariable Long parentId) {
-        return ApiResponse.success(commentService.replyCommentRequest(page, size, parentId));
+    public ApiResponse<CommentPageResponseDto> getPaginationReplyComments(@RequestParam int page, @RequestParam int size,
+                                                                          @PathVariable Long parentId, @MemberId Long memberId) {
+        return ApiResponse.success(commentService.replyCommentRequest(page, size, parentId, memberId));
     }
-
 
 }

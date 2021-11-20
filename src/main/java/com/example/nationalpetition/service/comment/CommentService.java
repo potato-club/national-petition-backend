@@ -121,13 +121,12 @@ public class CommentService {
 
     }
 
-
     @Transactional
-    public CommentPageResponseDto replyCommentRequest(int page, int size, Long parentId) {
+    public CommentPageResponseDto replyCommentRequest(int page, int size, Long parentId, Long memberId) {
         Page<Comment> comments = commentRepository.findAllChildCommentByCommentId(PageRequest.of(page - 1, size), parentId);
         return CommentPageResponseDto.builder()
                 .contents(comments.stream()
-                        .map(CommentDto::of)
+                        .map(comment -> CommentDto.of(comment, memberId))
                         .collect(Collectors.toList()))
                 .totalPages(comments.getTotalPages())
                 .totalElements(comments.getTotalElements())
@@ -135,20 +134,20 @@ public class CommentService {
     }
 
     @Transactional(readOnly = true)
-    public List<CommentDto> commentRequest(Long boardId, int size, Long lastId) {
-
+    public List<CommentDto> commentRequest(Long boardId, int size, Long lastId, Long memberId) {
         if (lastId == null) {
             List<Comment> contents = commentRepository.findALlRootCommentsByBoardIdAndSize(boardId, size);
-            return getComment(contents);
-
+            return getComment(contents, memberId);
         }
         List<Comment> comments = commentRepository.findAllRootCommentByBoardIdAndSizeAndLastId(boardId, size, lastId);
-        return getComment(comments);
-
+        return getComment(comments, memberId);
     }
 
-    private List<CommentDto> getComment(List<Comment> contents) {
-        return contents.stream().map(CommentDto::of).collect(Collectors.toList());
+
+    private List<CommentDto> getComment(List<Comment> contents, Long memberId) {
+        return contents.stream()
+                .map(content -> CommentDto.of(content, memberId))
+                .collect(Collectors.toList());
     }
 
 }
