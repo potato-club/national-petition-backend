@@ -64,11 +64,10 @@ public class CommentController {
         return ApiResponse.OK;
     }
 
-    @Operation(summary = "무한스크롤 페이지네이션")
+    @Operation(summary = "무한스크롤 페이지네이션 API")
     @GetMapping("/api/v1/comment/page/{boardId}")
-    public ApiResponse<List<CommentDto>> getPagination(@PathVariable Long boardId, @RequestParam int size, @RequestParam(required = false) Long lastId,
-                                                       @RequestHeader(required = false) String token) {
-        return ApiResponse.success(commentService.commentRequest(boardId, size, lastId, token));
+    public ApiResponse<List<CommentDto>> getPagination(@PathVariable Long boardId, @RequestParam int size, @RequestParam(required = false) Long lastId) {
+        return ApiResponse.success(commentService.commentRequest(boardId, size, lastId));
     }
 
     @Operation(summary = "대댓글 페이지네이션 API")
