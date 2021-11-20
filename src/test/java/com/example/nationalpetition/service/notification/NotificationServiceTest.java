@@ -166,6 +166,67 @@ public class NotificationServiceTest {
         assertThat(notificationInfoResponses).hasSize(2);
     }
 
+    @DisplayName("전체 알림이 off이면 개별 알람이 on이여도 알람 db에 저장이 되지 않는다")
+    @Test
+    void 전체알람이_오프일_경우1() {
+        // given
+        Member member = MemberCreator.create("sunjo");
+        member.updateMemberNotification(false);
+        memberRepository.save(member);
+        Board board = BoardCreator.create(boardMember.getId(), "title1", "content1");
+        boardRepository.save(board);
+
+        CommentCreateDto dto = CommentCreateDto.builder()
+                .content("와 ~ 댓글이다")
+                .build();
+
+        // when
+        commentService.addComment(dto, board.getId(), member.getId());
+
+        // then
+        List<Notification> notificationList = notificationRepository.findAll();
+        assertThat(notificationList).isEmpty();
+    }
+
+    @DisplayName("전체 알림이 off이면 개별 알람이 on이여도 알람 db에 저장이 되지 않는다")
+    @Test
+    void 전체알람이_오프일_경우2() {
+        // given
+        Member member = MemberCreator.create("sunjo");
+        member.updateMemberNotification(false);
+        memberRepository.save(member);
+        Board board = BoardCreator.create(boardMember.getId(), "title1", "content1");
+        boardRepository.save(board);
+        Comment comment = CommentCreator.create("와 부모댓글이다.", board.getId(), null, member1, 0);
+        commentRepository.save(comment);
+
+        CommentCreateDto dto = CommentCreateDto.builder()
+                .content("와 ~ 댓글이다")
+                .parentId(comment.getId())
+                .build();
+
+        // when
+        commentService.addComment(dto, board.getId(), member.getId());
+
+        // then
+        List<Notification> notificationList = notificationRepository.findAll();
+        assertThat(notificationList).isEmpty();
+    }
+
+    @DisplayName("전체 알람의 상태를 변경한다")
+    @Test
+    void 전체알람의_상태를_변경한다() {
+        // given
+
+        // when
+        notificationService.updateMemberNotification(false, member1.getId());
+
+        // then
+        List<Member> memberList = memberRepository.findAll();
+        assertThat(memberList).hasSize(4);
+        assertThat(memberList.get(0).isNotification()).isFalse();
+    }
+
 //    @DisplayName("알림 상태를 변경한다")
 //    @Test
 //    void 알림_상태를_변경() {

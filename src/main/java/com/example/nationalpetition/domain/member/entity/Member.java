@@ -29,11 +29,14 @@ public class Member extends BaseTimeEntity {
 
     private String refreshToken;
 
+    private boolean isNotification;
+
     @Builder
     public Member(String name, String email, String picture) {
         this.name = name;
         this.email = email;
         this.picture = picture;
+        this.isNotification = true;
     }
 
     public void addNickName(String nickName) {
@@ -57,6 +60,10 @@ public class Member extends BaseTimeEntity {
 
     public void removeRefreshToken() {
         this.refreshToken = null;
+    }
+
+    public void updateMemberNotification(Boolean state) {
+        this.isNotification = state;
     }
 
 }
