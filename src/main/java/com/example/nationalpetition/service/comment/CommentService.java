@@ -121,7 +121,6 @@ public class CommentService {
 
     }
 
-
     @Transactional
     public CommentPageResponseDto replyCommentRequest(int page, int size, Long parentId) {
         Page<Comment> comments = commentRepository.findAllChildCommentByCommentId(PageRequest.of(page - 1, size), parentId);
@@ -135,11 +134,12 @@ public class CommentService {
     }
 
     @Transactional(readOnly = true)
-    public List<CommentDto> commentRequest(Long boardId, int size, Long lastId) {
+    public List<CommentDto> commentRequest(Long boardId, int size, Long lastId, Long memberId) {
+        // 로그인 안했으면 null 하면 1L
+
         if (lastId == null) {
             List<Comment> contents = commentRepository.findALlRootCommentsByBoardIdAndSize(boardId, size);
             return getComment(contents);
-
         }
         List<Comment> comments = commentRepository.findAllRootCommentByBoardIdAndSizeAndLastId(boardId, size, lastId);
         return getComment(comments);
@@ -147,7 +147,9 @@ public class CommentService {
     }
 
     private List<CommentDto> getComment(List<Comment> contents) {
-        return contents.stream().map(CommentDto::of).collect(Collectors.toList());
+        return contents.stream()
+                .map(CommentDto::of)
+                .collect(Collectors.toList());
     }
 
 }
