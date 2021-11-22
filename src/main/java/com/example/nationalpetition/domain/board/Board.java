@@ -53,9 +53,7 @@ public class Board extends BaseTimeEntity {
 
     private Boolean isDeleted;
 
-    private Boolean isCommentAlarm;
-
-    private Boolean isReplyCommentAlarm;
+    private Boolean isAlarm;
 
     @Builder
     public Board(Long memberId, String petitionTitle, String title, String petitionContent, String content, String petitionUrl,
@@ -74,9 +72,7 @@ public class Board extends BaseTimeEntity {
         this.viewCounts = 0;
         this.rootCommentsCount = 0;
         this.likeCounts = 0;
-        this.isCommentAlarm = true;
-        this.isReplyCommentAlarm = true;
-
+        this.isAlarm = true;
     }
 
     public void updateBoard(String title, String content) {
@@ -84,12 +80,8 @@ public class Board extends BaseTimeEntity {
         this.content = content;
     }
 
-    public void updateCommentAlarm(boolean isCommentAlarm) {
-        this.isCommentAlarm = isCommentAlarm;
-    }
-
-    public void updateReplyCommentAlarm(boolean isReplyCommentAlarm) {
-        this.isReplyCommentAlarm = isReplyCommentAlarm;
+    public void updateAlarm(boolean isAlarm) {
+        this.isAlarm = isAlarm;
     }
 
     public void incrementViewCount() {

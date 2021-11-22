@@ -1,7 +1,5 @@
 package com.example.nationalpetition.dto.alarm;
 
-import com.example.nationalpetition.domain.alarm.entity.CommentAlarm;
-import com.example.nationalpetition.domain.alarm.entity.ReplyCommentAlarm;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

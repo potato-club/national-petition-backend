@@ -39,6 +39,8 @@ public class Comment extends BaseTimeEntity {
 
     private boolean isDeleted;
 
+    private Boolean isAlarm;
+
     @Builder
     private Comment(Long boardId, Long parentId, String content, int depth, boolean isDeleted, Member member) {
         this.boardId = boardId;
@@ -48,6 +50,7 @@ public class Comment extends BaseTimeEntity {
         this.isDeleted = isDeleted;
         this.childCommentsCount = 0;
         this.member = member;
+        this.isAlarm = true;
     }
 
     public static Comment newRootComment(Member member, Long boardId, String content) {

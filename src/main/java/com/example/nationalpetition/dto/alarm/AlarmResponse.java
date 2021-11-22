@@ -1,30 +1,32 @@
 package com.example.nationalpetition.dto.alarm;
 
+import com.example.nationalpetition.domain.alarm.entity.Alarm;
+import com.example.nationalpetition.domain.alarm.entity.AlarmEventType;
+import com.example.nationalpetition.domain.alarm.entity.AlarmState;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Getter
-@NoArgsConstructor
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class AlarmResponse {
 
-    private Long boardId;
-    private String message;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime createdDate;
+    private final Long alarmId;
 
+    private final AlarmEventType eventType;
 
-    public AlarmResponse(Long boardId, String message, LocalDateTime createdDate) {
-        this.boardId = boardId;
-        this.message = message;
-        this.createdDate = createdDate;
+    private final AlarmState alarmState;
+
+    private final String message;
+
+    private final Long boardId;
+
+    public static AlarmResponse of(Alarm alarm) {
+        return new AlarmResponse(alarm.getId(), alarm.getEventType(), alarm.getState(), alarm.getMessage(), alarm.getBoardId());
     }
-
-    public static AlarmResponse of(Long boardId, String message, LocalDateTime createdDate) {
-        return new AlarmResponse(boardId, message, createdDate);
-    }
-
 
 }

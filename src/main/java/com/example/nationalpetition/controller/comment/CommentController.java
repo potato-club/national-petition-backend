@@ -1,5 +1,6 @@
 package com.example.nationalpetition.controller.comment;
 
+import com.example.nationalpetition.applicationlayer.CommentFacade;
 import com.example.nationalpetition.config.auth.Auth;
 import com.example.nationalpetition.config.auth.MemberId;
 import com.example.nationalpetition.controller.ApiResponse;
@@ -21,6 +22,7 @@ import javax.validation.Valid;
 public class CommentController {
 
     private final CommentService commentService;
+    private final CommentFacade commentFacade;
 
     @Operation(summary = "댓글 등록하는 API", security = {@SecurityRequirement(name = "BearerKey")})
     @Auth
@@ -28,7 +30,7 @@ public class CommentController {
     public ApiResponse<Long> addComment(@RequestBody @Valid CommentCreateDto dto,
                                         @PathVariable @Valid Long boardId,
                                         @MemberId Long memberId) {
-        return ApiResponse.success(commentService.addComment(dto, boardId, memberId));
+        return ApiResponse.success(commentFacade.createComment(dto, boardId, memberId));
     }
 
     @Operation(summary = "댓글 수정하는 API", security = {@SecurityRequirement(name = "BearerKey")})
