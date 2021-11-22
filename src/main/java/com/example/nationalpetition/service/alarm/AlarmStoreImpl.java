@@ -15,9 +15,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.example.nationalpetition.domain.alarm.entity.AlarmEventType.*;
+
 @Slf4j
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Transactional
 @Service
 public class AlarmStoreImpl implements AlarmStore {
 
@@ -25,17 +27,24 @@ public class AlarmStoreImpl implements AlarmStore {
     private final CommentRepository commentRepository;
     private final BoardRepository boardRepository;
 
-    @Transactional
     @Override
     public AlarmResponse createAlarm(AlarmEventType AlarmEventType, Long commentId) {
         final Comment comment = CommentServiceUtils.findCommentById(commentRepository, commentId);
         final Board board = BoardServiceUtils.findBoardById(boardRepository, comment.getBoardId());
 
+        if (isBoardWriterEqualsCommentWriter(AlarmEventType, comment, board)) {
+            return null;
+        }
+
+        if (isReCommentWriterEqualsCommentWriter(AlarmEventType, comment)) {
+            return null;
+        }
+
         final AlarmMessage alarmMessage = AlarmMessage.of(board.getId(), board.getTitle(), comment.getMember().getNickName());
         return AlarmResponse.of(alarmRepository.save(alarmMessage.toEntity(board.getMemberId(), AlarmEventType)));
     }
 
-    @Transactional
+
     @Override
     public AlarmResponse checkAlarm(Long alarmId, Long memberId) {
         final Alarm alarm = AlarmServiceUtils.findAlarmByIdAndMemberId(alarmRepository, alarmId, memberId);
@@ -43,10 +52,18 @@ public class AlarmStoreImpl implements AlarmStore {
         return AlarmResponse.of(alarm);
     }
 
-    @Transactional
+    @Override
     public void deleteAlarm(Long alarmId, Long memberId) {
-        Alarm alarm = AlarmServiceUtils.findAlarmByIdAndMemberId(alarmRepository, alarmId, memberId);
+        final Alarm alarm = AlarmServiceUtils.findAlarmByIdAndMemberId(alarmRepository, alarmId, memberId);
         alarm.delete();
     }
 
+
+    private boolean isReCommentWriterEqualsCommentWriter(AlarmEventType AlarmEventType, Comment comment) {
+        return AlarmEventType.equals(RE_COMMENT_CREATED) && comment.getParentId().equals(comment.getMember().getId());
+    }
+
+    private boolean isBoardWriterEqualsCommentWriter(AlarmEventType AlarmEventType, Comment comment, Board board) {
+        return AlarmEventType.equals(COMMENT_CREATED) && board.isCreator(comment.getMember().getId());
+    }
 }

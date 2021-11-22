@@ -30,7 +30,7 @@ public class CommentController {
     public ApiResponse<Long> addComment(@RequestBody @Valid CommentCreateDto dto,
                                         @PathVariable @Valid Long boardId,
                                         @MemberId Long memberId) {
-        return ApiResponse.success(commentFacade.createComment(dto, boardId, memberId));
+        return ApiResponse.success(commentFacade.addComment(dto, boardId, memberId));
     }
 
     @Operation(summary = "댓글 수정하는 API", security = {@SecurityRequirement(name = "BearerKey")})

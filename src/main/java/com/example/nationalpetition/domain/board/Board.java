@@ -99,4 +99,8 @@ public class Board extends BaseTimeEntity {
     public void decrementLikeCounts() {
         this.likeCounts--;
     }
+
+    public boolean isCreator(Long memberId) {
+        return this.memberId.equals(memberId);
+    }
 }
