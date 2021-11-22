@@ -11,14 +11,16 @@ public class BoardListResponse {
 
     private List<BoardInfoResponseWithLikeCount> boardList;
     private long boardCounts;
+    private long boardPages;
 
-    public BoardListResponse(List<BoardInfoResponseWithLikeCount> boardList, long boardCounts) {
+    public BoardListResponse(List<BoardInfoResponseWithLikeCount> boardList, long boardCounts, long boardPages) {
         this.boardList = boardList;
         this.boardCounts = boardCounts;
+        this.boardPages = boardPages;
     }
 
-    public static BoardListResponse of(List<BoardInfoResponseWithLikeCount> boardList, long boardCounts) {
-        return new BoardListResponse(boardList, boardCounts);
+    public static BoardListResponse of(List<BoardInfoResponseWithLikeCount> boardList, long boardCounts, long boardPages) {
+        return new BoardListResponse(boardList, boardCounts, boardPages);
     }
 
 }

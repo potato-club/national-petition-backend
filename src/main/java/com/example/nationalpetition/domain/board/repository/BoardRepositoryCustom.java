@@ -11,8 +11,6 @@ public interface BoardRepositoryCustom {
 
     Optional<Board> findByIdAndMemberId(Long boardId, Long memberId);
 
-    long findBoardCounts(String search, BoardCategory category);
-
     long findBoardCountsWithMemberId(Long memberId);
 
     Page<Board> findBySearchingAndCategory(String search, BoardCategory category, Pageable pageable);

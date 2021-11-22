@@ -307,7 +307,8 @@ public class BoardControllerTest {
                                 fieldWithPath("data.boardList[].boardUnLikeCounts").description("싫어요 개수"),
                                 fieldWithPath("data.boardList[].createdDate").description("생성날짜"),
                                 fieldWithPath("data.boardList[].memberResponse").description("작성자 정보"),
-                                fieldWithPath("data.boardCounts").description("게시글 총 개수")
+                                fieldWithPath("data.boardCounts").description("게시글 총 개수"),
+                                fieldWithPath("data.boardPages").description("게시글 리스트 페이지 총 개수")
                         )
                 ));
         resultActions.andExpect(status().isOk());
@@ -355,7 +356,8 @@ public class BoardControllerTest {
                                 fieldWithPath("data.boardList[].boardUnLikeCounts").description("싫어요 개수"),
                                 fieldWithPath("data.boardList[].createdDate").description("생성날짜"),
                                 fieldWithPath("data.boardList[].memberResponse").description("작성자 정보"),
-                                fieldWithPath("data.boardCounts").description("게시글 총 개수")
+                                fieldWithPath("data.boardCounts").description("게시글 총 개수"),
+                                fieldWithPath("data.boardPages").description("게시글 리스트 페이지 총 개수")
                         )
                 ));
         resultActions.andExpect(status().isOk());
@@ -403,7 +405,8 @@ public class BoardControllerTest {
                                 fieldWithPath("data.boardList[].boardUnLikeCounts").description("싫어요 개수"),
                                 fieldWithPath("data.boardList[].createdDate").description("생성날짜"),
                                 fieldWithPath("data.boardList[].memberResponse").description("작성자 정보"),
-                                fieldWithPath("data.boardCounts").description("게시글 총 개수")
+                                fieldWithPath("data.boardCounts").description("게시글 총 개수"),
+                                fieldWithPath("data.boardPages").description("게시글 리스트 페이지 총 개수")
                         )
                 ));
         resultActions.andExpect(status().isOk());
@@ -452,7 +455,8 @@ public class BoardControllerTest {
                                 fieldWithPath("data.boardList[].boardUnLikeCounts").description("싫어요 개수"),
                                 fieldWithPath("data.boardList[].createdDate").description("생성날짜"),
                                 fieldWithPath("data.boardList[].memberResponse").description("작성자 정보"),
-                                fieldWithPath("data.boardCounts").description("게시글 총 개수")
+                                fieldWithPath("data.boardCounts").description("게시글 총 개수"),
+                                fieldWithPath("data.boardPages").description("게시글 리스트 페이지 총 개수")
                         )
                 ));
         resultActions.andExpect(status().isOk());
@@ -500,7 +504,8 @@ public class BoardControllerTest {
                                 fieldWithPath("data.boardList[].boardUnLikeCounts").description("싫어요 개수"),
                                 fieldWithPath("data.boardList[].createdDate").description("생성날짜"),
                                 fieldWithPath("data.boardList[].memberResponse").description("작성자 정보"),
-                                fieldWithPath("data.boardCounts").description("게시글 총 개수")
+                                fieldWithPath("data.boardCounts").description("게시글 총 개수"),
+                                fieldWithPath("data.boardPages").description("게시글 리스트 페이지 총 개수")
                         )
                 ));
         resultActions.andExpect(status().isOk());
