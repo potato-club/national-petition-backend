@@ -19,6 +19,7 @@ import com.example.nationalpetition.external.petition.dto.response.PetitionRespo
 import com.example.nationalpetition.utils.error.ErrorCode;
 import com.example.nationalpetition.utils.error.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -73,12 +74,12 @@ public class BoardService {
 
     @Transactional(readOnly = true)
     public BoardListResponse retrieveBoard(String search, BoardCategory category, Pageable pageable) {
-        List<BoardInfoResponseWithLikeCount> boardList = boardRepository.findBySearchingAndCategory(search, category, pageable)
-                .stream().map(board -> BoardInfoResponseWithLikeCount.of(board, boardLikeRepository.countLikeByBoardId(board.getId())
+        Page<Board> boardPagination = boardRepository.findBySearchingAndCategory(search, category, pageable);
+        List<BoardInfoResponseWithLikeCount> boardList = boardPagination.stream()
+                .map(board -> BoardInfoResponseWithLikeCount.of(board, boardLikeRepository.countLikeByBoardId(board.getId())
                         .orElse(BoardLikeAndUnLikeCounts.of(0, 0))))
                 .collect(Collectors.toList());
-        long boardCounts = boardRepository.findBoardCounts(search, category);
-        return BoardListResponse.of(boardList, boardCounts);
+        return BoardListResponse.of(boardList, boardPagination.getTotalElements(), boardPagination.getTotalPages());
     }
 
     @Transactional

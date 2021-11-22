@@ -39,17 +39,6 @@ public class BoardRepositoryCustomImpl implements BoardRepositoryCustom {
     }
 
     @Override
-    public long findBoardCounts(String search, BoardCategory category) {
-        return queryFactory.selectFrom(board)
-                .where(
-                        board.title.contains(search)
-                                .or(board.petitionTitle.contains(search)),
-                        eqCategory(category),
-                        board.isDeleted.isFalse()
-                ).fetchCount();
-    }
-
-    @Override
     public long findBoardCountsWithMemberId(Long memberId) {
         return queryFactory.selectFrom(board)
                 .where(
