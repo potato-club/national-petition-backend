@@ -1,6 +1,5 @@
 package com.example.nationalpetition.service.alarm;
 
-import com.example.nationalpetition.domain.alarm.entity.Alarm;
 import com.example.nationalpetition.domain.alarm.entity.AlarmEventType;
 import com.example.nationalpetition.dto.alarm.AlarmResponse;
 

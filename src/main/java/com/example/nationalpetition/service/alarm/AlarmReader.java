@@ -8,5 +8,4 @@ public interface AlarmReader {
 
     AlarmListResponse getAlarmList(Long memberId);
 
-    Alarm findByMemberIdAndCommentId(Long memberId, Long commentId);
 }

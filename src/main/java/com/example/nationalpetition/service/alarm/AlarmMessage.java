@@ -19,6 +19,6 @@ public class AlarmMessage{
     }
 
     public Alarm toEntity(Long memberId, AlarmEventType alarmEventType) {
-        return Alarm.of(memberId, boardId, String.format(alarmEventType.getMessageFormat(), nickName, boardTitle), AlarmEventType.COMMENT_CREATED);
+        return Alarm.of(memberId, boardId, String.format(alarmEventType.getMessageFormat(), nickName, boardTitle), alarmEventType);
     }
 }

@@ -15,8 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.example.nationalpetition.domain.alarm.entity.AlarmEventType.*;
-
 @Slf4j
 @RequiredArgsConstructor
 @Transactional
@@ -28,20 +26,17 @@ public class AlarmStoreImpl implements AlarmStore {
     private final BoardRepository boardRepository;
 
     @Override
-    public AlarmResponse createAlarm(AlarmEventType AlarmEventType, Long commentId) {
+    public AlarmResponse createAlarm(AlarmEventType alarmEventType, Long commentId) {
+        if (alarmEventType == null) {
+            return null;
+        }
+
         final Comment comment = CommentServiceUtils.findCommentById(commentRepository, commentId);
         final Board board = BoardServiceUtils.findBoardById(boardRepository, comment.getBoardId());
 
-        if (isBoardWriterEqualsCommentWriter(AlarmEventType, comment, board)) {
-            return null;
-        }
-
-        if (isReCommentWriterEqualsCommentWriter(AlarmEventType, comment)) {
-            return null;
-        }
 
         final AlarmMessage alarmMessage = AlarmMessage.of(board.getId(), board.getTitle(), comment.getMember().getNickName());
-        return AlarmResponse.of(alarmRepository.save(alarmMessage.toEntity(board.getMemberId(), AlarmEventType)));
+        return AlarmResponse.of(alarmRepository.save(alarmMessage.toEntity(board.getMemberId(), alarmEventType)));
     }
 
 
@@ -59,11 +54,5 @@ public class AlarmStoreImpl implements AlarmStore {
     }
 
 
-    private boolean isReCommentWriterEqualsCommentWriter(AlarmEventType AlarmEventType, Comment comment) {
-        return AlarmEventType.equals(RE_COMMENT_CREATED) && comment.getParentId().equals(comment.getMember().getId());
-    }
 
-    private boolean isBoardWriterEqualsCommentWriter(AlarmEventType AlarmEventType, Comment comment, Board board) {
-        return AlarmEventType.equals(COMMENT_CREATED) && board.isCreator(comment.getMember().getId());
-    }
 }

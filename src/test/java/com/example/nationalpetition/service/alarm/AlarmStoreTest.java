@@ -40,20 +40,22 @@ class AlarmStoreTest {
     private MemberRepository memberRepository;
 
     @Autowired
+    private AlarmRepository alarmRepository;
+
+    @Autowired
     private AlarmStore alarmStore;
 
     @Autowired
     private AlarmValidator alarmValidator;
 
-    @Autowired
-    private AlarmRepository alarmRepository;
+
 
     @AfterEach
     void clear() {
+        alarmRepository.deleteAll();
         boardRepository.deleteAll();
         commentRepository.deleteAll();
         memberRepository.deleteAll();
-        alarmRepository.deleteAll();
     }
 
     @Test
@@ -70,7 +72,7 @@ class AlarmStoreTest {
         Comment comment = Comment.newRootComment(commentWriter, board.getId(), "댓글 내용");
         commentRepository.save(comment);
 
-        final AlarmEventType alarmEventType = alarmValidator.validateAlarm(comment.getId());
+        final AlarmEventType alarmEventType = alarmValidator.checkCommentOrReComment(comment.getId());
         //when
         final AlarmResponse alarm = alarmStore.createAlarm(alarmEventType, comment.getId());
         //then
@@ -78,50 +80,6 @@ class AlarmStoreTest {
         assertThat(alarm.getAlarmState()).isEqualTo(UNCHECKED);
         assertThat(alarm.getBoardId()).isEqualTo(board.getId());
         assertThat(alarm.getMessage()).isEqualTo(String.format(alarmEventType.getMessageFormat(), commentWriter.getNickName(), board.getTitle()));
-    }
-
-    @Test
-    @DisplayName("게시글 작성자와 댓글 작성자가 같을 때 알림 X")
-    void createAlarm_fail1() {
-        //given
-        Member boardCreator = MemberCreator.create("aa@bb.cc", "게시글 작성자");
-        memberRepository.save(boardCreator);
-
-        Board board = BoardCreator.create(boardCreator.getId(), "게시글 제목", "게시글 내용");
-        boardRepository.save(board);
-
-        Comment comment = Comment.newRootComment(boardCreator, board.getId(), "댓글 내용");
-        commentRepository.save(comment);
-
-        final AlarmEventType alarmEventType = alarmValidator.validateAlarm(comment.getId());
-        //when
-        final AlarmResponse alarm = alarmStore.createAlarm(alarmEventType, comment.getId());
-        //then
-        assertThat(alarm).isNull();
-    }
-
-    @Test
-    @DisplayName("댓글 작성자와 대댓글 작성자가 같을 때 알림 X")
-    void createAlarm_fail2() {
-        //given
-        Member boardCreator = MemberCreator.create("aa@bb.cc", "게시글 작성자");
-        Member commentWriter = MemberCreator.create("dd@ee.ff", "댓글 작성자");
-        memberRepository.saveAll(List.of(boardCreator, commentWriter));
-
-        Board board = BoardCreator.create(boardCreator.getId(), "게시글 제목", "게시글 내용");
-        boardRepository.save(board);
-
-        Comment comment = Comment.newRootComment(boardCreator, board.getId(), "댓글 내용");
-        commentRepository.save(comment);
-
-        Comment childComment = Comment.newChildComment(comment.getId(), commentWriter, board.getId(), comment.getDepth() + 1, "대댓글 내용");
-        commentRepository.save(childComment);
-
-        final AlarmEventType alarmEventType = alarmValidator.validateAlarm(comment.getId());
-        //when
-        final AlarmResponse alarm = alarmStore.createAlarm(alarmEventType, comment.getId());
-        //then
-        assertThat(alarm).isNull();
     }
 
 

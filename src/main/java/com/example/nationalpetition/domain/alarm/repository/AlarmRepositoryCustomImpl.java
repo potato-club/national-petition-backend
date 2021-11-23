@@ -21,7 +21,7 @@ public class AlarmRepositoryCustomImpl implements AlarmRepositoryCustom{
         return queryFactory.
                 selectFrom(alarm)
                 .where(alarm.state.in(CHECKED, UNCHECKED),
-                        alarm.id.eq(memberId))
+                        alarm.memberId.eq(memberId))
                 .orderBy(alarm.memberId.desc())
                 .fetch();
     }

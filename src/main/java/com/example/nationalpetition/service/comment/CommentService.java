@@ -35,7 +35,6 @@ public class CommentService {
     private final LikeCommentRepository likeCommentRepository;
     private final BoardRepository boardRepository;
     private final MemberRepository memberRepository;
-    private final AlarmStore alarmStore;
 
     @Transactional
     public Long addComment(CommentCreateDto dto, Long boardId, Long memberId) {
