@@ -19,7 +19,7 @@ import static com.example.nationalpetition.config.auth.AuthConstants.MEMBER_ID;
 @Component
 public class AuthInterceptor implements HandlerInterceptor {
 
-    private static final String BEARER_PREFIX = "Bearer";
+    private static final String BEARER_PREFIX = "Bearer ";
 
     private final TokenService tokenService;
 
