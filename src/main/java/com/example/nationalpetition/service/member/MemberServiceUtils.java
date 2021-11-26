@@ -1,8 +1,10 @@
 package com.example.nationalpetition.service.member;
 
 import com.example.nationalpetition.domain.member.entity.Member;
+import com.example.nationalpetition.domain.member.repository.MemberRepository;
 import com.example.nationalpetition.utils.error.ErrorCode;
 import com.example.nationalpetition.utils.error.exception.ConflictException;
+import com.example.nationalpetition.utils.error.exception.NotFoundException;
 
 public class MemberServiceUtils {
 
@@ -13,4 +15,10 @@ public class MemberServiceUtils {
 		}
 		return member;
 	}
+
+	public static Member findMemberById(MemberRepository memberRepository, Long memberId) {
+		return memberRepository.findById(memberId)
+				.orElseThrow(() -> new NotFoundException(String.format("해당하는 유저 (%s)는 존재하지 않습니다", memberId), ErrorCode.NOT_FOUND_EXCEPTION_USER));
+	}
+
 }

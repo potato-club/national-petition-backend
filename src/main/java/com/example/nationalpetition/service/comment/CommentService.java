@@ -10,12 +10,14 @@ import com.example.nationalpetition.dto.comment.CommentDto;
 import com.example.nationalpetition.dto.comment.request.CommentUpdateDto;
 import com.example.nationalpetition.dto.comment.request.LikeCommentRequestDto;
 import com.example.nationalpetition.dto.comment.response.CommentPageResponseDto;
+import com.example.nationalpetition.event.CommentCreatedEvent;
 import com.example.nationalpetition.service.board.BoardServiceUtils;
 import com.example.nationalpetition.utils.error.ErrorCode;
 import com.example.nationalpetition.utils.error.exception.ForbiddenException;
 import com.example.nationalpetition.utils.error.exception.NotFoundException;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -31,6 +33,8 @@ public class CommentService {
 
     private static final int commentDepthLimit = 2;
 
+    private final ApplicationEventPublisher eventPublisher;
+
     private final CommentRepository commentRepository;
     private final LikeCommentRepository likeCommentRepository;
     private final BoardRepository boardRepository;
@@ -43,7 +47,9 @@ public class CommentService {
 
         if (dto.getParentId() == null) {
             board.countRootComments();
-            return commentRepository.save(Comment.newRootComment(member, boardId, dto.getContent())).getId();
+            Comment comment = commentRepository.save(Comment.newRootComment(member, boardId, dto.getContent()));
+            eventPublisher.publishEvent(CommentCreatedEvent.of(comment.getId()));
+            return comment.getId();
         }
 
         Comment parentComment = CommentServiceUtils.findCommentById(commentRepository, dto.getParentId());
@@ -56,7 +62,10 @@ public class CommentService {
 
         parentComment.countChildComments();
 
-        return commentRepository.save(Comment.newChildComment(dto.getParentId(), member, board.getId(), depth + 1, dto.getContent())).getId();
+        Comment comment = commentRepository.save(Comment.newChildComment(dto.getParentId(), member, board.getId(), depth + 1, dto.getContent()));
+        eventPublisher.publishEvent(CommentCreatedEvent.of(comment.getId()));
+
+        return comment.getId();
     }
 
     @Transactional
@@ -66,6 +75,7 @@ public class CommentService {
             throw new NotFoundException(String.format("멤버(%s)에게 해당하는 댓글(%s)은 존재하지 않습니다", memberId, updateDto.getCommentId()), ErrorCode.NOT_FOUND_EXCEPTION_COMMENT);
         }
         comment.update(updateDto.getContent());
+        eventPublisher.publishEvent(CommentCreatedEvent.of(comment.getId()));
         return comment;
     }
 

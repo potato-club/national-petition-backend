@@ -102,4 +102,8 @@ public class Comment extends BaseTimeEntity {
         return this.parentId == null;
     }
 
+	public Long getMemberId() {
+        return this.member.getId();
+	}
+
 }
