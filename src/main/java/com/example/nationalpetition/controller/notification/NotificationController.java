@@ -45,20 +45,20 @@ public class NotificationController {
         return ApiResponse.OK;
     }
 
-    @Operation(summary = "게시글의 알림 상태를 변경하는 api", security = {@SecurityRequirement(name = "BearerKey")})
-    @Auth
-    @PostMapping("/api/v1/board/notification/state")
-    public ApiResponse<String> updateBoardNotification(@RequestBody @Valid UpdateBoardNotificationRequest request, @MemberId Long memberId) {
-        notificationService.updateBoardNotification(request, memberId);
-        return ApiResponse.OK;
-    }
-
-    @Operation(summary = "댓글의 알림 상태를 변경하는 api", security = {@SecurityRequirement(name = "BearerKey")})
-    @Auth
-    @PostMapping("/api/v1/comment/notification/state")
-    public ApiResponse<String> updateCommentNotification(@RequestBody @Valid UpdateCommentNotificationRequest request, @MemberId Long memberId) {
-        notificationService.updateCommentNotification(request, memberId);
-        return ApiResponse.OK;
-    }
+//    @Operation(summary = "게시글의 알림 상태를 변경하는 api", security = {@SecurityRequirement(name = "BearerKey")})
+//    @Auth
+//    @PostMapping("/api/v1/board/notification/state")
+//    public ApiResponse<String> updateBoardNotification(@RequestBody @Valid UpdateBoardNotificationRequest request, @MemberId Long memberId) {
+//        notificationService.updateBoardNotification(request, memberId);
+//        return ApiResponse.OK;
+//    }
+//
+//    @Operation(summary = "댓글의 알림 상태를 변경하는 api", security = {@SecurityRequirement(name = "BearerKey")})
+//    @Auth
+//    @PostMapping("/api/v1/comment/notification/state")
+//    public ApiResponse<String> updateCommentNotification(@RequestBody @Valid UpdateCommentNotificationRequest request, @MemberId Long memberId) {
+//        notificationService.updateCommentNotification(request, memberId);
+//        return ApiResponse.OK;
+//    }
 
 }

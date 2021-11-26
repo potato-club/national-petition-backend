@@ -43,8 +43,6 @@ public class Comment extends BaseTimeEntity {
 
     private boolean isDeleted;
 
-    private boolean isCommentNotification;
-
     @Builder
     private Comment(Long boardId, Long parentId, String content, int depth,
                     boolean isDeleted, Member member, List<LikeComment> likeComments) {
@@ -55,7 +53,6 @@ public class Comment extends BaseTimeEntity {
         this.isDeleted = isDeleted;
         this.childCommentsCount = 0;
         this.member = member;
-        this.isCommentNotification = true;
         this.likeComments = likeComments;
     }
 
@@ -99,10 +96,6 @@ public class Comment extends BaseTimeEntity {
 
     public boolean isRootComment() {
         return this.parentId == null;
-    }
-
-    public void updateCommentNotification(Boolean state) {
-        this.isCommentNotification = state;
     }
 
 }
