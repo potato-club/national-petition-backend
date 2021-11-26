@@ -92,4 +92,5 @@ public class Board extends BaseTimeEntity {
     public void decrementLikeCounts() {
         this.likeCounts--;
     }
+
 }
