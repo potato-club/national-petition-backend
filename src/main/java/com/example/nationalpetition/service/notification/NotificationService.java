@@ -29,9 +29,9 @@ public class NotificationService {
 
     @Transactional(readOnly = true)
     public List<NotificationInfoResponse> retrieveNotification(Long memberId) {
-        Member member = memberRepository.findById(memberId)
+        memberRepository.findById(memberId)
                 .orElseThrow(() -> new NotFoundException("멤버를 찾을 수 없어요", ErrorCode.NOT_FOUND_EXCEPTION_COMMENT));
-        return notificationRepository.findByNotificationMemberId(memberId, member.getNickName()).stream()
+        return notificationRepository.findByNotificationMemberId(memberId).stream()
                 .map(NotificationInfoResponse::of).collect(Collectors.toList());
     }
 
@@ -48,22 +48,5 @@ public class NotificationService {
                 .orElseThrow(() -> new NotFoundException("멤버를 찾을 수 없어요", ErrorCode.NOT_FOUND_EXCEPTION_COMMENT));
         member.updateMemberNotification(state);
     }
-
-//    @Transactional
-//    public void updateBoardNotification(UpdateBoardNotificationRequest request, Long memberId) {
-//        Board board = boardRepository.findByIdAndMemberId(request.getBoardId(), memberId)
-//                .orElseThrow(() -> new NotFoundException(String.format("해당하는 멤버 (%s)에게 해당하는 게시글 (%s)은 존재하지 않습니다",
-//                        memberId, request.getBoardId()), ErrorCode.NOT_FOUND_EXCEPTION_BOARD));
-//        board.updateBoardNotification(request.getState());
-//    }
-//
-//    @Transactional
-//    public void updateCommentNotification(UpdateCommentNotificationRequest request, Long memberId) {
-//        Comment comment = commentRepository.findByIdAndMemberIdAndIsDeletedIsFalse(request.getCommentId(), memberId);
-//        if (comment == null) {
-//            throw new NotFoundException(String.format("멤버(%s)에게 해당하는 댓글(%s)은 존재하지 않습니다", memberId, request.getCommentId()), ErrorCode.NOT_FOUND_EXCEPTION_COMMENT);
-//        }
-//        comment.updateCommentNotification(request.getState());
-//    }
 
 }

@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface NotificationRepositoryCustom {
 
-    List<Notification> findByNotificationMemberId(Long memberId, String nickname);
+    List<Notification> findByNotificationMemberId(Long memberId);
 
     Optional<Notification> findNotificationById(Long notificationId, Long memberId);
 

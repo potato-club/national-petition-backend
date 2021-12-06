@@ -48,7 +48,7 @@ public class CommentService {
 
         if (dto.getParentId() == null) {
             board.countRootComments();
-            if (member.isNotification() && !Objects.equals(board.getMemberId(), memberId)) {
+            if (member.isNotification() && !board.getMemberId().equals(memberId)) {
                 eventPublisher.publishEvent(NotificationEvent.of(board.getMemberId(), board.getId(), NotificationTemplate.CREATE_COMMENT, member.getNickName()));
             }
             return commentRepository.save(Comment.newRootComment(member, boardId, dto.getContent())).getId();
@@ -63,7 +63,7 @@ public class CommentService {
         }
 
         parentComment.countChildComments();
-        if (member.isNotification()) {
+        if (member.isNotification() && !parentComment.getMember().getId().equals(memberId)) {
             eventPublisher.publishEvent(NotificationEvent.of(parentComment.getMember().getId(), board.getId(), NotificationTemplate.CREATE_RE_COMMENT, member.getNickName()));
         }
         return commentRepository.save(Comment.newChildComment(dto.getParentId(), member, board.getId(), depth + 1, dto.getContent())).getId();
