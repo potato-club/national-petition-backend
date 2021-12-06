@@ -112,7 +112,7 @@ public class NotificationServiceTest {
                 .build();
 
         // when
-        commentService.addComment(dto, board.getId(), member1.getId());
+        commentService.addComment(dto, board.getId(), member2.getId());
 
         // then
         List<Comment> commentList = commentRepository.findAll();
@@ -163,7 +163,7 @@ public class NotificationServiceTest {
         List<NotificationInfoResponse> notificationInfoResponses = notificationService.retrieveNotification(member1.getId());
 
         // then
-        assertThat(notificationInfoResponses).hasSize(2);
+        assertThat(notificationInfoResponses).hasSize(3);
     }
 
     @DisplayName("전체 알림이 off이면 개별 알람이 on이여도 알람 db에 저장이 되지 않는다")
