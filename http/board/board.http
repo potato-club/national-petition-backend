@@ -103,12 +103,3 @@ Authorization: Bearer {{TOKEN}}
   "state": false
 }
 
-### 게시글의 알림 상태 변경
-POST {{local}}/api/v1/board/notification/state
-Content-Type: application/json
-Authorization: Bearer {{TOKEN}}
-
-{
-  "state": false,
-  "boardId": 1
-}
