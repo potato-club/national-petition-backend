@@ -12,4 +12,8 @@ public class UpdateMemberNotificationRequest {
     @NotNull
     private Boolean state;
 
+    public UpdateMemberNotificationRequest(Boolean state) {
+        this.state = state;
+    }
+
 }
