@@ -90,6 +90,7 @@ public class NotificationControllerTest {
                                 fieldWithPath("code").description("code"),
                                 fieldWithPath("message").description("message"),
                                 fieldWithPath("data[].id").description("notificationId"),
+                                fieldWithPath("data[].boardId").description("boardId"),
                                 fieldWithPath("data[].content").description("notification content"),
                                 fieldWithPath("data[].isRead").description("읽었는지 상태 표시")
                         )

@@ -22,7 +22,6 @@ public class NotificationService {
     private final MemberRepository memberRepository;
     private final NotificationRepository notificationRepository;
 
-    @Transactional
     public void addNotification(NotificationEvent event) {
         notificationRepository.save(event.toEntity());
     }
