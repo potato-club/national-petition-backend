@@ -32,4 +32,18 @@ public class LocalController {
 		return ApiResponse.success(tokenService.generateToken(member.getId()));
 	}
 
+	@Operation(summary = "테스트 토큰을 받아오는 API (개발 서버 전용)")
+	@GetMapping("/test-token2")
+	public ApiResponse<Token> getTestToken2() {
+		Member member = memberRepository.findByEmail("potato.test2@gmail.com")
+				.orElse(Member.builder()
+						.email("potato.test2@gmail.com")
+						.name("test")
+						.picture("picture")
+						.build()
+				);
+		memberRepository.save(member);
+		return ApiResponse.success(tokenService.generateToken(member.getId()));
+	}
+
 }

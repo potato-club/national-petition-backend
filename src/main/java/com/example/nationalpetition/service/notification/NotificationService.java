@@ -4,7 +4,6 @@ import com.example.nationalpetition.domain.member.entity.Member;
 import com.example.nationalpetition.domain.member.repository.MemberRepository;
 import com.example.nationalpetition.domain.notification.Notification;
 import com.example.nationalpetition.domain.notification.repository.NotificationRepository;
-import com.example.nationalpetition.dto.notification.NotificationEvent;
 import com.example.nationalpetition.dto.notification.response.NotificationInfoResponse;
 import com.example.nationalpetition.utils.error.ErrorCode;
 import com.example.nationalpetition.utils.error.exception.NotFoundException;
@@ -21,10 +20,6 @@ public class NotificationService {
 
     private final MemberRepository memberRepository;
     private final NotificationRepository notificationRepository;
-
-    public void addNotification(NotificationEvent event) {
-        notificationRepository.save(event.toEntity());
-    }
 
     @Transactional(readOnly = true)
     public List<NotificationInfoResponse> retrieveNotification(Long memberId) {

@@ -9,11 +9,11 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class NotificationEventHandler {
 
-    private final NotificationService notificationService;
+    private final NotificationEventService notificationEventService;
 
     @EventListener
     public void addNotification(NotificationEvent event) {
-        notificationService.addNotification(event);
+        notificationEventService.addNotification(event);
     }
 
 }

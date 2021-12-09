@@ -109,6 +109,10 @@ dependencies {
     // db
     implementation group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.4.1'
 
+    // redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+    implementation 'com.google.code.gson:gson:2.7'
 }
 
 dependencyManagement {

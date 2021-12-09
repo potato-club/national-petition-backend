@@ -91,8 +91,10 @@ public class NotificationControllerTest {
                                 fieldWithPath("message").description("message"),
                                 fieldWithPath("data[].id").description("notificationId"),
                                 fieldWithPath("data[].boardId").description("boardId"),
+                                fieldWithPath("data[].notificationMemberId").description("notificationMemberId"),
                                 fieldWithPath("data[].content").description("notification content"),
-                                fieldWithPath("data[].isRead").description("읽었는지 상태 표시")
+                                fieldWithPath("data[].isRead").description("읽었는지 상태 표시"),
+                                fieldWithPath("data[].createdDate").description("createdDate")
                         )
                 ));
         resultActions.andExpect(status().isOk());
