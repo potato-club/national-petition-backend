@@ -23,6 +23,10 @@ spring:
         use_sql_comments: true
   flyway:
     enabled: false
+  redis:
+    port: 6379
+    host: 3.38.124.11
+    password:
 google:
   redirect:
     uri: http://localhost:8080/nickName

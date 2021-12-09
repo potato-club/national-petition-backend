@@ -68,10 +68,18 @@ client.global.set('TOKEN', response.body.data.token)
 client.log(client.global.get('TOKEN'));
  %}
 
+###
+GET {{local}}/test-token2
+
+> {%
+client.global.set('TOKEN2', response.body.data.token)
+client.log(client.global.get('TOKEN2'));
+ %}
+
 ### 닉네임 등록
 POST {{local}}/api/v1/mypage/nickName
 Content-Type: application/json
-Authorization: Bearer {{TOKEN}}
+Authorization: Bearer {{TOKEN2}}
 
 {
   "nickName": "sunjo"
@@ -80,7 +88,7 @@ Authorization: Bearer {{TOKEN}}
 ### 댓글 남기기
 POST {{local}}/api/v1/comment/1
 Content-Type: application/json
-Authorization: Bearer {{TOKEN}}
+Authorization: Bearer {{TOKEN2}}
 
 {
   "content": "댓글을 남겨봅시다!~~"
@@ -102,4 +110,7 @@ Authorization: Bearer {{TOKEN}}
 {
   "state": false
 }
+
+### redis test
+GET {{local}}/api/v1/redis/150
 

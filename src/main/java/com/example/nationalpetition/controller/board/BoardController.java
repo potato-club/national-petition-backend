@@ -7,7 +7,9 @@ import com.example.nationalpetition.domain.board.BoardState;
 import com.example.nationalpetition.dto.board.request.*;
 import com.example.nationalpetition.dto.board.response.BoardInfoResponseWithLikeCount;
 import com.example.nationalpetition.dto.board.response.BoardListResponse;
+import com.example.nationalpetition.dto.notification.response.NotificationInfoResponse;
 import com.example.nationalpetition.service.board.BoardService;
+import com.example.nationalpetition.service.redis.RedisService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+import java.time.LocalDateTime;
+
 import static org.springframework.data.domain.Sort.Direction.DESC;
 
 @RestController
@@ -25,6 +29,7 @@ import static org.springframework.data.domain.Sort.Direction.DESC;
 public class BoardController {
 
 	private final BoardService boardService;
+	private final RedisService redisService;
 
 	@Operation(summary = "게시글 등록하는 API", security = {@SecurityRequirement(name = "BearerKey")})
 	@Auth
@@ -75,6 +80,13 @@ public class BoardController {
 	@GetMapping("/api/v1/board/status/{boardId}")
 	public ApiResponse<BoardState> getBoardStatus(@PathVariable Long boardId, @MemberId Long memberId) {
 		return ApiResponse.success(boardService.getBoardStatus(boardId, memberId));
+	}
+
+	@Operation(summary = "레디스 테스트용입니다.")
+	@GetMapping("/api/v1/redis/{memberId}")
+	public ApiResponse<String> testRedis(@PathVariable Long memberId) {
+		redisService.publish(new NotificationInfoResponse(1L, 1L, memberId, "sunjo 님이 댓글을 달았습니다.", false, LocalDateTime.now()));
+		return ApiResponse.OK;
 	}
 
 }
