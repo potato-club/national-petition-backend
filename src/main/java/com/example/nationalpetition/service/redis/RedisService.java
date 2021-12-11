@@ -16,7 +16,7 @@ public class RedisService {
     private final RedisTemplate<String, Object> redisTemplate;
 
     public void publish(NotificationInfoResponse notification) {
-        log.debug("redis publish");
+        log.info("redis publish");
         Gson gson = new Gson();
         redisTemplate.convertAndSend(topic, gson.toJson(notification));
     }
